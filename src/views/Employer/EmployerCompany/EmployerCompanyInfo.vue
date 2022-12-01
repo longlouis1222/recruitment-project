@@ -61,7 +61,7 @@ const resetForm = (formEl) => {
         ref="ruleFormRef"
         :model="formData"
         :rules="validForm"
-        label-width="160px"
+        label-width="140px"
         label-position="left"
         class="demo-ruleForm"
         status-icon
@@ -110,18 +110,16 @@ const resetForm = (formEl) => {
         <b-row>
           <h5 class="mb-4">Giấy phép kinh doanh</h5>
           <b-col md="7">
-            <p> Giấy phép kinh doanh hợp lệ</p>
-            <p><Edit /> Có dấu giáp lai của cơ quan có thẩm quyền.</p>
-            <p><el-icon><CircleCheck /></el-icon> Trường hợp giấy phép kinh doanh là bản photo thì phải có dấu công chứng.</p>
+            <p>Giấy phép kinh doanh hợp lệ</p>
+            <p><el-icon color="green"><CircleCheck /></el-icon> Có dấu giáp lai của cơ quan có thẩm quyền.</p>
+            <p><el-icon color="green"><CircleCheck /></el-icon> Trường hợp giấy phép kinh doanh là bản photo thì phải có dấu công chứng.</p>
           </b-col>
         </b-row>
-        <b-row>
-          <el-form-item>
-            <el-button type="primary" @click="submitForm(ruleFormRef)"
-              >Cập nhật</el-button
-            >
-          </el-form-item>
-        </b-row>
+        <div>
+          <el-button type="primary" @click="submitForm(ruleFormRef)"
+            >Cập nhật</el-button
+          >
+        </div>
       </el-form>
     </el-card>
   </div>

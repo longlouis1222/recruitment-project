@@ -26,6 +26,8 @@ import BootstrapVue3 from 'bootstrap-vue-3';
 // if (window.MyConfig.language == "en") {
 //   locale.use(enLocale)
 // }
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+
 
 const app = createApp(App)
 app.use(store)
@@ -39,4 +41,7 @@ app.component('CIcon', CIcon)
 app.component('DocsCallout', DocsCallout)
 app.component('DocsExample', DocsExample)
 
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+  app.component(key, component)
+}
 app.mount('#app')

@@ -57,7 +57,7 @@ const resetForm = (formEl) => {
         ref="ruleFormRef"
         :model="formData"
         :rules="validForm"
-        label-width="160px"
+        label-width="140px"
         label-position="left"
         class="demo-ruleForm"
         status-icon
@@ -75,7 +75,7 @@ const resetForm = (formEl) => {
           <b-col md="5">
             <el-form-item label="Ảnh đại diện" prop="avatar">
               <el-upload
-                class="avatar-uploader"
+                class="avatar-uploader d-flex"
                 action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
                 :show-file-list="false"
                 :on-success="handleAvatarSuccess"
@@ -83,6 +83,13 @@ const resetForm = (formEl) => {
               >
                 <img v-if="imageUrl" :src="imageUrl" class="avatar" />
                 <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+                <template #tip>
+                  <div class="el-upload__tip ms-2">
+                    Dạng file .jpg, .jpeg, .png <br>
+                    dung lượng tối đa là 300KB <br>
+                    và kích thước tối thiểu 300x300 pixel.
+                  </div>
+                </template>
               </el-upload>
             </el-form-item>
           </b-col>
@@ -107,17 +114,40 @@ const resetForm = (formEl) => {
             </el-form-item>
           </b-col>
         </b-row>
-        <b-row>
-          <el-form-item>
-            <el-button type="primary" @click="submitForm(ruleFormRef)"
-              >Cập nhật</el-button
-            >
-          </el-form-item>
-        </b-row>
+        <div>
+          <el-button type="primary" @click="submitForm(ruleFormRef)"
+            >Cập nhật</el-button
+          >
+        </div>
       </el-form>
     </el-card>
   </div>
 </template>
 
 <style lang="scss" scoped>
+::v-deep .avatar-uploader .avatar {
+  width: 120px;
+  height: 120px;
+  display: block;
+}
+::v-deep .avatar-uploader .el-upload {
+  border: 1px dashed #dcdfe6;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: .1s ease;
+}
+
+::v-deep .avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+
+::v-deep .el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 120px;
+  height: 120px;
+  text-align: center;
+}
 </style>
