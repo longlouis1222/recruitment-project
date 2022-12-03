@@ -99,7 +99,7 @@ onMounted(() => {
         <!-- end row -->
         <div class="login-container position-relative">
           <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6 col-xl-5">
+            <div class="col-md-8 col-lg-6" :class="isVerifyAccount == false ? 'col-xl-6' : 'col-xl-5'">
               <div class="card mt-4">
                 <div v-if="!isVerifyAccount" class="card-body p-4">
                   <div class="mt-2 text-center">
@@ -130,8 +130,8 @@ onMounted(() => {
                           :disabled="!isVerifyAccount"
                         />
                       </el-form-item>
-                      <div class="d-flex justify-content-between">
-                        <el-form-item class="mb-0 w-48">
+                      <!-- <div class="d-flex justify-content-between"> -->
+                        <!-- <el-form-item class="mb-0 w-48">
                           <el-button
                             type="button"
                             style="height: 36px"
@@ -142,8 +142,8 @@ onMounted(() => {
                           >
                             Quay lại
                           </el-button>
-                        </el-form-item>
-                        <el-form-item class="mb-0 w-48">
+                        </el-form-item> -->
+                        <el-form-item class="mb-0 w-100">
                           <el-button
                             type="primary"
                             style="height: 36px"
@@ -153,10 +153,10 @@ onMounted(() => {
                             native-type="submit"
                             :loading="loadingBtn"
                           >
-                            Gửi
+                            Xác nhận
                           </el-button>
                         </el-form-item>
-                      </div>
+                      <!-- </div> -->
                     </el-form>
                   </div>
                 </div>
@@ -167,7 +167,7 @@ onMounted(() => {
                       Kích hoạt tài khoản thành công !
                     </h5>
                     <img
-                      class="w-75"
+                      class="w-50"
                       src="../../../src/assets/gifs/checker-3.gif"
                       alt="mail..."
                     />
