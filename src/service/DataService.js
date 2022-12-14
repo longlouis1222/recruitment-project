@@ -244,3 +244,237 @@ DataService.mainJobList = [
     value: 'Dầu khí - hóa chất'
   },
 ]
+
+DataService.secondJobList = [
+  {
+    label: 'Bán hàng',
+    value: 'Bán hàng'
+  },
+  {
+    label: 'Quản trị kinh doanh',
+    value: 'Quản trị kinh doanh'
+  },
+  {
+    label: 'Khách sạn - nhà hàng',
+    value: 'Khách sạn - nhà hàng'
+  },
+  {
+    label: 'Marketing - PR',
+    value: 'Marketing - PR'
+  },
+  {
+    label: 'Xây dựng',
+    value: 'Xây dựng'
+  },
+  {
+    label: 'Kiêm toán - kế toán',
+    value: 'Kiêm toán - kế toán'
+  },
+  {
+    label: 'Nhân sự',
+    value: 'Nhân sự'
+  },
+  {
+    label: 'Hành chính văn phòng',
+    value: 'Hành chính văn phòng'
+  },
+  {
+    label: 'Kinh doanh bất động sản',
+    value: 'Kinh doanh bất động sản'
+  },
+  {
+    label: 'An ninh - bảo vệ',
+    value: 'An ninh - bảo vệ'
+  },
+  {
+    label: 'Báo chí truyền hình',
+    value: 'Báo chí truyền hình'
+  },
+  {
+    label: 'Bảo hiểm',
+    value: 'Bảo hiểm'
+  },
+  {
+    label: 'Biên dịch - phiên dịch',
+    value: 'Biên dịch - phiên dịch'
+  },
+  {
+    label: 'Bưu chính',
+    value: 'Bưu chính'
+  },
+  {
+    label: 'Chứng khoán - vàng',
+    value: 'Chứng khoán - vàng'
+  },
+  {
+    label: 'Cơ khí - Chế tạo',
+    value: 'Cơ khí - Chế tạo'
+  },
+  {
+    label: 'Công nghệ cao',
+    value: 'Công nghệ cao'
+  },
+  {
+    label: 'Công nghiệp',
+    value: 'Công nghiệp'
+  },
+  {
+    label: 'Dầu khí - hóa chất',
+    value: 'Dầu khí - hóa chất'
+  },
+]
+
+DataService.workPlaceList = [
+  {
+    label: 'Hà Nội',
+    value: 'Hà Nội',
+  },
+  {
+    label: 'TP.HCM',
+    value: 'TP.HCM',
+  },
+  {
+    label: 'An Giang',
+    value: 'An Giang',
+  },
+  {
+    label: 'Bà Rịa - Vũng Tàu',
+    value: 'Bà Rịa - Vũng Tàu',
+  },
+  {
+    label: 'Bắc Cạn - Bắc Giang',
+    value: 'Bắc Cạn - Bắc Giang',
+  },
+  {
+    label: 'Bạc Liêu',
+    value: 'Bạc Liêu',
+  },
+  {
+    label: 'Bắc Ninh',
+    value: 'Bắc Ninh',
+  },
+  {
+    label: 'Bến Tre',
+    value: 'Bến Tre',
+  },
+  {
+    label: 'Bình Dương',
+    value: 'Bình Dương',
+  },
+  {
+    label: 'Bình Phước',
+    value: 'Bình Phước',
+  },
+  {
+    label: 'Bình Thuận',
+    value: 'Bình Thuận',
+  },
+  {
+    label: 'Bình Định',
+    value: 'Bình Định',
+  },
+  {
+    label: 'Cà Mau',
+    value: 'Cà Mau',
+  },
+  {
+    label: 'Cần Thơ',
+    value: 'Cần Thơ',
+  },
+]
+
+DataService.minSalaryList = [
+  {
+    label: '1 triệu',
+    value: '1 triệu',
+  },
+  {
+    label: '2 triệu',
+    value: '2 triệu',
+  },
+  {
+    label: '3 triệu',
+    value: '3 triệu',
+  },
+  {
+    label: '4 triệu',
+    value: '4 triệu',
+  },
+  {
+    label: '5 triệu',
+    value: '5 triệu',
+  },
+  {
+    label: '6 triệu',
+    value: '6 triệu',
+  },
+  {
+    label: '7 triệu',
+    value: '7 triệu',
+  },
+  {
+    label: '8 triệu',
+    value: '8 triệu',
+  },
+  {
+    label: '9 triệu',
+    value: '9 triệu',
+  },
+  {
+    label: '10 triệu',
+    value: '10 triệu',
+  },
+  {
+    label: '11 triệu',
+    value: '11 triệu',
+  },
+]
+
+DataService.maxSalaryList = [
+  {
+    label: '1 triệu',
+    value: '1 triệu',
+  },
+  {
+    label: '2 triệu',
+    value: '2 triệu',
+  },
+  {
+    label: '3 triệu',
+    value: '3 triệu',
+  },
+  {
+    label: '4 triệu',
+    value: '4 triệu',
+  },
+  {
+    label: '5 triệu',
+    value: '5 triệu',
+  },
+  {
+    label: '6 triệu',
+    value: '6 triệu',
+  },
+  {
+    label: '7 triệu',
+    value: '7 triệu',
+  },
+  {
+    label: '8 triệu',
+    value: '8 triệu',
+  },
+  {
+    label: '9 triệu',
+    value: '9 triệu',
+  },
+  {
+    label: '10 triệu',
+    value: '10 triệu',
+  },
+  {
+    label: '11 triệu',
+    value: '11 triệu',
+  },
+]
+
+export default DataService

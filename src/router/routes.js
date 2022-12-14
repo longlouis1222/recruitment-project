@@ -4,7 +4,7 @@ import DefaultLayout from '@/layouts/DefaultLayout'
 export default [
   {
     path: '/',
-    name: 'Home',
+    name: 'Trang chủ',
     component: DefaultLayout,
     redirect: '/dashboard',
     children: [
@@ -19,7 +19,7 @@ export default [
       },
       {
         path: '/admin/user-management/user-list',
-        name: 'User List',
+        name: 'Danh sách người dùng',
         component: () =>
           import('@/views/admin/UserManagement/UserList.vue'),
       },
@@ -35,6 +35,25 @@ export default [
         component: () =>
           import('@/views/Employer/EmployerCompany/EmployerCompanyInfo.vue'),
       },
+      {
+        path: '/employer/recruitment-post/recuitment-post-create',
+        name: 'Tạo tin tuyển dụng',
+        component: () =>
+          import('@/views/Employer/RecruitmentPost/RecruitmentPostCreate.vue'),
+      },
+      {
+        path: '/employer/recruitment-post/recuitment-post-list',
+        name: 'Danh sách tin đăng',
+        component: () =>
+          import('@/views/Employer/RecruitmentPost/RecruitmentPostList.vue'),
+      },
+      {
+        path: '/employer/find-candidate/find-candidate-list',
+        name: 'Tìm ứng viên',
+        component: () =>
+          import('@/views/Employer/FindCandidate/FindCandidate.vue'),
+      },
+
       {
         path: '/theme',
         name: 'Theme',

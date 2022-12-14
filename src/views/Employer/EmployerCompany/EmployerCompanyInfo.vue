@@ -91,7 +91,7 @@ const resetForm = (formEl) => {
               <el-select
                 v-model="formData.field_of_acitvity"
                 multiple
-                placeholder="Select"
+                placeholder="Chọn"
               >
                 <el-option
                   v-for="item in options"

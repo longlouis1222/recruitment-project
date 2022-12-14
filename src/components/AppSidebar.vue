@@ -12,16 +12,19 @@
     "
   >
     <CSidebarBrand>
-      <CIcon
+      <!-- <CIcon
         custom-class-name="sidebar-brand-full"
         :icon="logoNegative"
         :height="35"
-      />
-      <CIcon
+      /> -->
+      <div custom-class-name="sidebar-brand-full">
+        <img src="logo_R.png" style="width: 60px">
+      </div>
+      <!-- <CIcon
         custom-class-name="sidebar-brand-narrow"
         :icon="sygnet"
         :height="35"
-      />
+      /> -->
     </CSidebarBrand>
     <AppSidebarNav />
     <CSidebarToggler

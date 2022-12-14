@@ -11,7 +11,7 @@ export default [
   },
   {
     component: 'CNavItem',
-    name: 'User List',
+    name: 'Danh sách người dùng',
     to: '/admin/user-management/user-list',
     icon: 'cilPeople',
   },
@@ -26,6 +26,24 @@ export default [
     name: 'Công ty',
     to: '/employer/employer-company/employer-company-info',
     icon: 'cilPeople',
+  },
+  {
+    component: 'CNavItem',
+    name: 'Tạo tin tuyển dụng',
+    to: '/employer/recruitment-post/recuitment-post-create',
+    icon: 'cil-pencil',
+  },
+  {
+    component: 'CNavItem',
+    name: 'Danh sách tin đăng',
+    to: '/employer/recruitment-post/recuitment-post-list',
+    icon: 'cil-puzzle',
+  },
+  {
+    component: 'CNavItem',
+    name: 'Tìm ứng viên',
+    to: '/employer/find-candidate/find-candidate-list',
+    icon: 'cilSearch',
   },
   // {
   //   component: 'CNavTitle',
