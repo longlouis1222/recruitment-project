@@ -89,8 +89,8 @@ const backToPrev = () => {
         <div class="login-container position-relative">
           <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6 col-xl-5">
-              <div class="card mt-4">
-                <div v-if="isRecoverPw" class="card-body p-4">
+              <div class="card mt-4 b-shadow">
+                <div v-if="isRecoverPw" class="card-body p-4 px-3">
                   <div class="mt-2 text-center">
                     <h5 class="mb-4">QUÊN MẬT KHẨU</h5>
                     <p :class="{ active: true }">
@@ -141,6 +141,7 @@ const backToPrev = () => {
                             tabindex="1"
                             native-type="submit"
                             :loading="loadingBtn"
+                            @keyup.enter="getVerificationCodes(ruleFormRef)"
                           >
                             Gửi
                           </el-button>
@@ -156,7 +157,7 @@ const backToPrev = () => {
                       Gửi thông tin lấy lại mật khẩu thành công !
                     </h5>
                     <img
-                      class="w-75"
+                      class="w-50"
                       src="../../../src/assets/gifs/mail-download.gif"
                       alt="mail..."
                     />
@@ -202,7 +203,7 @@ const backToPrev = () => {
   font-weight: 500;
 }
 .auth-one-bg {
-  background-image: url('@/assets/images/vue400.jpg');
+  background-image: url('@/assets/images/bgc-wrap.jpg');
   background-position: 50%;
   background-size: cover;
 }

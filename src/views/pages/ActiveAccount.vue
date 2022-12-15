@@ -100,7 +100,7 @@ onMounted(() => {
         <div class="login-container position-relative">
           <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6" :class="isVerifyAccount == false ? 'col-xl-6' : 'col-xl-5'">
-              <div class="card mt-4">
+              <div class="card mt-4 b-shadow">
                 <div v-if="!isVerifyAccount" class="card-body p-4">
                   <div class="mt-2 text-center">
                     <h5 class="mb-4">KÍCH HOẠT TÀI KHOẢN</h5>
@@ -201,7 +201,7 @@ onMounted(() => {
   font-weight: 500;
 }
 .auth-one-bg {
-  background-image: url('@/assets/images/vue400.jpg');
+  background-image: url('@/assets/images/bgc-wrap.jpg');
   background-position: 50%;
   background-size: cover;
 }
