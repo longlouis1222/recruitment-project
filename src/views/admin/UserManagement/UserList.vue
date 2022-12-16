@@ -88,12 +88,42 @@ onMounted(() => {
         </div>
       </template>
       <el-table :data="tableData" style="width: 100%">
-        <el-table-column prop="account" label="Tài khoản" width="180" />
-        <el-table-column prop="password" label="Mật khẩu" width="180" />
+        <el-table-column prop="account" label="Tài khoản" width="120" />
+        <el-table-column prop="password" label="Mật khẩu" width="100" />
         <el-table-column prop="firstname" label="Tên" />
         <el-table-column prop="lastname" label="Họ" />
-        <el-table-column prop="username" label="Tên đầy đủ" />
+        <el-table-column prop="username" label="Tên đầy đủ" min-width="120" />
         <el-table-column prop="dateOfbirth" label="Ngày sinh" />
+        <el-table-column
+          fixed="right"
+          align="center"
+          label="Thao tác"
+          width="180"
+        >
+          <template #default>
+            <div class="d-flex">
+              <el-button
+                size="small"
+                @click="handleEdit(scope.$index, scope.row)"
+                ><CIcon icon="cilFindInPage"
+              /></el-button>
+              <el-button
+                size="small"
+                type="primary"
+                plain
+                @click="handleEdit(scope.$index, scope.row)"
+                ><CIcon icon="cilPencil"
+              /></el-button>
+              <el-button
+                size="small"
+                type="danger"
+                plain
+                @click="handleDelete(scope.$index, scope.row)"
+                ><CIcon icon="cilTrash"
+              /></el-button>
+            </div>
+          </template>
+        </el-table-column>
       </el-table>
       <div class="mt-3 mb-3" style="float: right">
         <el-pagination

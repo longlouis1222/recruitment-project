@@ -53,6 +53,27 @@ export default [
         component: () =>
           import('@/views/Employer/FindCandidate/FindCandidate.vue'),
       },
+      {
+        path: '/employer/candidate-profile/candidate-profile-list',
+        name: 'Hồ sơ ứng viên',
+        component: () =>
+          import('@/views/Employer/CandidateProfile/CandidateProfileList.vue'),
+      },
+
+      // EMPLOYEE
+
+      {
+        path: '/employee/employee-account/employee-account-info',
+        name: 'Tài khoản ứng viên',
+        component: () =>
+          import( '@/views/Employee/EmployeeAccount/EmployeeAccountInfo.vue'),
+      },
+      {
+        path: '/employee/curriculum-vitae/curriculum-vitae-info',
+        name: 'Hồ sơ ứng viên',
+        component: () =>
+          import( '@/views/Employee/CurriculumVitae/CurriculumVitae.vue'),
+      },
 
       {
         path: '/theme',

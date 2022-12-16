@@ -176,7 +176,7 @@ const backToPrev = () => {
                       hoặc
                       <a
                         style="color: #409eff; cursor: pointer"
-                        @click="router.go(-1)"
+                        @click="router.push({ name: 'Login'})"
                         >Quay lại màn đăng nhập</a
                       >
                     </div>

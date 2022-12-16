@@ -6,7 +6,7 @@ export default [
     icon: 'cil-speedometer',
     badge: {
       color: 'primary',
-      text: 'NEW',
+      // text: 'NEW',
     },
   },
   {
@@ -19,13 +19,13 @@ export default [
     component: 'CNavItem',
     name: 'Tài khoản nhà tuyển dụng',
     to: '/employer/employer-account/employer-account-info',
-    icon: 'cilPeople',
+    icon: 'cilHouse',
   },
   {
     component: 'CNavItem',
     name: 'Công ty',
     to: '/employer/employer-company/employer-company-info',
-    icon: 'cilPeople',
+    icon: 'cilLibraryBuilding',
   },
   {
     component: 'CNavItem',
@@ -45,6 +45,28 @@ export default [
     to: '/employer/find-candidate/find-candidate-list',
     icon: 'cilSearch',
   },
+  {
+    component: 'CNavItem',
+    name: 'Danh sách hồ sơ',
+    to: '/employer/candidate-profile/candidate-profile-list',
+    icon: 'cilStorage',
+  },
+
+  // EMPLOYEE
+
+  {
+    component: 'CNavItem',
+    name: 'Tài khoản ứng viên',
+    to: '/employee/employee-account/employee-account-info',
+    icon: 'cilContact',
+  },
+  {
+    component: 'CNavItem',
+    name: 'Hồ sơ ứng viên',
+    to: '/employee/curriculum-vitae/curriculum-vitae-info',
+    icon: 'cilAddressBook',
+  },
+
   // {
   //   component: 'CNavTitle',
   //   name: 'Theme',

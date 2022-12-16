@@ -160,7 +160,7 @@ onMounted(() => {
         <b-collapse
           v-model="tableRules.showFormSearch"
           id="myFormSearch"
-          class="b-shadow"
+          class=""
         >
           <el-card>
             <el-form

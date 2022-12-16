@@ -1,7 +1,7 @@
 <template>
   <div>
-    <WidgetsStatsA />
-    <CRow>
+    <!-- <WidgetsStatsA /> -->
+    <!-- <CRow>
       <CCol :md="12">
         <CCard class="mb-4">
           <CCardBody>
@@ -88,7 +88,7 @@
           </CCardFooter>
         </CCard>
       </CCol>
-    </CRow>
+    </CRow> -->
     <WidgetsStatsD />
     <CRow>
       <CCol :md="12">

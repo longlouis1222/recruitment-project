@@ -24,79 +24,51 @@ const ruleFormRef = ref(FormInstance)
 const validForm = modelData.validForm
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
 const formData = reactive(MethodService.copyObject(modelData.dataForm))
-const options = [
+const statusList = [
   {
     value: 'Option1',
-    label: 'Option1',
+    label: 'Chờ duyệt',
   },
   {
     value: 'Option2',
-    label: 'Option2',
+    label: 'Đã duyệt',
   },
   {
     value: 'Option3',
-    label: 'Option3',
-  },
-  {
-    value: 'Option4',
-    label: 'Option4',
-  },
-  {
-    value: 'Option5',
-    label: 'Option5',
+    label: 'Từ chối',
   },
 ]
 
 const tableData = [
   {
-    name: 'Tin tức 24h siêu hot',
-    date_post: '12/02/2022',
-    end_date: '20/02/2022',
-    approve_time: '22',
-    read_time: '10',
-    post_status: 'Nổi bật',
+    name: 'Hồ sơ Front-dev',
     status: 'Đã duyệt',
-    others: 'Tin tức tuyển dụng',
+    date_save: '12/02/2022',
+    candidate_status: 'Nổi bật',
   },
   {
-    name: 'Tin tức 24h siêu hot',
-    date_post: '12/02/2022',
-    end_date: '20/02/2022',
-    approve_time: '22',
-    read_time: '10',
-    post_status: 'Nổi bật',
-    status: 'Đã duyệt',
-    others: 'Tin tức tuyển dụng',
+    name: 'Hồ sơ Back-dev',
+    status: 'Từ chối',
+    date_save: '13/02/2022',
+    candidate_status: 'Ẩn',
   },
   {
-    name: 'Tin tức 24h siêu hot',
-    date_post: '12/02/2022',
-    end_date: '20/02/2022',
-    approve_time: '22',
-    read_time: '10',
-    post_status: 'Nổi bật',
+    name: 'Hồ sơ Fullstack-dev',
     status: 'Đã duyệt',
-    others: 'Tin tức tuyển dụng',
+    date_save: '14/02/2022',
+    candidate_status: 'Nổi bật',
   },
   {
-    name: 'Tin tức 24h siêu hot',
-    date_post: '12/02/2022',
-    end_date: '20/02/2022',
-    approve_time: '22',
-    read_time: '10',
-    post_status: 'Nổi bật',
-    status: 'Đã duyệt',
-    others: 'Tin tức tuyển dụng',
+    name: 'Hồ sơ BA',
+    status: 'Chờ duyệt',
+    date_save: '15/02/2022',
+    candidate_status: 'Nổi bật',
   },
   {
-    name: 'Tin tức 24h siêu hot',
-    date_post: '12/02/2022',
-    end_date: '20/02/2022',
-    approve_time: '22',
-    read_time: '10',
-    post_status: 'Nổi bật',
+    name: 'Hồ sơ Designer',
     status: 'Đã duyệt',
-    others: 'Tin tức tuyển dụng',
+    date_save: '11/02/2022',
+    candidate_status: 'Ẩn',
   },
 ]
 
@@ -122,31 +94,31 @@ const toggleSearchBox = () => {
 
 // phân trang
 const fn_tableSizeChange = (limit) => {
-  tableRules.limit = limit;
-  fn_tableChangeOffset(1);
-};
+  tableRules.limit = limit
+  fn_tableChangeOffset(1)
+}
 const fn_tableCurentChange = (page) => {
-  fn_tableChangeOffset(page);
-};
+  fn_tableChangeOffset(page)
+}
 const fn_tablePrevClick = () => {
   // fn_tableChangeOffset(page);
-};
+}
 const fn_tableNextClick = () => {
   // fn_tableChangeOffset(page);
-};
+}
 const fn_tableChangeOffset = (page) => {
-  tableRules.page = page;
-  tableRules.offset = (tableRules.page - 1) * tableRules.limit;
+  tableRules.page = page
+  tableRules.offset = (tableRules.page - 1) * tableRules.limit
   // getService();
-};
+}
 const fn_tableSortChange = (column, tableSort) => {
-  tableSort = tableRules;
-  MethodService.tableSortChange(column, tableSort);
+  tableSort = tableRules
+  MethodService.tableSortChange(column, tableSort)
   // getService();
-};
+}
 
 onMounted(() => {
-  tableRules.total = tableData.length;
+  tableRules.total = tableData.length
   // console.log('tableRules.showFormSearch', tableRules.showFormSearch)
 })
 </script>
@@ -157,7 +129,7 @@ onMounted(() => {
       <template #header>
         <div class="card-header">
           <div class="d-flex justify-content-between">
-            <h4>Tìm ứng viên</h4>
+            <h4>Hồ sơ ứng viên</h4>
             <el-button
               type="primary"
               class="btn btn-soft-secondary btn-border"
@@ -188,14 +160,22 @@ onMounted(() => {
             >
               <b-row>
                 <b-col md="3">
-                  <el-form-item label="Hình thức làm việc" prop="">
+                  <el-form-item label="Tên hồ sơ" prop="">
+                    <el-input
+                      clearable
+                      v-model="tableRules.dataSearch.value['name']"
+                    ></el-input>
+                  </el-form-item>
+                </b-col>
+                <b-col md="3">
+                  <el-form-item label="Tình trạng" prop="">
                     <el-select
                       v-model="formData.field_of_acitvity"
                       placeholder="Chọn"
                       clearable
                     >
                       <el-option
-                        v-for="item in workFormList"
+                        v-for="item in statusList"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value"
@@ -204,39 +184,16 @@ onMounted(() => {
                   </el-form-item>
                 </b-col>
                 <b-col md="3">
-                  <el-form-item label="Địa điểm" prop="">
-                    <el-select
+                  <el-form-item label="Ngày lưu" prop="">
+                    <el-date-picker
                       v-model="formData.field_of_acitvity"
+                      type="date"
                       placeholder="Chọn"
-                      clearable
-                    >
-                      <el-option
-                        v-for="item in workPlaceList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
+                    />
                   </el-form-item>
                 </b-col>
                 <b-col md="3">
-                  <el-form-item label="Bằng cấp" prop="">
-                    <el-select
-                      v-model="formData.field_of_acitvity"
-                      placeholder="Chọn"
-                      clearable
-                    >
-                      <el-option
-                        v-for="item in certificateList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </b-col>
-                <b-col md="3">
-                  <el-form-item label="Kinh nghiệm" prop="">
+                  <el-form-item label="Trạng thái" prop="">
                     <el-select
                       v-model="formData.field_of_acitvity"
                       placeholder="Chọn"
@@ -252,74 +209,6 @@ onMounted(() => {
                   </el-form-item>
                 </b-col>
               </b-row>
-
-              <b-row>
-                <b-col md="3">
-                  <el-form-item label="Mức lương" prop="">
-                    <el-select
-                      v-model="formData.field_of_acitvity"
-                      placeholder="Chọn"
-                      clearable
-                    >
-                      <el-option
-                        v-for="item in minSalaryList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </b-col>
-                <b-col md="3">
-                  <el-form-item label="Giới tính" prop="">
-                    <el-select
-                      v-model="formData.field_of_acitvity"
-                      placeholder="Chọn"
-                      clearable
-                    >
-                      <el-option
-                        v-for="item in genderRequirementList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </b-col>
-                <b-col md="3">
-                  <el-form-item label="Ngoại ngữ" prop="email">
-                    <el-select
-                      v-model="formData.field_of_acitvity"
-                      placeholder="Chọn"
-                      clearable
-                    >
-                      <el-option
-                        v-for="item in genderRequirementList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </b-col>
-                <b-col md="3">
-                  <el-form-item label="Loại hồ sơ" prop="email">
-                    <el-select
-                      v-model="formData.field_of_acitvity"
-                      placeholder="Chọn"
-                      clearable
-                    >
-                      <el-option
-                        v-for="item in mainJobList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </b-col>
-              </b-row>
-
               <div class="text-center">
                 <el-button type="primary" @click="submitForm(ruleFormRef)"
                   >Tìm kiếm</el-button
@@ -331,30 +220,69 @@ onMounted(() => {
       </div>
 
       <el-table :data="tableData">
-        <el-table-column prop="name" label="Tên tin đăng" min-width="180" />
+        <el-table-column prop="name" label="Tên hồ sơ" min-width="180" />
         <el-table-column
-          prop="date_post"
-          label="Ngày đăng"
+          prop="status"
+          label="Tình trạng"
+          min-width="100"
+          align="center"
+        >
+          <template #default="scope">
+            <el-tag
+              :type="
+                scope.row.status === 'Đã duyệt'
+                  ? 'success'
+                  : scope.row.status === 'Chờ duyệt'
+                  ? 'warning'
+                  : 'info'
+              "
+              disable-transitions
+              >{{ scope.row.status }}</el-tag
+            >
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="date_save"
+          label="Ngày lưu"
           min-width="100"
           align="center"
         />
         <el-table-column
-          prop="end_date"
-          label="Thời hạn nộp"
-          min-width="100"
+          prop="candidate_status"
+          label="Trạng thái"
           align="center"
-        />
-        <el-table-column prop="approve_time" label="Lượt nộp" align="center" />
-        <el-table-column prop="read_time" label="Lượt xem" align="center" />
+        >
+        </el-table-column>
         <el-table-column
-          prop="post_status"
-          label="Tình trạng tin"
-          min-width="100"
-          show-overflow-tooltip
+          fixed="right"
           align="center"
-        />
-        <el-table-column prop="status" label="Trạng thái" align="center" />
-        <el-table-column prop="others" label="Khác" />
+          label="Thao tác"
+          width="180"
+        >
+          <template #default>
+            <div class="d-flex">
+              <el-button
+                size="small"
+                @click="handleEdit(scope.$index, scope.row)"
+                ><CIcon icon="cilFindInPage"
+              /></el-button>
+              <el-button
+                size="small"
+                type="primary"
+                plain
+                @click="handleEdit(scope.$index, scope.row)"
+                ><CIcon icon="cilPencil"
+              /></el-button>
+              <el-button
+                size="small"
+                type="danger"
+                plain
+                @click="handleDelete(scope.$index, scope.row)"
+                ><CIcon icon="cilTrash"
+              /></el-button>
+            </div>
+          </template>
+        </el-table-column>
       </el-table>
       <div class="mt-3 mb-3" style="float: right">
         <el-pagination
