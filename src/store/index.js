@@ -43,7 +43,7 @@ export default createStore({
           )
           commit('SET_CURRENT_USER', VueJwtDecode.decode(res.data.token))
           localStorage.setItem('Token', res.data.token)
-          router.push({ name: 'Home' })
+          router.push({ name: 'Trang chủ' })
         }
       } catch (error) {
         console.log(error)

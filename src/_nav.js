@@ -17,6 +17,12 @@ export default [
   },
   {
     component: 'CNavItem',
+    name: 'Danh sách ngành nghề',
+    to: '/admin/industry-management/industry-list',
+    icon: 'cilLayers',
+  },
+  {
+    component: 'CNavItem',
     name: 'Tài khoản nhà tuyển dụng',
     to: '/employer/employer-account/employer-account-info',
     icon: 'cilHouse',

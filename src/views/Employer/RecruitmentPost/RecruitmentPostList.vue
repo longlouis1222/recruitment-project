@@ -143,7 +143,7 @@ onMounted(() => {
       <template #header>
         <div class="card-header">
           <div class="d-flex justify-content-between">
-            <h4>Danh sách tin đăng</h4>
+            <h4>Danh sách bài tuyển dụng</h4>
             <el-button
               type="primary"
               class="btn btn-soft-secondary btn-border"
@@ -225,7 +225,21 @@ onMounted(() => {
           show-overflow-tooltip
           align="center"
         />
-        <el-table-column prop="status" label="Trạng thái" align="center" />
+        <el-table-column prop="status" label="Trạng thái" align="center">
+          <template #default="scope">
+            <el-tag
+              :type="
+                scope.row.status === 'Đã duyệt'
+                  ? 'success'
+                  : scope.row.status === 'Chờ duyệt'
+                  ? 'warning'
+                  : 'info'
+              "
+              disable-transitions
+              >{{ scope.row.status }}</el-tag
+            >
+          </template>
+        </el-table-column>
         <el-table-column prop="others" label="Khác" />
       </el-table>
       <div class="mt-3 mb-3" style="float: right">

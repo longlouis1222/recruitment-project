@@ -145,7 +145,7 @@ const resetForm = (formEl) => {
                 <el-radio-group v-model="formData.gender" class="ml-4">
                   <el-radio label="1" size="large">Nam</el-radio>
                   <el-radio label="2" size="large">Nữ</el-radio>
-                  <el-radio label="2" size="large">Khác</el-radio>
+                  <el-radio label="3" size="large">Khác</el-radio>
                 </el-radio-group>
               </el-form-item>
             </b-col>

@@ -168,7 +168,7 @@ onMounted(() => {
                     </h5>
                     <img
                       class="w-50"
-                      src="../../../src/assets/gifs/checker-3.gif"
+                      src="../../../src/assets/gifs/checker-2.gif"
                       alt="mail..."
                     />
                     <div class="text-center w-100 mt-2" style="font-size: 11px">

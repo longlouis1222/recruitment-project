@@ -38,7 +38,7 @@ const validatePass = (rule, value, callback) => {
 const validatePassCheck = (rule, value, callback) => {
   if (!value) {
     callback(new Error('Vui lòng nhập lại mật khẩu'))
-  } else if (value && value !== dataForm.value.oldPassword) {
+  } else if (value && value !== dataForm.value.password) {
     callback(new Error('Nhập lại mật khẩu chưa trùng khớp với mật khẩu mới'))
   } else {
     callback()
@@ -164,7 +164,7 @@ onMounted(() => {
                       style="height: 36px"
                       class="btn btn-success w-100 mt-2"
                       @click="router.go(-1)"
-                      tabindex="2"
+                      tabindex="4"
                       native-type="submit"
                     >
                       Quay lại
@@ -176,7 +176,7 @@ onMounted(() => {
                       style="height: 36px"
                       class="btn btn-success btn-load w-100 mt-2"
                       @click="signUp(ruleFormRef)"
-                      tabindex="1"
+                      tabindex="5"
                       native-type="submit"
                       :loading="loadingBtn"
                     >
@@ -192,7 +192,7 @@ onMounted(() => {
                 <h5 class="text-center">Kích hoạt tài khoản</h5>
                 <img
                   class="w-75"
-                  src="../../../src/assets/gifs/mail-download.gif"
+                  src="../../../src/assets/gifs/check-mail.gif"
                   alt="mail..."
                 />
                 <p class="active text-center">

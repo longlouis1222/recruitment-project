@@ -24,6 +24,12 @@ export default [
           import('@/views/admin/UserManagement/UserList.vue'),
       },
       {
+        path: '/admin/industry-management/industry-list',
+        name: 'Danh sách ngành nghề',
+        component: () =>
+          import('@/views/admin/IndustryManagement/IndustryList.vue'),
+      },
+      {
         path: '/employer/employer-account/employer-account-info',
         name: 'Tài khoản nhà tuyển dụng',
         component: () =>
@@ -55,7 +61,7 @@ export default [
       },
       {
         path: '/employer/candidate-profile/candidate-profile-list',
-        name: 'Hồ sơ ứng viên',
+        name: 'Danh sách hồ sơ',
         component: () =>
           import('@/views/Employer/CandidateProfile/CandidateProfileList.vue'),
       },
@@ -362,7 +368,11 @@ export default [
         name: 'UpdatePassword',
         component: () => import('@/views/pages/UpdatePassword'),
       },
-
+      {
+        path: 'landing-page',
+        name: 'Landing page',
+        component: () => import('@/views/pages/LandingPage'),
+      },
     ],
   },
 ]

@@ -8,46 +8,50 @@ const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
 
 const tableData = [
   {
-    account: 'longlouis',
+    account: 'haitn',
     password: '********',
-    firstname: 'Long',
-    lastname: 'Nguyen',
-    username: 'Nguyễn Huy Long',
-    dateOfbirth: '12/02/2000'
+    firstname: 'Hải',
+    lastname: 'Nguyễn',
+    username: 'Nguyễn Hoàng Hải',
+    dateOfbirth: '22/02/2001'
   },
   {
     account: 'longlouis',
     password: '********',
     firstname: 'Long',
-    lastname: 'Nguyen',
+    lastname: 'Nguyễn',
     username: 'Nguyễn Huy Long',
     dateOfbirth: '12/02/2000'
   },
   {
-    account: 'longlouis',
+    account: 'trangnth',
     password: '********',
-    firstname: 'Long',
-    lastname: 'Nguyen',
-    username: 'Nguyễn Huy Long',
-    dateOfbirth: '12/02/2000'
+    firstname: 'Trang',
+    lastname: 'Nguyễn',
+    username: 'Nguyễn Thị Huyền Trang',
+    dateOfbirth: '12/04/1994'
   },
   {
-    account: 'longlouis',
+    account: 'huenv',
     password: '********',
-    firstname: 'Long',
-    lastname: 'Nguyen',
-    username: 'Nguyễn Huy Long',
-    dateOfbirth: '12/02/2000'
+    firstname: 'Huế',
+    lastname: 'Nguyễn',
+    username: 'Nguyễn Văn Huế',
+    dateOfbirth: '26/02/1997'
   },
   {
-    account: 'longlouis',
+    account: 'khanhnn',
     password: '********',
-    firstname: 'Long',
-    lastname: 'Nguyen',
-    username: 'Nguyễn Huy Long',
-    dateOfbirth: '12/02/2000'
+    firstname: 'Khánh',
+    lastname: 'Nguyễn',
+    username: 'Nguyễn Ngọc Khánh',
+    dateOfbirth: '12/11/1999'
   },
 ]
+
+const toggleSearchBox = () => {
+  tableRules.showFormSearch = !tableRules.showFormSearch
+}
 
 const fn_tableSizeChange = (limit) => {
   tableRules.limit = limit;
@@ -84,9 +88,81 @@ onMounted(() => {
     <el-card class="box-card">
       <template #header>
         <div class="card-header">
-          <span>Danh sách thông tin người dùng</span>
+          <div class="d-flex justify-content-between">
+            <h4>Danh sách thông tin người dùng</h4>
+            <el-button
+              type="primary"
+              class="btn btn-soft-secondary btn-border"
+              @click="toggleSearchBox"
+            >
+              <el-icon class="me-2"><Search /></el-icon>
+              Ẩn/hiện tìm kiếm
+            </el-button>
+          </div>
         </div>
       </template>
+
+      <div class="main-body-search mx-3 mb-3">
+        <b-collapse
+          v-model="tableRules.showFormSearch"
+          id="myFormSearch"
+          class=""
+        >
+          <el-card>
+            <el-form
+              ref="ruleFormRef"
+              :model="formData"
+              :rules="validForm"
+              label-width="140px"
+              label-position="top"
+              class="demo-ruleForm"
+              status-icon
+            >
+              <b-row>
+                <b-col md="4">
+                  <el-form-item label="Tài khoản" prop="">
+                    <el-input
+                      clearable
+                      v-model="tableRules.dataSearch.value['name']"
+                    ></el-input>
+                  </el-form-item>
+                </b-col>
+                <b-col md="4">
+                  <el-form-item label="Tên đầy đủ" prop="">
+                    <el-select
+                      v-model="tableRules.dataSearch.value['name']"
+                      placeholder="Chọn"
+                      clearable
+                    >
+                      <el-option
+                        v-for="item in statusList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </b-col>
+                <b-col md="4">
+                  <el-form-item label="Ngày sinh" prop="">
+                    <el-date-picker
+                      v-model="tableRules.dataSearch.value['name']"
+                      type="date"
+                      placeholder="Chọn"
+                    />
+                  </el-form-item>
+                </b-col>
+              </b-row>
+              <div class="text-center">
+                <el-button type="primary" @click="submitForm(ruleFormRef)"
+                  >Tìm kiếm</el-button
+                >
+              </div>
+            </el-form>
+          </el-card>
+        </b-collapse>
+      </div>
+
       <el-table :data="tableData" style="width: 100%">
         <el-table-column prop="account" label="Tài khoản" width="120" />
         <el-table-column prop="password" label="Mật khẩu" width="100" />

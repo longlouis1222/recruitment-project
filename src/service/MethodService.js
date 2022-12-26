@@ -5,6 +5,7 @@ import * as moment from "moment";
 // import FileSaver from "file-saver";
 // import { blockUi, unblockUi } from "../shared/utils";
 // import { store } from '../store/store';
+import $ from 'jquery'
 
 let MethodService = {};
 
@@ -732,11 +733,10 @@ function unescapeRegex(string) {
 MethodService.filterTable = function (jsonFilter) {
   if (jsonFilter) {
     let dataSearch = JSON.parse(jsonFilter);
-    console.log("dataSearch", dataSearch);
     let filters = "";
-    $.each(dataSearch.value, (key, value) => {
-      console.log("value", value);
+    $.each(dataSearch, (key, value) => {
       if (value) {
+        console.log('dataSearch.operator', dataSearch.operator)
         if (dataSearch.operator) {
           if (dataSearch.operator[key]) {
             let operator = dataSearch.operator[key];
