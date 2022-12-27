@@ -179,9 +179,15 @@ const backToPrev = () => {
                   class="card__logo"
                 />
                 <div class="">
-                  <p class="card__title-company">Công ty cổ phần Phần mềm ABC</p>
-                  <span class="card__subtitle me-3"> <el-icon><Money /></el-icon> 10 - 20 triệu</span>
-                  <span class="card__subtitle"><el-icon><Location /></el-icon>Hà Nội</span>
+                  <p class="card__title-company">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
+                  <span class="card__subtitle me-3">
+                    <el-icon><Money /></el-icon> 10 - 20 triệu</span
+                  >
+                  <span class="card__subtitle"
+                    ><el-icon><Location /></el-icon>Hà Nội</span
+                  >
                 </div>
               </div>
             </el-card>
@@ -196,9 +202,15 @@ const backToPrev = () => {
                   class="card__logo"
                 />
                 <div class="">
-                  <p class="card__title-company">Công ty cổ phần Phần mềm ABC</p>
-                  <span class="card__subtitle me-3"> <el-icon><Money /></el-icon> 10 - 20 triệu</span>
-                  <span class="card__subtitle"><el-icon><Location /></el-icon>Hà Nội</span>
+                  <p class="card__title-company">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
+                  <span class="card__subtitle me-3">
+                    <el-icon><Money /></el-icon> 10 - 20 triệu</span
+                  >
+                  <span class="card__subtitle"
+                    ><el-icon><Location /></el-icon>Hà Nội</span
+                  >
                 </div>
               </div>
             </el-card>
@@ -213,9 +225,15 @@ const backToPrev = () => {
                   class="card__logo"
                 />
                 <div class="">
-                  <p class="card__title-company">Công ty cổ phần Phần mềm ABC</p>
-                  <span class="card__subtitle me-3"> <el-icon><Money /></el-icon> 10 - 20 triệu</span>
-                  <span class="card__subtitle"><el-icon><Location /></el-icon>Hà Nội</span>
+                  <p class="card__title-company">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
+                  <span class="card__subtitle me-3">
+                    <el-icon><Money /></el-icon> 10 - 20 triệu</span
+                  >
+                  <span class="card__subtitle"
+                    ><el-icon><Location /></el-icon>Hà Nội</span
+                  >
                 </div>
               </div>
             </el-card>
@@ -232,9 +250,15 @@ const backToPrev = () => {
                   class="card__logo"
                 />
                 <div class="">
-                  <p class="card__title-company">Công ty cổ phần Phần mềm ABC</p>
-                  <span class="card__subtitle me-3"> <el-icon><Money /></el-icon> 10 - 20 triệu</span>
-                  <span class="card__subtitle"><el-icon><Location /></el-icon>Hà Nội</span>
+                  <p class="card__title-company">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
+                  <span class="card__subtitle me-3">
+                    <el-icon><Money /></el-icon> 10 - 20 triệu</span
+                  >
+                  <span class="card__subtitle"
+                    ><el-icon><Location /></el-icon>Hà Nội</span
+                  >
                 </div>
               </div>
             </el-card>
@@ -249,9 +273,15 @@ const backToPrev = () => {
                   class="card__logo"
                 />
                 <div class="">
-                  <p class="card__title-company">Công ty cổ phần Phần mềm ABC</p>
-                  <span class="card__subtitle me-3"> <el-icon><Money /></el-icon> 10 - 20 triệu</span>
-                  <span class="card__subtitle"><el-icon><Location /></el-icon>Hà Nội</span>
+                  <p class="card__title-company">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
+                  <span class="card__subtitle me-3">
+                    <el-icon><Money /></el-icon> 10 - 20 triệu</span
+                  >
+                  <span class="card__subtitle"
+                    ><el-icon><Location /></el-icon>Hà Nội</span
+                  >
                 </div>
               </div>
             </el-card>
@@ -266,9 +296,15 @@ const backToPrev = () => {
                   class="card__logo"
                 />
                 <div class="">
-                  <p class="card__title-company">Công ty cổ phần Phần mềm ABC</p>
-                  <span class="card__subtitle me-3"> <el-icon><Money /></el-icon> 10 - 20 triệu</span>
-                  <span class="card__subtitle"><el-icon><Location /></el-icon>Hà Nội</span>
+                  <p class="card__title-company">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
+                  <span class="card__subtitle me-3">
+                    <el-icon><Money /></el-icon> 10 - 20 triệu</span
+                  >
+                  <span class="card__subtitle"
+                    ><el-icon><Location /></el-icon>Hà Nội</span
+                  >
                 </div>
               </div>
             </el-card>
@@ -285,9 +321,15 @@ const backToPrev = () => {
                   class="card__logo"
                 />
                 <div class="">
-                  <p class="card__title-company">Công ty cổ phần Phần mềm ABC</p>
-                  <span class="card__subtitle me-3"> <el-icon><Money /></el-icon> 10 - 20 triệu</span>
-                  <span class="card__subtitle"><el-icon><Location /></el-icon>Hà Nội</span>
+                  <p class="card__title-company">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
+                  <span class="card__subtitle me-3">
+                    <el-icon><Money /></el-icon> 10 - 20 triệu</span
+                  >
+                  <span class="card__subtitle"
+                    ><el-icon><Location /></el-icon>Hà Nội</span
+                  >
                 </div>
               </div>
             </el-card>
@@ -302,9 +344,15 @@ const backToPrev = () => {
                   class="card__logo"
                 />
                 <div class="">
-                  <p class="card__title-company">Công ty cổ phần Phần mềm ABC</p>
-                  <span class="card__subtitle me-3"> <el-icon><Money /></el-icon> 10 - 20 triệu</span>
-                  <span class="card__subtitle"><el-icon><Location /></el-icon>Hà Nội</span>
+                  <p class="card__title-company">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
+                  <span class="card__subtitle me-3">
+                    <el-icon><Money /></el-icon> 10 - 20 triệu</span
+                  >
+                  <span class="card__subtitle"
+                    ><el-icon><Location /></el-icon>Hà Nội</span
+                  >
                 </div>
               </div>
             </el-card>
@@ -319,9 +367,15 @@ const backToPrev = () => {
                   class="card__logo"
                 />
                 <div class="">
-                  <p class="card__title-company">Công ty cổ phần Phần mềm ABC</p>
-                  <span class="card__subtitle me-3"> <el-icon><Money /></el-icon> 10 - 20 triệu</span>
-                  <span class="card__subtitle"><el-icon><Location /></el-icon>Hà Nội</span>
+                  <p class="card__title-company">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
+                  <span class="card__subtitle me-3">
+                    <el-icon><Money /></el-icon> 10 - 20 triệu</span
+                  >
+                  <span class="card__subtitle"
+                    ><el-icon><Location /></el-icon>Hà Nội</span
+                  >
                 </div>
               </div>
             </el-card>
@@ -333,7 +387,11 @@ const backToPrev = () => {
 
     <!-- Start Banner discovery Job -->
     <CContainer xxl class="mt-4">
-      <img src="../../assets/images/banner/banner-home-pc-2.png" alt="banner-home-pc-2.png" class="w-100">
+      <img
+        src="../../assets/images/banner/banner-home-pc-2.png"
+        alt="banner-home-pc-2.png"
+        class="w-100"
+      />
     </CContainer>
     <!-- Start Banner discovery Job -->
 
@@ -366,12 +424,22 @@ const backToPrev = () => {
                   class="card__logo"
                 />
                 <div>
-                  <p class="card__title-position mb-1 ms-2">Front-end developer</p>
-                  <p class="card__title-company ms-2">Công ty cổ phần Phần mềm ABC</p>
+                  <p class="card__title-position mb-1 ms-2">
+                    Front-end developer
+                  </p>
+                  <p class="card__title-company ms-2">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
                   <div class="ms-2 mt-2">
-                    <p class="card__subtitle mb-1"><el-icon><LocationInformation /></el-icon>Hà Nội</p>
-                    <p class="card__subtitle mb-1"><el-icon><Money /></el-icon> 10 - 20 triệu</p>
-                    <p class="card__subtitle mb-0"><el-icon><Timer /></el-icon>09/12/2023</p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><LocationInformation /></el-icon>Hà Nội
+                    </p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><Money /></el-icon> 10 - 20 triệu
+                    </p>
+                    <p class="card__subtitle mb-0">
+                      <el-icon><Timer /></el-icon>09/12/2023
+                    </p>
                   </div>
                 </div>
               </div>
@@ -386,12 +454,22 @@ const backToPrev = () => {
                   class="card__logo"
                 />
                 <div>
-                  <p class="card__title-position mb-1 ms-2">Front-end developer</p>
-                  <p class="card__title-company ms-2">Công ty cổ phần Phần mềm ABC</p>
+                  <p class="card__title-position mb-1 ms-2">
+                    Front-end developer
+                  </p>
+                  <p class="card__title-company ms-2">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
                   <div class="ms-2 mt-2">
-                    <p class="card__subtitle mb-1"><el-icon><LocationInformation /></el-icon>Hà Nội</p>
-                    <p class="card__subtitle mb-1"><el-icon><Money /></el-icon> 10 - 20 triệu</p>
-                    <p class="card__subtitle mb-0"><el-icon><Timer /></el-icon>09/12/2023</p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><LocationInformation /></el-icon>Hà Nội
+                    </p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><Money /></el-icon> 10 - 20 triệu
+                    </p>
+                    <p class="card__subtitle mb-0">
+                      <el-icon><Timer /></el-icon>09/12/2023
+                    </p>
                   </div>
                 </div>
               </div>
@@ -406,12 +484,22 @@ const backToPrev = () => {
                   class="card__logo"
                 />
                 <div>
-                  <p class="card__title-position mb-1 ms-2">Front-end developer</p>
-                  <p class="card__title-company ms-2">Công ty cổ phần Phần mềm ABC</p>
+                  <p class="card__title-position mb-1 ms-2">
+                    Front-end developer
+                  </p>
+                  <p class="card__title-company ms-2">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
                   <div class="ms-2 mt-2">
-                    <p class="card__subtitle mb-1"><el-icon><LocationInformation /></el-icon>Hà Nội</p>
-                    <p class="card__subtitle mb-1"><el-icon><Money /></el-icon> 10 - 20 triệu</p>
-                    <p class="card__subtitle mb-0"><el-icon><Timer /></el-icon>09/12/2023</p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><LocationInformation /></el-icon>Hà Nội
+                    </p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><Money /></el-icon> 10 - 20 triệu
+                    </p>
+                    <p class="card__subtitle mb-0">
+                      <el-icon><Timer /></el-icon>09/12/2023
+                    </p>
                   </div>
                 </div>
               </div>
@@ -428,12 +516,22 @@ const backToPrev = () => {
                   class="card__logo"
                 />
                 <div>
-                  <p class="card__title-position mb-1 ms-2">Front-end developer</p>
-                  <p class="card__title-company ms-2">Công ty cổ phần Phần mềm ABC</p>
+                  <p class="card__title-position mb-1 ms-2">
+                    Front-end developer
+                  </p>
+                  <p class="card__title-company ms-2">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
                   <div class="ms-2 mt-2">
-                    <p class="card__subtitle mb-1"><el-icon><LocationInformation /></el-icon>Hà Nội</p>
-                    <p class="card__subtitle mb-1"><el-icon><Money /></el-icon> 10 - 20 triệu</p>
-                    <p class="card__subtitle mb-0"><el-icon><Timer /></el-icon>09/12/2023</p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><LocationInformation /></el-icon>Hà Nội
+                    </p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><Money /></el-icon> 10 - 20 triệu
+                    </p>
+                    <p class="card__subtitle mb-0">
+                      <el-icon><Timer /></el-icon>09/12/2023
+                    </p>
                   </div>
                 </div>
               </div>
@@ -448,12 +546,22 @@ const backToPrev = () => {
                   class="card__logo"
                 />
                 <div>
-                  <p class="card__title-position mb-1 ms-2">Front-end developer</p>
-                  <p class="card__title-company ms-2">Công ty cổ phần Phần mềm ABC</p>
+                  <p class="card__title-position mb-1 ms-2">
+                    Front-end developer
+                  </p>
+                  <p class="card__title-company ms-2">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
                   <div class="ms-2 mt-2">
-                    <p class="card__subtitle mb-1"><el-icon><LocationInformation /></el-icon>Hà Nội</p>
-                    <p class="card__subtitle mb-1"><el-icon><Money /></el-icon> 10 - 20 triệu</p>
-                    <p class="card__subtitle mb-0"><el-icon><Timer /></el-icon>09/12/2023</p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><LocationInformation /></el-icon>Hà Nội
+                    </p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><Money /></el-icon> 10 - 20 triệu
+                    </p>
+                    <p class="card__subtitle mb-0">
+                      <el-icon><Timer /></el-icon>09/12/2023
+                    </p>
                   </div>
                 </div>
               </div>
@@ -468,12 +576,22 @@ const backToPrev = () => {
                   class="card__logo"
                 />
                 <div>
-                  <p class="card__title-position mb-1 ms-2">Front-end developer</p>
-                  <p class="card__title-company ms-2">Công ty cổ phần Phần mềm ABC</p>
+                  <p class="card__title-position mb-1 ms-2">
+                    Front-end developer
+                  </p>
+                  <p class="card__title-company ms-2">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
                   <div class="ms-2 mt-2">
-                    <p class="card__subtitle mb-1"><el-icon><LocationInformation /></el-icon>Hà Nội</p>
-                    <p class="card__subtitle mb-1"><el-icon><Money /></el-icon> 10 - 20 triệu</p>
-                    <p class="card__subtitle mb-0"><el-icon><Timer /></el-icon>09/12/2023</p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><LocationInformation /></el-icon>Hà Nội
+                    </p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><Money /></el-icon> 10 - 20 triệu
+                    </p>
+                    <p class="card__subtitle mb-0">
+                      <el-icon><Timer /></el-icon>09/12/2023
+                    </p>
                   </div>
                 </div>
               </div>
@@ -490,12 +608,22 @@ const backToPrev = () => {
                   class="card__logo"
                 />
                 <div>
-                  <p class="card__title-position mb-1 ms-2">Front-end developer</p>
-                  <p class="card__title-company ms-2">Công ty cổ phần Phần mềm ABC</p>
+                  <p class="card__title-position mb-1 ms-2">
+                    Front-end developer
+                  </p>
+                  <p class="card__title-company ms-2">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
                   <div class="ms-2 mt-2">
-                    <p class="card__subtitle mb-1"><el-icon><LocationInformation /></el-icon>Hà Nội</p>
-                    <p class="card__subtitle mb-1"><el-icon><Money /></el-icon> 10 - 20 triệu</p>
-                    <p class="card__subtitle mb-0"><el-icon><Timer /></el-icon>09/12/2023</p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><LocationInformation /></el-icon>Hà Nội
+                    </p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><Money /></el-icon> 10 - 20 triệu
+                    </p>
+                    <p class="card__subtitle mb-0">
+                      <el-icon><Timer /></el-icon>09/12/2023
+                    </p>
                   </div>
                 </div>
               </div>
@@ -510,12 +638,22 @@ const backToPrev = () => {
                   class="card__logo"
                 />
                 <div>
-                  <p class="card__title-position mb-1 ms-2">Front-end developer</p>
-                  <p class="card__title-company ms-2">Công ty cổ phần Phần mềm ABC</p>
+                  <p class="card__title-position mb-1 ms-2">
+                    Front-end developer
+                  </p>
+                  <p class="card__title-company ms-2">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
                   <div class="ms-2 mt-2">
-                    <p class="card__subtitle mb-1"><el-icon><LocationInformation /></el-icon>Hà Nội</p>
-                    <p class="card__subtitle mb-1"><el-icon><Money /></el-icon> 10 - 20 triệu</p>
-                    <p class="card__subtitle mb-0"><el-icon><Timer /></el-icon>09/12/2023</p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><LocationInformation /></el-icon>Hà Nội
+                    </p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><Money /></el-icon> 10 - 20 triệu
+                    </p>
+                    <p class="card__subtitle mb-0">
+                      <el-icon><Timer /></el-icon>09/12/2023
+                    </p>
                   </div>
                 </div>
               </div>
@@ -530,12 +668,22 @@ const backToPrev = () => {
                   class="card__logo"
                 />
                 <div>
-                  <p class="card__title-position mb-1 ms-2">Front-end developer</p>
-                  <p class="card__title-company ms-2">Công ty cổ phần Phần mềm ABC</p>
+                  <p class="card__title-position mb-1 ms-2">
+                    Front-end developer
+                  </p>
+                  <p class="card__title-company ms-2">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
                   <div class="ms-2 mt-2">
-                    <p class="card__subtitle mb-1"><el-icon><LocationInformation /></el-icon>Hà Nội</p>
-                    <p class="card__subtitle mb-1"><el-icon><Money /></el-icon> 10 - 20 triệu</p>
-                    <p class="card__subtitle mb-0"><el-icon><Timer /></el-icon>09/12/2023</p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><LocationInformation /></el-icon>Hà Nội
+                    </p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><Money /></el-icon> 10 - 20 triệu
+                    </p>
+                    <p class="card__subtitle mb-0">
+                      <el-icon><Timer /></el-icon>09/12/2023
+                    </p>
                   </div>
                 </div>
               </div>
@@ -663,7 +811,11 @@ const backToPrev = () => {
             <b-row>
               <b-col md="12">
                 <ul class="ps-2">
-                  <li class="pb-1" v-for="job in workPlaceList" :key="job.value">
+                  <li
+                    class="pb-1"
+                    v-for="job in workPlaceList"
+                    :key="job.value"
+                  >
                     <el-link>Việc làm {{ job.label }}</el-link>
                   </li>
                 </ul>
@@ -681,7 +833,11 @@ const backToPrev = () => {
             <b-row>
               <b-col md="12">
                 <ul class="ps-2">
-                  <li class="pb-1" v-for="job in secondJobList" :key="job.value">
+                  <li
+                    class="pb-1"
+                    v-for="job in secondJobList"
+                    :key="job.value"
+                  >
                     <el-link>Việc làm {{ job.label }}</el-link>
                   </li>
                 </ul>
@@ -694,35 +850,98 @@ const backToPrev = () => {
     <!-- End Recommend type job -->
 
     <div class="footer">
-      <CContainer class="mt-4">
+      <CContainer xl class="mt-4">
         <b-row>
           <b-col md="6">
-            <h5 class="mb-3">HotLine cho Người tìm việc</h5>
+            <h5 class="mb-4">Hotline cho Người tìm việc</h5>
             <div class="d-flex align-items-center">
               <div class="d-flex align-items-center">
-                <img
-                  src="@/assets/images/new-post.png"
-                  alt="clock-ringing"
-                  style="width: 5%"
-                />
-                <div>
-                  <p class="ms-2">Hotline hỗ trợ miền Bắc</p>
+                <el-icon class="footer__icon"><Headset /></el-icon>
+                <div class="ms-3">
+                  <p class="mb-1">Hotline hỗ trợ miền Bắc</p>
                   <p>HN: (024) 2567 6969</p>
                 </div>
               </div>
-              <el-divider direction="vertical" />
+              <el-divider direction="vertical" class="mx-3 divider-hotline" />
               <div class="d-flex align-items-center">
-                <img
-                  src="@/assets/images/new-post.png"
-                  alt="clock-ringing"
-                  style="width: 5%"
-                />
-                <div>
-                  <p class="ms-2">Hotline hỗ trợ miền Bắc</p>
+                <el-icon class="footer__icon"><Headset /></el-icon>
+                <div class="ms-3">
+                  <p class="mb-1">Hotline hỗ trợ miền Nam</p>
                   <p>HCM: (0248) 2667 6969</p>
                 </div>
               </div>
             </div>
+          </b-col>
+          <b-col md="6">
+            <h5 class="mb-4">Hotline cho Người tìm việc</h5>
+            <div class="d-flex align-items-center">
+              <div class="d-flex align-items-center">
+                <el-icon class="footer__icon"><Headset /></el-icon>
+                <div class="ms-3">
+                  <p class="mb-1">Hotline hỗ trợ miền Bắc</p>
+                  <p>HN: (024) 2567 6969</p>
+                </div>
+              </div>
+              <el-divider direction="vertical" class="mx-3 divider-hotline" />
+              <div class="d-flex align-items-center">
+                <el-icon class="footer__icon"><Headset /></el-icon>
+                <div class="ms-3">
+                  <p class="mb-1">Hotline hỗ trợ miền Nam</p>
+                  <p>HCM: (0248) 2667 6969</p>
+                </div>
+              </div>
+            </div>
+          </b-col>
+        </b-row>
+        <el-divider />
+        <b-row>
+          <b-col md="6">
+            <p>Về chúng tôi</p>
+            <p class="small">Recuitment.vn - Công Ty Cổ Phần Việc Làm</p>
+            <p class="small fw-lighter">
+              Trụ sở: Tòa nhà Siêu Việt, 23 Trần Cao Vân, Phường Đa Kao, Quận 1,
+              TP Hồ Chí Minh
+            </p>
+            <p class="small fw-lighter">
+              Chi nhánh: Tầng 12A, Tòa nhà Center Building, Số 1 Nguyễn Huy
+              Tưởng, Quận Thanh Xuân, Hà Nội.
+            </p>
+            <p class="small fw-lighter">
+              Giấy phép hoạt động dịch vụ việc làm số: 4938/SLĐTBXH-GP do Sở Lao
+              Động Thương Binh & Xã Hội TP.HCM cấp
+            </p>
+            <p class="small fw-lighter">
+              Điện thoại:(024) 2567 6969
+              <el-divider direction="vertical" class="mx-1" /> (0248) 2667 6969
+            </p>
+            <p class="small fw-lighter">
+              Email hỗ trợ người tìm việc: longnguyenhuy1402@gmail.com
+            </p>
+            <p class="small fw-lighter">
+              Email hỗ trợ nhà tuyển dụng: longnguyenhuy1402@gmail.com
+            </p>
+          </b-col>
+          <b-col md="3">
+            <p>Thông tin</p>
+            <p><el-link class="small">Cẩm nang nghề nghiệp</el-link></p>
+            <p><el-link class="small">Báo giá dịch vụ</el-link></p>
+            <p><el-link class="small">Điều khoản sử dụng</el-link></p>
+            <p><el-link class="small">Quy định bảo mật</el-link></p>
+            <p><el-link class="small">Sơ đồ web</el-link></p>
+          </b-col>
+          <b-col md="3">
+            <p>Kết nối với chúng tôi</p>
+            <div>
+              <CIcon class="mx-2" icon="cibFacebook" size="lg" />
+              <CIcon class="mx-2" icon="cibYoutube" size="lg" />
+            </div>
+          </b-col>
+        </b-row>
+        <el-divider />
+        <b-row>
+          <b-col md="12">
+            <img src="/logo_R.png" alt="" style="width: 35px" />
+            <span class="small ms-1">@ 2023 - Bản quyền thuộc về Nguyễn Huy Long</span>
           </b-col>
         </b-row>
       </CContainer>
@@ -836,6 +1055,19 @@ const backToPrev = () => {
   .card__subtitle {
     font-size: 13px;
     font-weight: 600;
+  }
+}
+.footer {
+  .footer__icon {
+    font-size: 40px;
+  }
+  // .el-divider--horizontal {
+  //   border-color: black;
+  // }
+  .divider-hotline.el-divider--vertical {
+    width: 2px;
+    height: 3em;
+    // border-color: black;
   }
 }
 </style>

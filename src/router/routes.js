@@ -6,7 +6,7 @@ export default [
     path: '/',
     name: 'Trang chủ',
     component: DefaultLayout,
-    redirect: '/dashboard',
+    redirect: '/pages/landing-page',
     children: [
       {
         path: '/dashboard',

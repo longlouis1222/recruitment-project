@@ -1,22 +1,18 @@
 .el-select, .el-date-editor {
   width: 100% !important;
 }
-
 .el-date-editor.el-input, .el-date-editor.el-input__wrapper {
   width: 100%;
 }
-
 // .el-card {
 //   height: calc(100vh - 155px);
 // }
-
 .el-table {
   height: calc(100vh - 320px) !important;
   .cell {
     word-break: break-word !important;
   }
 }
-
 // .el-table__inner-wrapper {
 //   height: calc(100vh - 285px);
 //   overflow-y: auto;
@@ -25,7 +21,9 @@
 .el-dialog__footer {
   text-align: center !important;
 }
-
 .el-icon {
   margin-right: 7px;
+}
+.el-popover.el-popper {
+  word-break: break-word !important;
 }

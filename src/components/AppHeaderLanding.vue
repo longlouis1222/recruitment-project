@@ -2,6 +2,30 @@
 <script setup>
 import AppBreadcrumb from './AppBreadcrumb'
 import { logo } from '@/assets/brand/logo'
+import DataService from '@/service/DataService'
+
+import { useRouter } from 'vue-router'
+import { ref } from 'vue-demi'
+
+const router = useRouter()
+const dialogAllIndustries = ref(false)
+const mainJobList = DataService.mainJobList
+
+const toggleDialogAllIndustries = () => {
+  dialogAllIndustries.value = true
+}
+
+const goToLogin = () => {
+  router.push({ name: 'Login' })
+}
+
+const goToRegister = () => {
+  router.push({ name: 'Register' })
+}
+
+const goToCreateCV = () => {
+  router.push({ name: 'Hồ sơ ứng viên' })
+}
 </script>
 <template>
   <CHeader position="sticky" class="mb-4 b-shadow">
@@ -16,7 +40,9 @@ import { logo } from '@/assets/brand/logo'
       <el-divider direction="vertical" />
       <CHeaderNav class="d-none d-md-flex me-auto">
         <CNavItem>
-          <CNavLink href="#">Cơ hội việc làm</CNavLink>
+          <CNavLink href="#/employee/curriculum-vitae/curriculum-vitae-info"
+            >Cơ hội việc làm</CNavLink
+          >
         </CNavItem>
         <CNavItem>
           <CNavLink href="#">Hồ sơ</CNavLink>
@@ -27,34 +53,37 @@ import { logo } from '@/assets/brand/logo'
       </CHeaderNav>
       <CHeaderNav class="align-items-center">
         <CNavItem>
-          <CNavLink href="#">
-            <el-tooltip
-              class="box-item"
-              effect="dark"
-              content="Thông báo"
-              placement="bottom-start"
-            >
+          <el-popover
+            placement="bottom"
+            title=""
+            :width="200"
+            trigger="click"
+            content="Bạn không có thông báo mới nào."
+          >
+            <template #reference>
               <CIcon class="mx-2" icon="cil-bell" size="lg" />
-            </el-tooltip>
+            </template>
+          </el-popover>
+        </CNavItem>
+        <CNavItem>
+          <CNavLink @click="goToRegister">
+            <el-button type="primary" plain @click="goToRegister"
+              >Đăng ký</el-button
+            >
           </CNavLink>
         </CNavItem>
         <CNavItem>
-          <CNavLink href="#">
-            <el-button type="primary" plain>Đăng ký</el-button>
-          </CNavLink>
-        </CNavItem>
-        <CNavItem>
-          <CNavLink href="#">
-            <el-button type="primary">Đăng nhập</el-button>
+          <CNavLink click="goToLogin">
+            <el-button type="primary" @click="goToLogin">Đăng nhập</el-button>
           </CNavLink>
         </CNavItem>
       </CHeaderNav>
     </CContainer>
     <CHeaderDivider />
     <CContainer fluid>
-      <CHeaderNav>
+      <CHeaderNav class="align-items-center">
         <CNavItem>
-          <CNavLink href="#" class="d-flex align-items-center">
+          <div @click="toggleDialogAllIndustries">
             <el-tooltip
               class="box-item"
               effect="dark"
@@ -63,7 +92,7 @@ import { logo } from '@/assets/brand/logo'
             >
               <CIcon class="mx-2" icon="cil-list" size="lg" />
             </el-tooltip>
-          </CNavLink>
+          </div>
         </CNavItem>
         <CNavItem>
           <CNavLink href="#"> Kinh doanh </CNavLink>
@@ -83,11 +112,103 @@ import { logo } from '@/assets/brand/logo'
       </CHeaderNav>
       <CHeaderNav class="align-items-center">
         <CNavItem>
-          <CNavLink href="#" class="d-flex align-items-center">
+          <CNavLink
+            href="#"
+            @click="goToCreateCV"
+            class="d-flex align-items-center"
+          >
             Tạo hồ sơ ngay <CIcon class="mx-2" icon="cilArrowRight" size="lg" />
           </CNavLink>
         </CNavItem>
       </CHeaderNav>
     </CContainer>
   </CHeader>
+
+  <el-dialog
+    v-model="dialogAllIndustries"
+    title="Danh sách ngành nghề"
+    width="100%"
+    top="5vh"
+    class="dialog__industry"
+    :close-on-click-modal="false"
+  >
+    <b-row>
+      <b-col md="4" class="left__side">
+        <p class="fw-bold">Top 10 ngành Hot</p>
+        <el-divider></el-divider>
+        <div class="d-flex flex-column align-items-start">
+          <el-link
+            class="mb-3"
+            :underline="false"
+            v-for="(industry, i) in mainJobList"
+            :key="i"
+            :style="i > 10 ? 'display: none' : ''"
+          >
+            {{ i < 11 ? industry.label : '' }}</el-link
+          >
+        </div>
+      </b-col>
+      <b-col md="8" class="right__side">
+        <p class="fw-bold">Ngành khác</p>
+        <el-divider></el-divider>
+        <b-row>
+          <b-col md="4">
+            <div class="d-flex flex-column align-items-start">
+              <el-link
+                class="mb-3"
+                :underline="false"
+                v-for="(industry, i) in mainJobList"
+                :key="i"
+                :style="i > 10 ? 'display: none' : ''"
+              >
+                {{ i < 11 ? industry.label : '' }}</el-link
+              >
+            </div>
+          </b-col>
+          <b-col md="4">
+            <div class="d-flex flex-column align-items-start">
+              <el-link
+                class="mb-3"
+                :underline="false"
+                v-for="(industry, i) in mainJobList"
+                :key="i"
+                :style="i > 10 ? 'display: none' : ''"
+              >
+                {{ i < 11 ? industry.label : '' }}</el-link
+              >
+            </div>
+          </b-col>
+          <b-col md="4">
+            <div class="d-flex flex-column align-items-start">
+              <el-link
+                class="mb-3"
+                :underline="false"
+                v-for="(industry, i) in mainJobList"
+                :key="i"
+                :style="i > 10 ? 'display: none' : ''"
+              >
+                {{ i < 11 ? industry.label : '' }}</el-link
+              >
+            </div>
+          </b-col>
+        </b-row>
+      </b-col>
+    </b-row>
+  </el-dialog>
 </template>
+
+<style lang="scss" scoped>
+.dialog__industry {
+  margin-bottom: 0;
+  height: calc(100vh - 35px);
+  .left__side {
+    border: 2px solid lightblue;
+    border-radius: 8px;
+    background-color: aliceblue;
+    padding: 30px;
+  }
+  .right__side {
+    padding: 30px;
+  }
+}
+</style>

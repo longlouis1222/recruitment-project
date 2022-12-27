@@ -1,3 +1,7 @@
+html, body {
+  -webkit-font-smoothing: antialiased;
+  font-weight: 600;
+}
 .wrapper {
   width: 100%;
   @include ltr-rtl("padding-left", var(--cui-sidebar-occupy-start, 0));
