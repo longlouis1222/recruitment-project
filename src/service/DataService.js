@@ -65,35 +65,35 @@ DataService.certificateList = [
 DataService.experienceList = [
   {
     label: 'Chưa có kinh nghiệm',
-    value: 'Chưa có kinh nghiệm'
+    value: 0
   },
-  {
-    label: 'Dưới 1 năm',
-    value: 'Dưới 1 năm'
-  },
+  // {
+  //   label: 'Dưới 1 năm',
+  //   value: 1
+  // },
   {
     label: '1 năm',
-    value: '1 năm'
+    value: 1
   },
   {
     label: '2 năm',
-    value: '2 năm'
+    value: 2
   },
   {
     label: '3 năm',
-    value: '3 năm'
+    value: 3
   },
   {
     label: '4 năm',
-    value: '4 năm'
+    value: 4
   },
   {
     label: '5 năm',
-    value: '5 năm'
+    value: 5
   },
   {
     label: 'Trên 5 năm',
-    value: 'Trên 5 năm'
+    value: 6
   },
 ]
 
@@ -474,6 +474,106 @@ DataService.maxSalaryList = [
   {
     label: '11 triệu',
     value: '11 triệu',
+  },
+]
+
+DataService.foreignLanguageList = [
+  {
+    label: 'Tiếng Anh',
+    value: 'Tiếng Anh',
+  },
+  {
+    label: 'Tiếng Nhật',
+    value: 'Tiếng Nhật',
+  },
+  {
+    label: 'Tiếng Pháp',
+    value: 'Tiếng Pháp',
+  },
+  {
+    label: 'Tiếng Trung',
+    value: 'Tiếng Trung',
+  },
+  {
+    label: 'Tiếng Nga',
+    value: 'Tiếng Nga',
+  },
+  {
+    label: 'Tiếng Hàn',
+    value: 'Tiếng Hàn',
+  },
+  {
+    label: 'Tiếng Đức',
+    value: 'Tiếng Đức',
+  },
+  {
+    label: 'Tiếng Ý',
+    value: 'Tiếng Ý',
+  },
+  {
+    label: 'Tiếng Ả Rập',
+    value: 'Tiếng Ả Rập',
+  },
+  {
+    label: 'Khác',
+    value: 'Khác',
+  },
+]
+
+DataService.proficiencyList = [
+  {
+    label: 'Sơ cấp',
+    value: 'Sơ cấp',
+  },
+  {
+    label: 'Trung cấp',
+    value: 'Trung cấp',
+  },
+  {
+    label: 'Cao cấp',
+    value: 'Cao cấp',
+  },
+]
+
+DataService.officeSkillList = [
+  {
+    label: 'Adobe Photoshop',
+    value: 'Adobe Photoshop',
+  },
+  {
+    label: 'Adobe Illutrator',
+    value: 'Adobe Illutrator',
+  },
+  {
+    label: 'Adobe Premiere',
+    value: 'Adobe Premiere',
+  },
+  {
+    label: 'Word',
+    value: 'Word',
+  },
+  {
+    label: 'Excel',
+    value: 'Excel',
+  },
+  {
+    label: 'PowerPoint',
+    value: 'PowerPoint',
+  },
+]
+
+DataService.postStatusList = [
+  {
+    label: 'Chờ duyệt',
+    value: 'WAITING_FOR_APPROVE'
+  },
+  {
+    label: 'Đã duyệt',
+    value: 'APPROVED'
+  },
+  {
+    label: 'Từ chối',
+    value: 'REJECTED'
   },
 ]
 

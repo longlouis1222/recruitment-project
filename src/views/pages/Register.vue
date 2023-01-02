@@ -15,8 +15,20 @@ const loadingBtn = ref(false)
 
 const isVerifyAccount = ref(false)
 
+const typeList = [
+  {
+    label: 'Nhà tuyển dụng',
+    value: 'EMPLOYER'
+  },
+  {
+    label: 'Ứng viên',
+    value: 'CANDIDATE'
+  },
+]
+
 const dataForm = reactive({
   value: {
+    type: null,
     email: null,
     username: null,
     password: null,
@@ -45,6 +57,7 @@ const validatePassCheck = (rule, value, callback) => {
   }
 }
 const rulesForm = reactive({
+  type: [ValidService.requiredChange],
   email: [ValidService.required, ValidService.checkEmail],
   username: [ValidService.required],
   password: [{ required: true, validator: validatePass, trigger: 'blur' }],
@@ -62,6 +75,7 @@ const signUp = async (formEl) => {
     }
     try {
       const data = {
+        type: dataForm.value.type,
         email: dataForm.value.email,
         username: dataForm.value.username,
         password: dataForm.value.password,
@@ -125,26 +139,39 @@ onMounted(() => {
                 label-position="top"
                 @submit.prevent
               >
+                <el-form-item label="Vai trò" prop="type">
+                  <el-select
+                    v-model="dataForm.value.type"
+                    placeholder="Chọn"
+                  >
+                    <el-option
+                      v-for="item in typeList"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
                 <el-form-item label="Email" prop="email">
                   <el-input
                     type="text"
                     v-model="dataForm.value.email"
-                    tabindex="0"
+                    autocomplete="off"
+                    placeholder="abc@gmail.com"
                   />
                 </el-form-item>
                 <el-form-item label="Tên người dùng" prop="username">
                   <el-input
                     type="text"
                     v-model="dataForm.value.username"
-                    tabindex="1"
                     autocomplete="off"
+                    placeholder="abc"
                   />
                 </el-form-item>
                 <el-form-item label="Mật khẩu" prop="password">
                   <el-input
                     type="password"
                     v-model="dataForm.value.password"
-                    tabindex="2"
                     show-password
                     autocomplete="off"
                   />
@@ -153,8 +180,9 @@ onMounted(() => {
                   <el-input
                     type="password"
                     v-model="dataForm.value.repeatPassword"
-                    tabindex="3"
                     show-password
+                    autocomplete="off"
+                    placeholder=""
                   />
                 </el-form-item>
                 <div class="d-flex justify-content-between">
@@ -164,7 +192,6 @@ onMounted(() => {
                       style="height: 36px"
                       class="btn btn-success w-100 mt-2"
                       @click="router.go(-1)"
-                      tabindex="4"
                       native-type="submit"
                     >
                       Quay lại
@@ -176,7 +203,6 @@ onMounted(() => {
                       style="height: 36px"
                       class="btn btn-success btn-load w-100 mt-2"
                       @click="signUp(ruleFormRef)"
-                      tabindex="5"
                       native-type="submit"
                       :loading="loadingBtn"
                     >

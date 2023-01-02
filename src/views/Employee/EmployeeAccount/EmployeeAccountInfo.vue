@@ -1,44 +1,155 @@
 <script setup>
 import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
+import UserProfileApi from '@/moduleApi/modules/UserProfileApi'
+import FileApi from '@/moduleApi/modules/FileApi'
 
+import axios from 'axios'
 import { ElNotification } from 'element-plus'
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
+
+import { useStore } from 'vuex'
 
 import modelData from './EmployeeAccountInfoModel'
 
 const workPlaceList = DataService.workPlaceList
 
 const ruleFormRef = ref(FormInstance)
+const formData = reactive({
+  value: MethodService.copyObject(modelData.dataForm),
+})
 const validForm = modelData.validForm
-const formData = reactive(MethodService.copyObject(modelData.dataForm))
+
+const userProfile = reactive({})
+
+const store = useStore()
+
+const userInfo = computed(() => store.state.user)
 
 const imageUrl = ref('')
 
-const handleAvatarSuccess = (response, uploadFile) => {
-  imageUrl.value = URL.createObjectURL(uploadFile)
+const dialogImageUrl = ref('')
+const dialogVisible = ref(false)
+const disabled = ref(false)
+
+const handleRemove = (file) => {
+  console.log(file)
+  formData.value.avatar = []
 }
 
-const beforeAvatarUpload = (rawFile) => {
-  if (rawFile.type !== 'image/jpeg') {
-    ElMessage.error('Avatar picture must be JPG format!')
-    return false
-  } else if (rawFile.size / 1024 / 1024 > 2) {
-    ElMessage.error('Avatar picture size can not exceed 2MB!')
-    return false
-  }
+const handlePictureCardPreview = (file) => {
+  dialogImageUrl.value = file.url
+  dialogVisible.value = true
+}
+
+const beforeAvatarUpload = (rawFile, file) => {
+  console.log('rawFile', rawFile)
+  console.log('file', file)
+  // if (rawFile.type !== 'image/jpg' || rawFile.type !== 'image/jpeg' || rawFile.type !== 'image/png') {
+  //   ElNotification({
+  //     title: 'Info',
+  //     message: 'Ảnh phải có định dạng là .jpg, .jpeg, .png',
+  //     type: 'info',
+  //     duration: 3000,
+  //   })
+  //   return false
+  // }
+  //  else if (rawFile.size / 1024 / 1024 > 2) {
+  //   ElMessage.error('Avatar picture size can not exceed 2MB!')
+  //   return false
+  // }
   return true
+}
+
+const handleAvatarSuccess = async (response, uploadFile) => {
+  console.log('ZOO')
+  console.log('response', response)
+  console.log('uploadFile', uploadFile)
+  // imageUrl.value = URL.createObjectURL(uploadFile.raw)
+  // let fd = new FormData()
+  // fd.append('image', uploadFile[0].raw, uploadFile[0].raw.name)
+  // console.log(fd)
+  // const fileApiRes = await FileApi.uploadFile(fd)
+  // console.log(fileApiRes)
+}
+const c = async () => {
+  console.log('formData.value.avatar', formData.value.avatar[0].raw.name)
+  let fd = new FormData()
+  fd.append('filePath', 'https://drive.google.com/drive/folders/1Evc0_Wr5g0ehP9nRPyiSYM_DFXxoHuMm?usp=share_link')
+  fd.append(
+    'fileUpload',
+    formData.value.avatar[0].raw,
+    formData.value.avatar[0].raw.name,
+  )
+  fd.append('shared', true)
+
+  console.log('fd', fd)
+  // const fileApiRes = await FileApi.uploadFile(fd)
+  // console.log(fileApiRes)
+
+  axios({
+    method: 'post',
+    url: 'http://localhost:8085/api/v1/users',
+    data: fd,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization:
+        localStorage.getItem('Token') && localStorage.getItem('uid')
+          ? 'Bearer ' + localStorage.getItem('Token')
+          : '',
+    },
+  })
+    .then(function (response) {
+      //handle success
+      console.log('success', response)
+    })
+    .catch(function (response) {
+      //handle error
+      console.log('error', response)
+    })
 }
 
 const submitForm = async (formEl) => {
   if (!formEl) return
-  await formEl.validate((valid, fields) => {
+  await formEl.validate(async (valid, fields) => {
     if (valid) {
-      console.log('submit!')
+      const data = {
+        id: userProfile.value.id,
+        companyRequest: userProfile.value.companyDTO,
+        email: userProfile.value.email,
+        password: userProfile.value.password,
+        listRole: null,
+        type: 'CANDIDATE',
+        status: userProfile.value.status ? userProfile.value.status : 1,
+        userInfoRequest: {
+          address: formData.value.userInfoRequest.address,
+          avatar: userProfile.value.userInfoDTO.avatar
+            ? userProfile.value.userInfoDTO.avatar
+            : '',
+          companyId: null,
+          dateOfBirth: formData.value.userInfoRequest.dateOfBirth,
+          fullName: formData.value.userInfoRequest.fullName,
+          gender: formData.value.userInfoRequest.gender,
+          marriageStatus: formData.value.userInfoRequest.marriageStatus,
+          phoneNumber: formData.value.userInfoRequest.phoneNumber,
+          town: formData.value.userInfoRequest.town,
+        },
+        username: userProfile.value.username ? userProfile.value.username : '',
+      }
+      const userProfileApiRes = await UserProfileApi.update(data)
+      if (userProfileApiRes.status == 200) {
+        ElNotification({
+          title: 'Success',
+          message: 'Cập nhật thành công.',
+          type: 'success',
+          duration: 3000,
+        })
+      }
     } else {
       console.log('error submit!', fields)
+      return
     }
   })
 }
@@ -47,6 +158,68 @@ const resetForm = (formEl) => {
   if (!formEl) return
   formEl.resetFields()
 }
+const imgSrc = ref('')
+
+// const _arrayBufferToBase64 = ( buffer ) => {
+//     var binary = '';
+//     var bytes = new Uint8Array( buffer );
+//     var len = bytes.byteLength;
+//     for (var i = 0; i < len; i++) {
+//         binary += String.fromCharCode( bytes[ i ] );
+//     }
+//     return window.btoa( binary );
+// }
+
+// const hexToBase64 = (str) => {
+//     return window.btoa(String.fromCharCode.apply(null, str.replace(/\r|\n/g, "").replace(/([\da-fA-F]{2}) ?/g, "0x$1 ").replace(/ +$/, "").split(" ")));
+// }
+
+const getUserInfo = async () => {
+  const userProfileApiRes = await UserProfileApi.findById(
+    localStorage.getItem('uid'),
+  )
+  if (userProfileApiRes.status == 200) {
+    userProfile.value = userProfileApiRes.data.data
+    const fileApiRes = await FileApi.downloadFile(userProfile.value.userInfoDTO.avatar)
+    console.log('fileApiRes', fileApiRes)
+
+    // imgSrc.value = 'data:image/png;base64,' + fileApiRes.data
+    // imgSrc.value = 'data:image/png;base64,' + _arrayBufferToBase64(fileApiRes.data)
+
+    // var img = document.createElement('img');
+    // img.src = 'data:image/jpeg;base64,' + _arrayBufferToBase64(fileApiRes.data);
+    // document.body.appendChild(img);
+
+    formData.value = {
+      companyDTO: userProfile.value.companyDTO,
+      email: userProfile.value.email,
+      password: userProfile.value.password,
+      listRole: null,
+      type: 'CANDIDATE',
+      status: userProfile.value.status ? userProfile.value.status : 1,
+      userInfoRequest: {
+        address: userProfile.value.userInfoDTO.address,
+        avatar: null,
+        companyId: null,
+        dateOfBirth: userProfile.value.userInfoDTO.dateOfBirth,
+        fullName: userProfile.value.userInfoDTO.fullName,
+        gender: userProfile.value.userInfoDTO.gender,
+        marriageStatus: userProfile.value.userInfoDTO.marriageStatus,
+        phoneNumber: userProfile.value.userInfoDTO.phoneNumber,
+        town: userProfile.value.userInfoDTO.town,
+      },
+      username: userProfile.value.username ? userProfile.value.username : '',
+    }
+    console.log('userProfile', userProfile)
+  }
+}
+const flag = ref(false)
+onMounted(() => {
+  getUserInfo()
+  setTimeout(() => {
+    flag.value = true
+  }, 5000);
+})
 </script>
 
 <template>
@@ -59,9 +232,9 @@ const resetForm = (formEl) => {
       </template>
       <el-form
         ref="ruleFormRef"
-        :model="formData"
+        :model="formData.value"
         :rules="validForm"
-        label-width="140px"
+        label-width="150px"
         label-position="left"
         class="demo-ruleForm"
         status-icon
@@ -70,13 +243,20 @@ const resetForm = (formEl) => {
           <h5 class="mb-4">Thông tin đăng nhập</h5>
           <b-col md="7">
             <el-form-item label="Địa chỉ email" prop="email">
-              <el-input v-model="formData.email" />
+              <el-input v-model="formData.value.email" disabled />
             </el-form-item>
             <el-form-item label="Mật khẩu" prop="password">
-              <el-input v-model="formData.password" />
+              <el-input
+                type="password"
+                v-model="formData.value.password"
+                disabled
+              />
             </el-form-item>
-            <el-form-item label="Số điện thoại" prop="phone_number">
-              <el-input v-model="formData.phone_number" />
+            <el-form-item
+              label="Số điện thoại"
+              prop="userInfoRequest.phoneNumber"
+            >
+              <el-input v-model="formData.value.userInfoRequest.phoneNumber" />
             </el-form-item>
           </b-col>
         </b-row>
@@ -85,7 +265,7 @@ const resetForm = (formEl) => {
 
         <b-row>
           <h5 class="mb-4">Thông tin cá nhân</h5>
-          <b-col md="6">
+          <!-- <b-col md="6">
             <el-form-item label="Ảnh đại diện" prop="avatar">
               <el-upload
                 class="avatar-uploader d-flex"
@@ -105,30 +285,86 @@ const resetForm = (formEl) => {
                 </template>
               </el-upload>
             </el-form-item>
+          </b-col> -->
+          <b-col md="6">
+            <!-- v-if="!formData.value.avatar || formData.value.avatar.length == 0" -->
+            <el-button type="primary" @click="c()">Cập nhật</el-button>
+            <img src="https://lh3.googleusercontent.com/cxBM-ylQa5a9f8CWB57y8rz7TaKG6C1eoKiFa_NNRZDFm90yzCKklRs5tfRpsPdjUmNEnhJky3rbTME=s220" alt="ảnh">
+            <el-upload
+              v-model:file-list="formData.value.avatar"
+              action="#"
+              list-type="picture-card"
+              limit="1"
+              :auto-upload="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload"
+              :on-change="handleAvatarSuccess"
+            >
+              <el-icon><Plus /></el-icon>
+
+              <template #file="{ file }">
+                <div>
+                  <img
+                    class="el-upload-list__item-thumbnail"
+                    :src="file.url"
+                    alt=""
+                  />
+                  <span class="el-upload-list__item-actions">
+                    <span
+                      class="el-upload-list__item-preview"
+                      @click="handlePictureCardPreview(file)"
+                    >
+                      <el-icon><zoom-in /></el-icon>
+                    </span>
+                    <span
+                      v-if="!disabled"
+                      class="el-upload-list__item-delete"
+                      @click="handleRemove(file)"
+                    >
+                      <el-icon><Delete /></el-icon>
+                    </span>
+                  </span>
+                </div>
+              </template>
+            </el-upload>
+
+            <el-dialog v-model="dialogVisible">
+              <img w-full :src="dialogImageUrl" alt="Preview Image" />
+            </el-dialog>
           </b-col>
         </b-row>
         <el-divider />
         <b-row>
           <b-row>
             <b-col md="6">
-              <el-form-item label="Họ và tên" prop="fullname">
-                <el-input v-model="formData.fullname" />
+              <el-form-item label="Họ và tên" prop="userInfoRequest.fullName">
+                <el-input v-model="formData.value.userInfoRequest.fullName" />
               </el-form-item>
             </b-col>
             <b-col md="6">
-              <el-form-item label="Ngày sinh" prop="date_of_birth">
+              <el-form-item
+                label="Ngày sinh"
+                prop="userInfoRequest.dateOfBirth"
+              >
                 <el-date-picker
-                  v-model="formData.date_of_birth"
+                  v-model="formData.value.userInfoRequest.dateOfBirth"
                   type="date"
                   placeholder="Chọn"
+                  format="DD/MM/YYYY"
                 />
               </el-form-item>
             </b-col>
           </b-row>
           <b-row>
             <b-col md="6">
-              <el-form-item label="Tỉnh / thành phố" prop="city">
-                <el-select v-model="formData.city" placeholder="Chọn">
+              <el-form-item
+                label="Tỉnh / thành phố"
+                prop="userInfoRequest.town"
+              >
+                <el-select
+                  v-model="formData.value.userInfoRequest.town"
+                  placeholder="Chọn"
+                >
                   <el-option
                     v-for="item in workPlaceList"
                     :key="item.value"
@@ -139,26 +375,43 @@ const resetForm = (formEl) => {
               </el-form-item>
             </b-col>
             <b-col md="6">
-              <el-form-item label="Địa chỉ liên hệ" prop="address">
-                <el-input v-model="formData.address" type="text" />
+              <el-form-item
+                label="Địa chỉ liên hệ"
+                prop="userInfoRequest.address"
+              >
+                <el-input
+                  v-model="formData.value.userInfoRequest.address"
+                  type="text"
+                />
               </el-form-item>
             </b-col>
           </b-row>
           <b-row>
             <b-col md="6">
-              <el-form-item label="Giới tính" prop="gender">
-                <el-radio-group v-model="formData.gender" class="ml-4">
-                  <el-radio label="1" size="large">Nam</el-radio>
-                  <el-radio label="2" size="large">Nữ</el-radio>
-                  <el-radio label="2" size="large">Khác</el-radio>
+              <el-form-item label="Giới tính" prop="userInfoRequest.gender">
+                <el-radio-group
+                  v-model="formData.value.userInfoRequest.gender"
+                  class="ml-4"
+                >
+                  <el-radio :label="0" size="large">Nam</el-radio>
+                  <el-radio :label="1" size="large">Nữ</el-radio>
+                  <el-radio :label="2" size="large">Khác</el-radio>
                 </el-radio-group>
               </el-form-item>
             </b-col>
             <b-col md="6">
-              <el-form-item label="Tình trạng hôn nhân" prop="marriage">
-                <el-radio-group v-model="formData.marriage" class="ml-4">
-                  <el-radio label="1" size="large">Độc thân</el-radio>
-                  <el-radio label="2" size="large">Đã lập gia đình</el-radio>
+              <el-form-item
+                label="Tình trạng hôn nhân"
+                prop="userInfoRequest.marriageStatus"
+              >
+                <el-radio-group
+                  v-model="formData.value.userInfoRequest.marriageStatus"
+                  class="ml-4"
+                >
+                  <el-radio label="single" size="large">Độc thân</el-radio>
+                  <el-radio label="marriaged" size="large"
+                    >Đã lập gia đình</el-radio
+                  >
                 </el-radio-group>
               </el-form-item>
             </b-col>

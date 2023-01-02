@@ -1,15 +1,19 @@
 <script setup>
 import MethodService from '@/service/MethodService'
+import DataService from '@/service/DataService'
+import UserProfileApi from '@/moduleApi/modules/UserProfileApi'
+
 import { ElNotification } from 'element-plus'
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
 
 import modelData from './EmployerAccountInfoModel'
 
 const ruleFormRef = ref(FormInstance)
+const formData = reactive({ value: MethodService.copyObject(modelData.dataForm)})
 const validForm = modelData.validForm
-const formData = reactive(MethodService.copyObject(modelData.dataForm))
+const userProfile = reactive({})
 
 const imageUrl = ref('')
 
@@ -30,11 +34,41 @@ const beforeAvatarUpload = (rawFile) => {
 
 const submitForm = async (formEl) => {
   if (!formEl) return
-  await formEl.validate((valid, fields) => {
+  await formEl.validate(async (valid, fields) => {
     if (valid) {
-      console.log('submit!')
+      const data = {
+        id: userProfile.value.id,
+        companyRequest: userProfile.value.companyDTO,
+        email: userProfile.value.email,
+        password: userProfile.value.password,
+        listRole: null,
+        type: "EMPLOYEE",
+        status: userProfile.value.status ? userProfile.value.status : 1,
+        userInfoRequest: {
+          address: formData.value.userInfoRequest.address,
+          avatar: userProfile.value.userInfoDTO.avatar ? userProfile.value.userInfoDTO.avatar : '',
+          companyId: null,
+          dateOfBirth: formData.value.userInfoRequest.dateOfBirth,
+          fullName: formData.value.userInfoRequest.fullName,
+          gender: formData.value.userInfoRequest.gender,
+          marriageStatus: formData.value.userInfoRequest.marriageStatus,
+          phoneNumber: formData.value.userInfoRequest.phoneNumber,
+          town: formData.value.userInfoRequest.town,
+        },
+        username: userProfile.value.username ? userProfile.value.username : ''
+      }
+      const userProfileApiRes = await UserProfileApi.update(data)
+      if (userProfileApiRes.status == 200) {
+        ElNotification({
+          title: 'Success',
+          message: 'Cập nhật thành công.',
+          type: 'success',
+          duration: 3000,
+        })
+      }
     } else {
       console.log('error submit!', fields)
+      return
     }
   })
 }
@@ -43,6 +77,38 @@ const resetForm = (formEl) => {
   if (!formEl) return
   formEl.resetFields()
 }
+
+const getUserInfo = async () => {
+  const userProfileApiRes = await UserProfileApi.findById(localStorage.getItem('uid'))
+  if (userProfileApiRes.status == 200) {
+    userProfile.value = userProfileApiRes.data.data
+    formData.value = {
+      companyDTO: userProfile.value.companyDTO,
+      email: userProfile.value.email,
+      password: userProfile.value.password,
+      listRole: null,
+      type: "EMPLOYEE",
+      status: userProfile.value.status ? userProfile.value.status : 1,
+      userInfoRequest: {
+        address: userProfile.value.userInfoDTO.address,
+        avatar: null,
+        companyId: null,
+        dateOfBirth: userProfile.value.userInfoDTO.dateOfBirth,
+        fullName: userProfile.value.userInfoDTO.fullName,
+        gender: userProfile.value.userInfoDTO.gender,
+        marriageStatus: userProfile.value.userInfoDTO.marriageStatus,
+        phoneNumber: userProfile.value.userInfoDTO.phoneNumber,
+        town: userProfile.value.userInfoDTO.town,
+      },
+      username: userProfile.value.username ? userProfile.value.username : ''
+    }
+    console.log("userProfile", userProfile)
+  }
+}
+
+onMounted(() => {
+  getUserInfo()
+})
 </script>
 
 <template>
@@ -55,7 +121,7 @@ const resetForm = (formEl) => {
       </template>
       <el-form
         ref="ruleFormRef"
-        :model="formData"
+        :model="formData.value"
         :rules="validForm"
         label-width="140px"
         label-position="left"
@@ -66,14 +132,14 @@ const resetForm = (formEl) => {
           <h5 class="mb-4">Thông tin đăng nhập</h5>
           <b-col md="7">
             <el-form-item label="Địa chỉ email" prop="email">
-              <el-input v-model="formData.email" />
+              <el-input v-model="formData.value.email" />
             </el-form-item>
             <el-form-item label="Mật khẩu" prop="password">
-              <el-input v-model="formData.password" />
+              <el-input type="password" v-model="formData.value.password" disabled />
             </el-form-item>
           </b-col>
           <b-col md="5">
-            <el-form-item label="Ảnh đại diện" prop="avatar">
+            <el-form-item label="Ảnh đại diện" prop="">
               <el-upload
                 class="avatar-uploader d-flex"
                 action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
@@ -100,17 +166,17 @@ const resetForm = (formEl) => {
         <b-row>
           <h5 class="mb-4">Thông tin liên hệ</h5>
           <b-col md="7">
-            <el-form-item label="Họ và tên" prop="fullname">
-              <el-input v-model="formData.fullname" />
+            <el-form-item label="Họ và tên" prop="fullName">
+              <el-input v-model="formData.value.userInfoRequest.fullName" />
             </el-form-item>
-            <el-form-item label="Số điện thoại" prop="phone_number">
-              <el-input v-model="formData.phone_number" />
+            <el-form-item label="Số điện thoại" prop="userInfoRequest.phoneNumber">
+              <el-input v-model="formData.value.userInfoRequest.phoneNumber" />
             </el-form-item>
-            <el-form-item label="Email liên hệ" prop="contact_email">
-              <el-input v-model="formData.contact_email" />
+            <el-form-item label="Email liên hệ" prop="email">
+              <el-input v-model="formData.value.email" />
             </el-form-item>
-            <el-form-item label="Địa chỉ liên hệ" prop="address">
-              <el-input v-model="formData.address"  type="textarea"/>
+            <el-form-item label="Địa chỉ liên hệ" prop="userInfoRequest.address">
+              <el-input v-model="formData.value.userInfoRequest.address"  type="textarea"/>
             </el-form-item>
           </b-col>
         </b-row>

@@ -4,24 +4,37 @@ let model = {}
 // dữ liệu form
 model.dataForm = {
   email: null,
+  listRole: [],
   password: null,
-  avatar: null,
-  fullname: null,
-  phone_number: null,
-  contact_email: null,
-  address: null,
+  status: 1,
+  type: null,
+  userInfoRequest: {
+    address: null,
+    avatar: null,
+    companyId: null,
+    dateOfBirth: null,
+    fullName: null,
+    gender: null,
+    marriageStatus: null,
+    phoneNumber: null,
+    town: null,
+  },
+  username: null,
 }
 
 // validation form
 model.validForm = {
   email: [ValidService.required],
-  password: [ValidService.required],
-  avatar: [ValidService.requiredChange],
-  fullname: [ValidService.required],
-  phone_number: [ValidService.required, ValidService.checkSpaceStringCenter],
-  // contact_email: [ValidService.required],
-  // address: [ValidService.required],
-
+  userInfoRequest: {
+    address: [ValidService.required],
+    avatar: [],
+    dateOfBirth: [ValidService.requiredChange],
+    fullName: [ValidService.required],
+    gender: [ValidService.requiredChange],
+    marriageStatus: [ValidService.requiredChange],
+    phoneNumber: [ValidService.required, ValidService.checkSpaceStringCenter],
+    town: [ValidService.required],
+  },
 }
 
 model.dataFormOther = {}

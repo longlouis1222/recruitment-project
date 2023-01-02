@@ -31,7 +31,7 @@ model.tableRules = {
   limit: 10,
   skip: 0,
   sort: '',
-  defaultSort: ['status_order', 'ascending'],
+  defaultSort: ['', 'ascending'],
   filters: '',
   recordSelected: [],
   dataSearch: {

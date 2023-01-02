@@ -21,7 +21,6 @@ model.validForm = {
   phone_number: [ValidService.required, ValidService.checkSpaceStringCenter],
   // contact_email: [ValidService.required],
   // address: [ValidService.required],
-
 }
 
 model.dataFormOther = {}
@@ -42,41 +41,28 @@ model.tableRules = {
   limit: 10,
   skip: 0,
   sort: '',
-  defaultSort: ['status_order', 'ascending'],
+  defaultSort: ['', 'ascending'],
   filters: '',
   recordSelected: [],
   dataSearch: {
     value: {
-      emp_names: '',
-      asset_names: '',
-      name: '',
-      value: '',
+      username: '',
+      email: '',
+      // userInfoDTO: {
+      //   fullName: '',
+      // },
       type: '',
-      identity: '',
       status: '',
-      is_broken: '',
     },
-    valid: {
-      emp_names: [],
-      asset_names: [],
-      name: [],
-      value: [],
-      type: [],
-      identity: [
-        ValidService.checkSpaceString,
-        ValidService.checkSpaceStringCenter,
-      ],
-      status: [],
-      is_broken: [],
-    },
+    valid: {},
     operator: {
-      emp_names: '$vn_text=',
-      asset_names: '$vn_text=',
-      name: '$vn_text=',
-      value: '',
-      identity: ':regex_i:',
-      status: ':in:',
-      is_broken: '',
+      username: '',
+      email: '',
+      // userInfoDTO: {
+      //   fullName: '',
+      // },
+      type: '',
+      status: '',
     },
   },
 }

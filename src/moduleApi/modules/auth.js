@@ -10,8 +10,6 @@ export default {
 
   register(credentials) {
     return Api().post('sign-up', {
-      // firstName: credentials.firstName,
-      // lastName: credentials.lastName,
       type: credentials.type,
       email: credentials.email,
       username: credentials.username,

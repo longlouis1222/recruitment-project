@@ -1,44 +1,53 @@
 <script setup>
 import MethodService from '@/service/MethodService'
+import DataService from '@/service/DataService'
+
+import UserProfileApi from '@/moduleApi/modules/UserProfileApi'
+
 import { ElNotification } from 'element-plus'
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
 
 import modelData from './EmployerCompanyInfoModel'
 
 const ruleFormRef = ref(FormInstance)
+const formData = reactive({ value: MethodService.copyObject(modelData.dataForm)})
 const validForm = modelData.validForm
-const formData = reactive(MethodService.copyObject(modelData.dataForm))
-const options = [
-  {
-    value: 'Option1',
-    label: 'Option1',
-  },
-  {
-    value: 'Option2',
-    label: 'Option2',
-  },
-  {
-    value: 'Option3',
-    label: 'Option3',
-  },
-  {
-    value: 'Option4',
-    label: 'Option4',
-  },
-  {
-    value: 'Option5',
-    label: 'Option5',
-  },
-]
+
+const mainJobList = DataService.mainJobList
+const userProfile = reactive({})
+
 const submitForm = async (formEl) => {
   if (!formEl) return
-  await formEl.validate((valid, fields) => {
+  await formEl.validate(async (valid, fields) => {
     if (valid) {
-      console.log('submit!')
+      const data = {
+        id: userProfile.value.id,
+        email: userProfile.value.email,
+        password: userProfile.value.password,
+        listRole: null,
+        type: "EMPLOYER",
+
+        userInfoRequest: userProfile.value.userInfoDTO,
+        // userInfoRequest: {
+        //   ...userProfile.value.userInfoDTO
+        // },
+        companyRequest: formData.value.companyRequest,
+      }
+      console.log('data', data)
+      const userProfileApiRes = await UserProfileApi.update(data)
+      if (userProfileApiRes.status == 200) {
+        ElNotification({
+          title: 'Success',
+          message: 'Cập nhật thành công.',
+          type: 'success',
+          duration: 3000,
+        })
+      }
     } else {
       console.log('error submit!', fields)
+      return
     }
   })
 }
@@ -47,6 +56,34 @@ const resetForm = (formEl) => {
   if (!formEl) return
   formEl.resetFields()
 }
+
+const getUserInfo = async () => {
+  const userProfileApiRes = await UserProfileApi.findById(localStorage.getItem('uid'))
+  if (userProfileApiRes.status == 200) {
+    userProfile.value = userProfileApiRes.data.data
+    formData.value = {
+      type: "EMPLOYER",
+      userInfoRequest: {
+        address: userProfile.value.userInfoDTO.address,
+        avatar: null,
+        companyId: null,
+        dateOfBirth: userProfile.value.userInfoDTO.dateOfBirth,
+        fullName: userProfile.value.userInfoDTO.fullName,
+        gender: userProfile.value.userInfoDTO.gender,
+        marriageStatus: userProfile.value.userInfoDTO.marriageStatus,
+        phoneNumber: userProfile.value.userInfoDTO.phoneNumber,
+        town: userProfile.value.userInfoDTO.town,
+      },
+      // companyRequest: userProfile.value.companyDTO,
+      companyRequest: { ...userProfile.value.companyDTO }
+    }
+    console.log("userProfile", userProfile)
+  }
+}
+
+onMounted(() => {
+  getUserInfo()
+})
 </script>
 
 <template>
@@ -59,9 +96,9 @@ const resetForm = (formEl) => {
       </template>
       <el-form
         ref="ruleFormRef"
-        :model="formData"
+        :model="formData.value"
         :rules="validForm"
-        label-width="140px"
+        label-width="160px"
         label-position="left"
         class="demo-ruleForm"
         status-icon
@@ -69,38 +106,36 @@ const resetForm = (formEl) => {
         <b-row>
           <h5 class="mb-4">Thông tin công ty</h5>
           <b-col md="7">
-            <el-form-item label="Mã số thuế " prop="tax_code">
-              <el-input v-model="formData.tax_code" />
+            <el-form-item label="Mã số thuế " prop="companyRequest.taxCode">
+              <el-input v-model="formData.value.companyRequest.taxCode" />
             </el-form-item>
-            <el-form-item label="Tên công ty" prop="company_name">
-              <el-input v-model="formData.company_name" />
+            <el-form-item label="Tên công ty" prop="companyRequest.name">
+              <el-input v-model="formData.value.companyRequest.name" />
             </el-form-item>
-            <el-form-item label="Quy mô nhân sự" prop="personnel_size">
-              <el-input v-model="formData.personnel_size" />
+            <el-form-item label="Quy mô nhân sự" prop="companyRequest.employeeNumber">
+              <el-input v-model="formData.value.companyRequest.employeeNumber" />
             </el-form-item>
-            <el-form-item label="Địa điểm" prop="location">
-              <el-input v-model="formData.location" />
+            <el-form-item label="Địa điểm" prop="companyRequest.location">
+              <el-input v-model="formData.value.companyRequest.location" />
             </el-form-item>
-            <el-form-item label="Địa chỉ" prop="company_address">
-              <el-input v-model="formData.company_address" />
+            <el-form-item label="Địa chỉ" prop="companyRequest.companyAddress">
+              <el-input v-model="formData.value.companyRequest.companyAddress" />
             </el-form-item>
-            <el-form-item label="Điện thoại cố định" prop="landline_phone">
-              <el-input v-model="formData.landline_phone" />
+            <el-form-item label="Điện thoại cố định" prop="companyRequest.companyPhoneNumber">
+              <el-input v-model="formData.value.companyRequest.companyPhoneNumber" />
             </el-form-item>
-            <el-form-item label="Lĩnh vực hoạt động" prop="field_of_acitvity">
+            <el-form-item label="Lĩnh vực hoạt động" prop="companyRequest.fieldOfActivity">
               <el-select
-                v-model="formData.field_of_acitvity"
-                multiple
+                v-model="formData.value.companyRequest.fieldOfActivity"
                 placeholder="Chọn"
               >
                 <el-option
-                  v-for="item in options"
+                  v-for="item in mainJobList"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
                 />
               </el-select>
-
             </el-form-item>
           </b-col>
         </b-row>

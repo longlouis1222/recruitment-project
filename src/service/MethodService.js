@@ -5,7 +5,7 @@ import * as moment from "moment";
 // import FileSaver from "file-saver";
 // import { blockUi, unblockUi } from "../shared/utils";
 // import { store } from '../store/store';
-import $ from 'jquery'
+// import $ from 'jquery'
 
 let MethodService = {};
 

@@ -1,15 +1,18 @@
 
 <script setup>
 import AppBreadcrumb from './AppBreadcrumb'
+import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt'
 import { logo } from '@/assets/brand/logo'
 import DataService from '@/service/DataService'
 
 import { useRouter } from 'vue-router'
-import { ref } from 'vue-demi'
+import { onMounted, ref } from 'vue-demi'
 
 const router = useRouter()
 const dialogAllIndustries = ref(false)
 const mainJobList = DataService.mainJobList
+
+const isShowAvatar = ref(false)
 
 const toggleDialogAllIndustries = () => {
   dialogAllIndustries.value = true
@@ -26,6 +29,14 @@ const goToRegister = () => {
 const goToCreateCV = () => {
   router.push({ name: 'Hồ sơ ứng viên' })
 }
+
+onMounted(() => {
+  localStorage.getItem('Token')
+  // console.log(localStorage.getItem('Token'))
+  if (localStorage.getItem('Token') && localStorage.getItem('uid')) {
+    isShowAvatar.value = true
+  }
+})
 </script>
 <template>
   <CHeader position="sticky" class="mb-4 b-shadow">
@@ -65,18 +76,19 @@ const goToCreateCV = () => {
             </template>
           </el-popover>
         </CNavItem>
-        <CNavItem>
+        <CNavItem v-if="!isShowAvatar">
           <CNavLink @click="goToRegister">
             <el-button type="primary" plain @click="goToRegister"
               >Đăng ký</el-button
             >
           </CNavLink>
         </CNavItem>
-        <CNavItem>
+        <CNavItem v-if="!isShowAvatar">
           <CNavLink click="goToLogin">
             <el-button type="primary" @click="goToLogin">Đăng nhập</el-button>
           </CNavLink>
         </CNavItem>
+        <AppHeaderDropdownAccnt v-if="isShowAvatar" />
       </CHeaderNav>
     </CContainer>
     <CHeaderDivider />
@@ -111,10 +123,8 @@ const goToCreateCV = () => {
         </CNavItem>
       </CHeaderNav>
       <CHeaderNav class="align-items-center">
-        <CNavItem>
+        <CNavItem @click="goToCreateCV">
           <CNavLink
-            href="#"
-            @click="goToCreateCV"
             class="d-flex align-items-center"
           >
             Tạo hồ sơ ngay <CIcon class="mx-2" icon="cilArrowRight" size="lg" />

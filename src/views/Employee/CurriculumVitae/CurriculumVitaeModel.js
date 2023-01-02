@@ -4,26 +4,68 @@ let model = {}
 // dữ liệu form
 model.dataForm = {
   email: null,
+  listRole: [],
   password: null,
-  avatar: null,
-  fullname: null,
-  phone_number: null,
-  contact_email: null,
+  status: null,
+  type: null,
+  userInfoDTO: {
+    address: null,
+    avatar: null,
+    companyId: null,
+    dateOfBirth: null,
+    fullName: null,
+    gender: null,
+    marriageStatus: null,
+    phoneNumber: null,
+    town: null,
+  },
+  username: null,
+
+
+  academyInfoDTO: {
+    addressAcademy: null,
+    certificateName: null,
+    specialize: null,
+    timeFrom: null,
+    timeTo: null,
+  },
+  academyLevel: null,
   address: null,
-  date_of_birth: null,
-  gender: null,
+  career: null,
+  careerTarget: null,
+  currentLevel: null,
+  experienceNumber: null,
+  foreignLanguageDTO: {
+    foreignLanguageNames: [],
+    proficiencies: [],
+  },
+  levelDesire: null,
+  offerSalary: null,
+  officeInfoDTO: {
+    officeNames: [],
+  },
+  positionOffer: null,
+  sortSkill: null,
+  workAddress: null,
+  workExperienceDTO: {
+    companyName: null,
+    description: null,
+    fromWorkTime: null,
+    regency: null,
+    toWorkTime: null,
+  },
+  workForm: null,
 }
 
 // validation form
 model.validForm = {
-  email: [ValidService.required],
-  password: [ValidService.required],
-  avatar: [ValidService.requiredChange],
-  fullname: [ValidService.required],
-  phone_number: [ValidService.required, ValidService.checkSpaceStringCenter],
-  date_of_birth: [ValidService.requiredChange],
-  gender: [ValidService.requiredChange],
-
+  // email: [ValidService.required],
+  // password: [ValidService.required],
+  // avatar: [ValidService.requiredChange],
+  // fullname: [ValidService.required],
+  // phone_number: [ValidService.required, ValidService.checkSpaceStringCenter],
+  // date_of_birth: [ValidService.requiredChange],
+  // gender: [ValidService.requiredChange],
 }
 
 model.dataFormOther = {}

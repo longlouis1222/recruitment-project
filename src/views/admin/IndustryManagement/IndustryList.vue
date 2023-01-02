@@ -4,8 +4,11 @@ import { ElNotification, ElMessageBox } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { FormInstance } from 'element-plus'
 import IndustryApi from '@/moduleApi/modules/IndustryApi'
+import { useRouter } from 'vue-router';
 
 import modelData from './IndustryModel'
+
+const router = useRouter()
 
 const ruleFormRef = ref(FormInstance)
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
@@ -63,15 +66,11 @@ const submitFormSearch = async (formEl) => {
   await formEl.validate(async (valid, fields) => {
     if (valid) {
       try {
-        const filter = MethodService.filterTable(
-          JSON.stringify(formSearchData)
-        );
-        console.log('filter', filter)
-        const industryApiRes = await IndustryApi.list(filter)
-        if (industryApiRes.status === 200) {
-          console.log('create', industryApiRes)
-          tableRules.data = industryApiRes.data.data.data
-        }
+        tableRules.filters = formSearchData
+        console.log('tableRules.filters', tableRules.filters)
+        tableRules.skip = 0;
+        tableRules.page = 1;
+        getIndustryList()
       } catch (error) {
         console.log(error)
       }
@@ -82,9 +81,24 @@ const submitFormSearch = async (formEl) => {
 }
 
 const getIndustryList = async () => {
-  const industryApiRes = await IndustryApi.list()
+  let dataFilter = {
+    limit: tableRules.limit,
+    skip: tableRules.skip,
+    page: tableRules.page > 0 ? tableRules.page - 1 : tableRules.page,
+    // sort: tableRules.sort,
+    ...tableRules.filters,
+  }
+  router.replace({
+    name: 'Danh sách ngành nghề',
+    query: {
+      ...dataFilter,
+    },
+  })
+  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
+  const industryApiRes = await IndustryApi.list(filter)
   if (industryApiRes.status === 200) {
     tableRules.data = industryApiRes.data.data.data
+    tableRules.total = industryApiRes.data.data.totalElements
     console.log('getIndustryList', industryApiRes)
   }
 }
@@ -148,8 +162,8 @@ const fn_tableNextClick = () => {
 }
 const fn_tableChangeOffset = (page) => {
   tableRules.page = page
-  tableRules.offset = (tableRules.page - 1) * tableRules.limit
-  // getService();
+  tableRules.skip = (tableRules.page - 1) * tableRules.limit
+  getIndustryList();
 }
 const fn_tableSortChange = (column, tableSort) => {
   tableSort = tableRules
@@ -211,7 +225,7 @@ onMounted(async () => {
             >
               <b-row>
                 <b-col md="6">
-                  <el-form-item label="Mã" prop="">
+                  <el-form-item label="Mã ngành nghề" prop="">
                     <el-input
                       clearable
                       v-model="formSearchData.code"
@@ -286,7 +300,7 @@ onMounted(async () => {
           :page-sizes="tableRules.lengthMenu"
           background
           layout="total, sizes, prev, pager, next, jumper"
-          :total="tableRules.total"
+          :total="Number(tableRules.total)"
           @size-change="fn_tableSizeChange"
           @current-change="fn_tableCurentChange"
           @prev-click="fn_tablePrevClick"

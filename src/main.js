@@ -28,6 +28,8 @@ import BootstrapVue3 from 'bootstrap-vue-3';
 // }
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
+window.jQuery = window.$ = require('jquery');
+
 const app = createApp(App)
 app.use(store)
 app.use(router)

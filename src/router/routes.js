@@ -49,7 +49,7 @@ export default [
       },
       {
         path: '/employer/recruitment-post/recuitment-post-list',
-        name: 'Danh sách tin đăng',
+        name: 'Danh sách bài tuyển dụng',
         component: () =>
           import('@/views/Employer/RecruitmentPost/RecruitmentPostList.vue'),
       },
@@ -79,6 +79,12 @@ export default [
         name: 'Hồ sơ ứng viên',
         component: () =>
           import( '@/views/Employee/CurriculumVitae/CurriculumVitae.vue'),
+      },
+      {
+        path: '/employee/employee-cv/employee-cv-info',
+        name: 'Hồ sơ của bạn',
+        component: () =>
+          import( '@/views/Employee/EmployeeCV/EmployeeCVList.vue'),
       },
 
       {
@@ -372,6 +378,11 @@ export default [
         path: 'landing-page',
         name: 'Landing page',
         component: () => import('@/views/pages/LandingPage'),
+      },
+      {
+        path: 'job-detail/:id',
+        name: 'Job detail',
+        component: () => import('@/views/pages/JobDetail'),
       },
     ],
   },

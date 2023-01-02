@@ -3,8 +3,12 @@ import DataService from '@/service/DataService'
 
 import { useRouter } from 'vue-router'
 import AppHeaderLanding from '@/components/AppHeaderLanding.vue'
+import { onMounted, computed } from 'vue'
+import { useStore } from 'vuex'
 
 const router = useRouter()
+const store = useStore()
+
 const mainJobList = DataService.mainJobList
 const secondJobList = DataService.secondJobList
 const workPlaceList = DataService.workPlaceList
@@ -35,6 +39,11 @@ const bannerList = [
 const backToPrev = () => {
   router.go(-1)
 }
+
+onMounted(() => {
+  const userInfo = computed(() => store.state.user)
+  console.log(userInfo)
+})
 </script>
 
 <template>
@@ -705,7 +714,7 @@ const backToPrev = () => {
         <b-col md="3">
           <el-card class="box-card" shadow="hover">
             <div class="icon-block mb-3">
-              <CIcon class="" icon="cilSearch" size="lg" />
+              <CIcon class="" icon="cilStorage" size="lg" />
             </div>
             <h5>Việc làm quản lý</h5>
             <p>2879 việc làm</p>
@@ -714,7 +723,7 @@ const backToPrev = () => {
         <b-col md="3">
           <el-card class="box-card" shadow="hover">
             <div class="icon-block mb-3">
-              <CIcon class="" icon="cilSearch" size="lg" />
+              <CIcon class="" icon="cibSitepoint" size="lg" />
             </div>
             <h5>Việc làm IT</h5>
             <p>2879 việc làm</p>
@@ -723,7 +732,7 @@ const backToPrev = () => {
         <b-col md="3">
           <el-card class="box-card" shadow="hover">
             <div class="icon-block mb-3">
-              <CIcon class="" icon="cilSearch" size="lg" />
+              <CIcon class="" icon="cilNewspaper" size="lg" />
             </div>
             <h5>Việc làm mới</h5>
             <p>2879 việc làm</p>
@@ -732,7 +741,7 @@ const backToPrev = () => {
         <b-col md="3">
           <el-card class="box-card" shadow="hover">
             <div class="icon-block mb-3">
-              <CIcon class="" icon="cilSearch" size="lg" />
+              <CIcon class="" icon="cilAvTimer" size="lg" />
             </div>
             <h5>Việc làm bán thời gian</h5>
             <p>2879 việc làm</p>
@@ -743,7 +752,7 @@ const backToPrev = () => {
         <b-col md="3">
           <el-card class="box-card" shadow="hover">
             <div class="icon-block mb-3">
-              <CIcon class="" icon="cilSearch" size="lg" />
+              <CIcon class="" icon="cilMoney" size="lg" />
             </div>
             <h5>Việc làm lương cao</h5>
             <p>2879 việc làm</p>
@@ -752,7 +761,7 @@ const backToPrev = () => {
         <b-col md="3">
           <el-card class="box-card" shadow="hover">
             <div class="icon-block mb-3">
-              <CIcon class="" icon="cilSearch" size="lg" />
+              <CIcon class="" icon="cilGraph" size="lg" />
             </div>
             <h5>Việc làm từ xa</h5>
             <p>2879 việc làm</p>
@@ -761,7 +770,7 @@ const backToPrev = () => {
         <b-col md="3">
           <el-card class="box-card" shadow="hover">
             <div class="icon-block mb-3">
-              <CIcon class="" icon="cilSearch" size="lg" />
+              <CIcon class="" icon="cilMoodGood" size="lg" />
             </div>
             <h5>Việc làm tốt nhất</h5>
             <p>2879 việc làm</p>

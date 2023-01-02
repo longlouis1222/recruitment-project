@@ -41,7 +41,7 @@ export default [
   },
   {
     component: 'CNavItem',
-    name: 'Danh sách tin đăng',
+    name: 'Danh sách bài tuyển dụng',
     to: '/employer/recruitment-post/recuitment-post-list',
     icon: 'cil-puzzle',
   },
@@ -70,6 +70,12 @@ export default [
     component: 'CNavItem',
     name: 'Hồ sơ ứng viên',
     to: '/employee/curriculum-vitae/curriculum-vitae-info',
+    icon: 'cilAddressBook',
+  },
+  {
+    component: 'CNavItem',
+    name: 'Hồ sơ của bạn',
+    to: '/employee/employee-cv/employee-cv-info',
     icon: 'cilAddressBook',
   },
 

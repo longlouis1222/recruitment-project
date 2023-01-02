@@ -3,26 +3,30 @@ let model = {}
 
 // dữ liệu form
 model.dataForm = {
-  tax_code: null,
-  company_name: null,
-  personnel_size: null,
-  location: null,
-  phone_number: null,
-  company_address: null,
-  landline_phone: null,
-  field_of_activity: null,
+  companyRequest: {
+    companyAddress: null,
+    companyPhoneNumber: null,
+    emailCompany: null,
+    employeeNumber: null,
+    fieldOfActivity: null,
+    location: null,
+    name: null,
+    taxCode: null,
+  },
 }
 
 // validation form
 model.validForm = {
-  tax_code: [ValidService.required],
-  company_name: [ValidService.required],
-  personnel_size: [ValidService.required],
-  location: [ValidService.required],
-  phone_number: [ValidService.required],
-  company_address: [ValidService.required],
-  landline_phone: [ValidService.required],
-  field_of_activity: [ValidService.requiredChange],
+  companyRequest: {
+    companyAddress: [ValidService.required],
+    companyPhoneNumber: [ValidService.required],
+    emailCompany: [ValidService.required],
+    employeeNumber: [ValidService.required],
+    fieldOfActivity: [ValidService.requiredChange],
+    location: [ValidService.required],
+    name: [ValidService.required],
+    taxCode: [ValidService.required],
+  },
 }
 
 model.dataFormOther = {}
@@ -43,42 +47,13 @@ model.tableRules = {
   limit: 10,
   skip: 0,
   sort: '',
-  defaultSort: ['status_order', 'ascending'],
+  defaultSort: ['', 'ascending'],
   filters: '',
   recordSelected: [],
   dataSearch: {
-    value: {
-      emp_names: '',
-      asset_names: '',
-      name: '',
-      value: '',
-      type: '',
-      identity: '',
-      status: '',
-      is_broken: '',
-    },
-    valid: {
-      emp_names: [],
-      asset_names: [],
-      name: [],
-      value: [],
-      type: [],
-      identity: [
-        ValidService.checkSpaceString,
-        ValidService.checkSpaceStringCenter,
-      ],
-      status: [],
-      is_broken: [],
-    },
-    operator: {
-      emp_names: '$vn_text=',
-      asset_names: '$vn_text=',
-      name: '$vn_text=',
-      value: '',
-      identity: ':regex_i:',
-      status: ':in:',
-      is_broken: '',
-    },
+    value: {},
+    valid: {},
+    operator: {},
   },
 }
 
