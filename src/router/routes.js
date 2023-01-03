@@ -380,7 +380,7 @@ export default [
         component: () => import('@/views/pages/LandingPage'),
       },
       {
-        path: 'job-detail/:id',
+        path: 'job-detail',
         name: 'Job detail',
         component: () => import('@/views/pages/JobDetail'),
       },

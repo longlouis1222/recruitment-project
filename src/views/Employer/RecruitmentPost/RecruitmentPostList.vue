@@ -1,91 +1,29 @@
 <script setup>
 import MethodService from '@/service/MethodService'
+
+import IndustryApi from '@/moduleApi/modules/IndustryApi'
+import PostApi from '@/moduleApi/modules/PostApi'
+
+import { useRouter } from 'vue-router'
 import { ElNotification } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
 
 import modelData from '../EmployerCompany/EmployerCompanyInfoModel'
 
-const ruleFormRef = ref(FormInstance)
-const validForm = modelData.validForm
-const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
-const formData = reactive(MethodService.copyObject(modelData.dataForm))
-const options = [
-  {
-    value: 'Option1',
-    label: 'Option1',
-  },
-  {
-    value: 'Option2',
-    label: 'Option2',
-  },
-  {
-    value: 'Option3',
-    label: 'Option3',
-  },
-  {
-    value: 'Option4',
-    label: 'Option4',
-  },
-  {
-    value: 'Option5',
-    label: 'Option5',
-  },
-]
+const router = useRouter()
 
-const tableData = [
-  {
-    name: 'Tin tức 24h siêu hot',
-    date_post: '12/02/2022',
-    end_date: '20/02/2022',
-    approve_time: '22',
-    read_time: '10',
-    post_status: 'Nổi bật',
-    status: 'Đã duyệt',
-    others: 'Tin tức tuyển dụng',
-  },
-  {
-    name: 'Tin tức 24h siêu hot',
-    date_post: '12/02/2022',
-    end_date: '20/02/2022',
-    approve_time: '22',
-    read_time: '10',
-    post_status: 'Nổi bật',
-    status: 'Đã duyệt',
-    others: 'Tin tức tuyển dụng',
-  },
-  {
-    name: 'Tin tức 24h siêu hot',
-    date_post: '12/02/2022',
-    end_date: '20/02/2022',
-    approve_time: '22',
-    read_time: '10',
-    post_status: 'Nổi bật',
-    status: 'Đã duyệt',
-    others: 'Tin tức tuyển dụng',
-  },
-  {
-    name: 'Tin tức 24h siêu hot',
-    date_post: '12/02/2022',
-    end_date: '20/02/2022',
-    approve_time: '22',
-    read_time: '10',
-    post_status: 'Nổi bật',
-    status: 'Đã duyệt',
-    others: 'Tin tức tuyển dụng',
-  },
-  {
-    name: 'Tin tức 24h siêu hot',
-    date_post: '12/02/2022',
-    end_date: '20/02/2022',
-    approve_time: '22',
-    read_time: '10',
-    post_status: 'Nổi bật',
-    status: 'Đã duyệt',
-    others: 'Tin tức tuyển dụng',
-  },
-]
+const moduleName = 'Danh sách bài tuyển dụng'
+const ruleFormRef = ref(FormInstance)
+const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
+const formData = reactive({
+  value: MethodService.copyObject(modelData.dataForm),
+})
+const validForm = modelData.validForm
+const formSearchData = reactive({
+  value: MethodService.copyObject(tableRules.dataSearch.value),
+})
+const validFormSearch = tableRules.dataSearch.valid
 
 const submitForm = async (formEl) => {
   if (!formEl) return
@@ -103,37 +41,106 @@ const resetForm = (formEl) => {
   formEl.resetFields()
 }
 
+const getPostList = async () => {
+  let dataFilter = {
+    limit: tableRules.limit,
+    skip: tableRules.skip,
+    page: tableRules.page > 0 ? tableRules.page - 1 : tableRules.page,
+    // sort: tableRules.sort,
+    ...tableRules.filters,
+  }
+  router.replace({
+    name: moduleName,
+    query: {
+      ...dataFilter,
+    },
+  })
+  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
+  const postApiRes = await PostApi.list(filter)
+  if (postApiRes.status == 200) {
+    tableRules.data = postApiRes.data.data.data
+    tableRules.total = postApiRes.data.data.totalElements
+  }
+}
+
+const submitFormSearch = async (formEl) => {
+  if (!formEl) return
+  await formEl.validate(async (valid, fields) => {
+    if (valid) {
+      try {
+        tableRules.filters = formSearchData.value
+        console.log('tableRules.filters', tableRules.filters)
+        tableRules.skip = 0
+        tableRules.page = 1
+        await getPostList()
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      console.log('error submit!', fields)
+    }
+  })
+}
+
+const deleteItem = async (id) => {
+  ElMessageBox.alert('Bạn có chắc muốn xóa bài viết này ?', 'Cảnh báo', {
+    // if you want to disable its autofocus
+    // autofocus: false,
+    confirmButtonText: 'Đồng ý',
+    callback: async () => {
+      try {
+        const postApiRes = await PostApi.delete(id)
+        if (postApiRes.status === 200) {
+          ElNotification({
+            title: 'Success',
+            message: 'Xóa thành công.',
+            type: 'success',
+            duration: 3000,
+          })
+          await getPostList()
+        }
+      } catch (error) {
+        ElNotification({
+          title: 'Error',
+          message: 'Xóa thất bại.',
+          type: 'error',
+          duration: 3000,
+        })
+      }
+    },
+  })
+}
+
 const toggleSearchBox = () => {
   tableRules.showFormSearch = !tableRules.showFormSearch
 }
 
 const fn_tableSizeChange = (limit) => {
-  tableRules.limit = limit;
-  fn_tableChangeOffset(1);
-};
+  tableRules.limit = limit
+  fn_tableChangeOffset(1)
+}
 const fn_tableCurentChange = (page) => {
-  fn_tableChangeOffset(page);
-};
+  fn_tableChangeOffset(page)
+}
 const fn_tablePrevClick = () => {
   // fn_tableChangeOffset(page);
-};
+}
 const fn_tableNextClick = () => {
   // fn_tableChangeOffset(page);
-};
+}
 const fn_tableChangeOffset = (page) => {
-  tableRules.page = page;
-  tableRules.offset = (tableRules.page - 1) * tableRules.limit;
+  tableRules.page = page
+  tableRules.offset = (tableRules.page - 1) * tableRules.limit
   // getService();
-};
+}
 const fn_tableSortChange = (column, tableSort) => {
-  tableSort = tableRules;
-  MethodService.tableSortChange(column, tableSort);
+  tableSort = tableRules
+  MethodService.tableSortChange(column, tableSort)
   // getService();
-};
+}
 
-onMounted(() => {
-  tableRules.total = tableData.length;
-  // console.log('tableRules.showFormSearch', tableRules.showFormSearch)
+onMounted(async () => {
+  await getPostList()
 })
 </script>
 
@@ -202,7 +209,7 @@ onMounted(() => {
         </b-collapse>
       </div>
 
-      <el-table :data="tableData" style="width: 100%">
+      <el-table :data="tableRules.data" style="width: 100%">
         <el-table-column prop="name" label="Tên tin đăng" min-width="180" />
         <el-table-column
           prop="date_post"
@@ -229,14 +236,18 @@ onMounted(() => {
           <template #default="scope">
             <el-tag
               :type="
-                scope.row.status === 'Đã duyệt'
+                scope.row.status === 'APPROVED'
                   ? 'success'
-                  : scope.row.status === 'Chờ duyệt'
+                  : scope.row.status === 'WAITING_FOR_APPROVE'
                   ? 'warning'
-                  : 'info'
+                  : 'danger'
               "
               disable-transitions
-              >{{ scope.row.status }}</el-tag
+              >{{ scope.row.status === 'APPROVED'
+                  ? 'Đã duyệt'
+                  : scope.row.status === 'WAITING_FOR_APPROVE'
+                  ? 'Chờ duyệt'
+                  : 'Từ chối' }}</el-tag
             >
           </template>
         </el-table-column>
@@ -250,7 +261,7 @@ onMounted(() => {
           :page-sizes="tableRules.lengthMenu"
           background
           layout="total, sizes, prev, pager, next, jumper"
-          :total="tableRules.total"
+          :total="Number(tableRules.total)"
           @size-change="fn_tableSizeChange"
           @current-change="fn_tableCurentChange"
           @prev-click="fn_tablePrevClick"

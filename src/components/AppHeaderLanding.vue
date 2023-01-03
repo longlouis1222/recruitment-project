@@ -30,6 +30,10 @@ const goToCreateCV = () => {
   router.push({ name: 'Hồ sơ ứng viên' })
 }
 
+const goToLandingPage = () => {
+  router.push({ name: 'Landing page' })
+}
+
 onMounted(() => {
   localStorage.getItem('Token')
   // console.log(localStorage.getItem('Token'))
@@ -39,12 +43,12 @@ onMounted(() => {
 })
 </script>
 <template>
-  <CHeader position="sticky" class="mb-4 b-shadow">
+  <CHeader position="sticky" class="mb-3 b-shadow">
     <CContainer fluid class="px-4">
       <!-- <CHeaderToggler class="ps-1">
         <CIcon icon="cil-menu" size="lg" />
       </CHeaderToggler> -->
-      <CHeaderBrand class="p-0" to="/pages/landing-page">
+      <CHeaderBrand style="cursor: pointer" class="p-0" @click="goToLandingPage">
         <img src="/logo_R.png" alt="" style="width: 45px" />
         Recruitment
       </CHeaderBrand>
@@ -102,7 +106,7 @@ onMounted(() => {
               content="Tất cả các ngành"
               placement="bottom-start"
             >
-              <CIcon class="mx-2" icon="cil-list" size="lg" />
+              <CIcon style="cursor: pointer" class="mx-2" icon="cil-list" size="lg" />
             </el-tooltip>
           </div>
         </CNavItem>
@@ -123,7 +127,7 @@ onMounted(() => {
         </CNavItem>
       </CHeaderNav>
       <CHeaderNav class="align-items-center">
-        <CNavItem @click="goToCreateCV">
+        <CNavItem @click="goToCreateCV" style="cursor: pointer">
           <CNavLink
             class="d-flex align-items-center"
           >

@@ -3,6 +3,7 @@ import DataService from '@/service/DataService'
 
 import { useRouter } from 'vue-router'
 import AppHeaderLanding from '@/components/AppHeaderLanding.vue'
+import AppFooterLanding from '@/components/AppFooterLanding.vue'
 import { onMounted, computed } from 'vue'
 import { useStore } from 'vuex'
 
@@ -16,7 +17,7 @@ const workPlaceList = DataService.workPlaceList
 const bannerList = [
   {
     id: 1,
-    src: require('../../assets/images/banner/hiring-career-employment-human-resources-concept.jpg'),
+    src: require('../../assets/images/banner/hiring-career-employment-human-resources-concept-min.jpg'),
   },
   {
     id: 2,
@@ -28,7 +29,7 @@ const bannerList = [
   },
   {
     id: 4,
-    src: require('../../assets/images/banner/we-need-you-hiring-employment-work.jpg'),
+    src: require('../../assets/images/banner/we-need-you-hiring-employment-work-min.jpg'),
   },
   {
     id: 5,
@@ -38,6 +39,10 @@ const bannerList = [
 
 const backToPrev = () => {
   router.go(-1)
+}
+
+const goToJobDetail = () => {
+  router.push({ name: 'Job detail'})
 }
 
 onMounted(() => {
@@ -52,7 +57,7 @@ onMounted(() => {
     <!-- Start Carousel -->
     <CContainer xxl>
       <div class="block text-center">
-        <el-carousel height="280px">
+        <el-carousel height="320px">
           <el-carousel-item
             v-for="item in bannerList"
             :key="item.id"
@@ -179,7 +184,7 @@ onMounted(() => {
         </template>
         <b-row class="mb-3">
           <b-col md="4">
-            <el-card class="box-card" shadow="hover">
+            <el-card class="box-card" shadow="hover" @click="goToJobDetail">
               <p class="card__title-position mb-2">Front-end developer</p>
               <div class="d-flex align-items-center">
                 <img
@@ -202,7 +207,7 @@ onMounted(() => {
             </el-card>
           </b-col>
           <b-col md="4">
-            <el-card class="box-card" shadow="hover">
+            <el-card class="box-card" shadow="hover" @click="goToJobDetail">
               <p class="card__title-position mb-2">Front-end developer</p>
               <div class="d-flex align-items-center">
                 <img
@@ -225,7 +230,7 @@ onMounted(() => {
             </el-card>
           </b-col>
           <b-col md="4">
-            <el-card class="box-card" shadow="hover">
+            <el-card class="box-card" shadow="hover" @click="goToJobDetail">
               <p class="card__title-position mb-2">Front-end developer</p>
               <div class="d-flex align-items-center">
                 <img
@@ -858,103 +863,7 @@ onMounted(() => {
     </CContainer>
     <!-- End Recommend type job -->
 
-    <div class="footer">
-      <CContainer xl class="mt-4">
-        <b-row>
-          <b-col md="6">
-            <h5 class="mb-4">Hotline cho Người tìm việc</h5>
-            <div class="d-flex align-items-center">
-              <div class="d-flex align-items-center">
-                <el-icon class="footer__icon"><Headset /></el-icon>
-                <div class="ms-3">
-                  <p class="mb-1">Hotline hỗ trợ miền Bắc</p>
-                  <p>HN: (024) 2567 6969</p>
-                </div>
-              </div>
-              <el-divider direction="vertical" class="mx-3 divider-hotline" />
-              <div class="d-flex align-items-center">
-                <el-icon class="footer__icon"><Headset /></el-icon>
-                <div class="ms-3">
-                  <p class="mb-1">Hotline hỗ trợ miền Nam</p>
-                  <p>HCM: (0248) 2667 6969</p>
-                </div>
-              </div>
-            </div>
-          </b-col>
-          <b-col md="6">
-            <h5 class="mb-4">Hotline cho Người tìm việc</h5>
-            <div class="d-flex align-items-center">
-              <div class="d-flex align-items-center">
-                <el-icon class="footer__icon"><Headset /></el-icon>
-                <div class="ms-3">
-                  <p class="mb-1">Hotline hỗ trợ miền Bắc</p>
-                  <p>HN: (024) 2567 6969</p>
-                </div>
-              </div>
-              <el-divider direction="vertical" class="mx-3 divider-hotline" />
-              <div class="d-flex align-items-center">
-                <el-icon class="footer__icon"><Headset /></el-icon>
-                <div class="ms-3">
-                  <p class="mb-1">Hotline hỗ trợ miền Nam</p>
-                  <p>HCM: (0248) 2667 6969</p>
-                </div>
-              </div>
-            </div>
-          </b-col>
-        </b-row>
-        <el-divider />
-        <b-row>
-          <b-col md="6">
-            <p>Về chúng tôi</p>
-            <p class="small">Recuitment.vn - Công Ty Cổ Phần Việc Làm</p>
-            <p class="small fw-lighter">
-              Trụ sở: Tòa nhà Siêu Việt, 23 Trần Cao Vân, Phường Đa Kao, Quận 1,
-              TP Hồ Chí Minh
-            </p>
-            <p class="small fw-lighter">
-              Chi nhánh: Tầng 12A, Tòa nhà Center Building, Số 1 Nguyễn Huy
-              Tưởng, Quận Thanh Xuân, Hà Nội.
-            </p>
-            <p class="small fw-lighter">
-              Giấy phép hoạt động dịch vụ việc làm số: 4938/SLĐTBXH-GP do Sở Lao
-              Động Thương Binh & Xã Hội TP.HCM cấp
-            </p>
-            <p class="small fw-lighter">
-              Điện thoại:(024) 2567 6969
-              <el-divider direction="vertical" class="mx-1" /> (0248) 2667 6969
-            </p>
-            <p class="small fw-lighter">
-              Email hỗ trợ người tìm việc: longnguyenhuy1402@gmail.com
-            </p>
-            <p class="small fw-lighter">
-              Email hỗ trợ nhà tuyển dụng: longnguyenhuy1402@gmail.com
-            </p>
-          </b-col>
-          <b-col md="3">
-            <p>Thông tin</p>
-            <p><el-link class="small">Cẩm nang nghề nghiệp</el-link></p>
-            <p><el-link class="small">Báo giá dịch vụ</el-link></p>
-            <p><el-link class="small">Điều khoản sử dụng</el-link></p>
-            <p><el-link class="small">Quy định bảo mật</el-link></p>
-            <p><el-link class="small">Sơ đồ web</el-link></p>
-          </b-col>
-          <b-col md="3">
-            <p>Kết nối với chúng tôi</p>
-            <div>
-              <CIcon class="mx-2" icon="cibFacebook" size="lg" />
-              <CIcon class="mx-2" icon="cibYoutube" size="lg" />
-            </div>
-          </b-col>
-        </b-row>
-        <el-divider />
-        <b-row>
-          <b-col md="12">
-            <img src="/logo_R.png" alt="" style="width: 35px" />
-            <span class="small ms-1">@ 2023 - Bản quyền thuộc về Nguyễn Huy Long</span>
-          </b-col>
-        </b-row>
-      </CContainer>
-    </div>
+    <AppFooterLanding />
   </div>
 </template>
 
@@ -1064,19 +973,6 @@ onMounted(() => {
   .card__subtitle {
     font-size: 13px;
     font-weight: 600;
-  }
-}
-.footer {
-  .footer__icon {
-    font-size: 40px;
-  }
-  // .el-divider--horizontal {
-  //   border-color: black;
-  // }
-  .divider-hotline.el-divider--vertical {
-    width: 2px;
-    height: 3em;
-    // border-color: black;
   }
 }
 </style>
