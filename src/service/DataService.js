@@ -565,7 +565,7 @@ DataService.officeSkillList = [
 DataService.postStatusList = [
   {
     label: 'Chờ duyệt',
-    value: 'WAITING_FOR_APPROVE'
+    value: 'WAITING_APPROVE'
   },
   {
     label: 'Đã duyệt',
@@ -573,7 +573,7 @@ DataService.postStatusList = [
   },
   {
     label: 'Từ chối',
-    value: 'REJECTED'
+    value: 'REJECT'
   },
 ]
 

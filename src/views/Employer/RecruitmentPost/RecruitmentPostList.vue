@@ -5,7 +5,7 @@ import IndustryApi from '@/moduleApi/modules/IndustryApi'
 import PostApi from '@/moduleApi/modules/PostApi'
 
 import { useRouter } from 'vue-router'
-import { ElNotification } from 'element-plus'
+import { ElMessageBox, ElNotification } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { FormInstance } from 'element-plus'
 
@@ -58,9 +58,17 @@ const getPostList = async () => {
   const filter = MethodService.filterTable(JSON.stringify(dataFilter))
   const postApiRes = await PostApi.list(filter)
   if (postApiRes.status == 200) {
-    tableRules.data = postApiRes.data.data.data
+    tableRules.data = await changeData(postApiRes.data.data.data)
     tableRules.total = postApiRes.data.data.totalElements
   }
+}
+
+const changeData = (data) => {
+  data.forEach(post => {
+    post.created = post.created ? MethodService.formatDate(post.created, 'date') : ''
+    post.jobApplicationDeadline = post.jobApplicationDeadline ? MethodService.formatDate(post.jobApplicationDeadline, 'date') : ''
+  })
+  return data
 }
 
 const submitFormSearch = async (formEl) => {
@@ -82,14 +90,14 @@ const submitFormSearch = async (formEl) => {
   })
 }
 
-const deleteItem = async (id) => {
+const deletePost = async (rowData) => {
   ElMessageBox.alert('Bạn có chắc muốn xóa bài viết này ?', 'Cảnh báo', {
     // if you want to disable its autofocus
     // autofocus: false,
     confirmButtonText: 'Đồng ý',
     callback: async () => {
       try {
-        const postApiRes = await PostApi.delete(id)
+        const postApiRes = await PostApi.delete(rowData.id)
         if (postApiRes.status === 200) {
           ElNotification({
             title: 'Success',
@@ -210,48 +218,86 @@ onMounted(async () => {
       </div>
 
       <el-table :data="tableRules.data" style="width: 100%">
-        <el-table-column prop="name" label="Tên tin đăng" min-width="180" />
+        <el-table-column prop="title" label="Tên tin đăng" min-width="180" />
         <el-table-column
-          prop="date_post"
+          prop="created"
           label="Ngày đăng"
           min-width="100"
           align="center"
         />
         <el-table-column
-          prop="end_date"
+          prop="jobApplicationDeadline"
           label="Thời hạn nộp"
-          min-width="100"
+          min-width="120"
           align="center"
         />
-        <el-table-column prop="approve_time" label="Lượt nộp" align="center" />
-        <el-table-column prop="read_time" label="Lượt xem" align="center" />
-        <el-table-column
+        <!-- <el-table-column prop="approve_time" label="Lượt nộp" align="center" />
+        <el-table-column prop="read_time" label="Lượt xem" align="center" /> -->
+        <el-table-column prop="numberOfRecruits" label="Số lượng tuyển" align="center" min-width="130" />
+        <el-table-column prop="level" label="Cấp bậc" min-width="120" />
+        <el-table-column prop="recruitmentArea" label="Khu vực tuyển" min-width="120" />
+        <el-table-column prop="recruitmentArea" label="Khu vực tuyển" min-width="120" />
+        <el-table-column prop="recruitmentAge" label="Độ tuổi" align="center" min-width="100px" />
+        <el-table-column prop="recruitmentGender" label="Giới tính" align="center" min-width="120" />
+        <el-table-column prop="salaryMin" label="Thu nhập tối thiểu" align="right" min-width="150" />
+        <el-table-column prop="salaryMax" label="Thu nhập tối đa" align="right" min-width="150" />
+        <!-- <el-table-column
           prop="post_status"
           label="Tình trạng tin"
-          min-width="100"
+          min-width="150"
           show-overflow-tooltip
           align="center"
-        />
-        <el-table-column prop="status" label="Trạng thái" align="center">
+        /> -->
+        <el-table-column prop="status" label="Trạng thái" align="center" min-width="120">
           <template #default="scope">
             <el-tag
               :type="
                 scope.row.status === 'APPROVED'
                   ? 'success'
-                  : scope.row.status === 'WAITING_FOR_APPROVE'
+                  : scope.row.status === 'WAITING_APPROVE'
                   ? 'warning'
                   : 'danger'
               "
               disable-transitions
               >{{ scope.row.status === 'APPROVED'
                   ? 'Đã duyệt'
-                  : scope.row.status === 'WAITING_FOR_APPROVE'
+                  : scope.row.status === 'WAITING_APPROVE'
                   ? 'Chờ duyệt'
                   : 'Từ chối' }}</el-tag
             >
           </template>
         </el-table-column>
-        <el-table-column prop="others" label="Khác" />
+        <el-table-column prop="necessarySkills" label="Khác" min-width="200"/>
+        <el-table-column
+          fixed="right"
+          align="center"
+          label="Thao tác"
+          width="140"
+        >
+          <template #default="scope">
+            <div class="">
+              <!-- <el-button
+                size="small"
+                @click="handleEdit(scope.$index, scope.row)"
+                ><CIcon icon="cilFindInPage"
+              /></el-button> -->
+              <el-button
+                size="small"
+                type="primary"
+                plain
+                @click="updatePost(scope.row)"
+                ><CIcon icon="cilPencil"
+              /></el-button>
+              <el-button
+                size="small"
+                type="danger"
+                plain
+                @click="deletePost(scope.row)"
+                ><CIcon icon="cilTrash"
+              /></el-button>
+            </div>
+          </template>
+        </el-table-column>
       </el-table>
       <div class="mt-3 mb-3" style="float: right">
         <el-pagination

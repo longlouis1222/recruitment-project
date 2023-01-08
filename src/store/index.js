@@ -48,7 +48,7 @@ export default createStore({
           commit('SET_CURRENT_USER', VueJwtDecode.decode(res.data.token))
           localStorage.setItem('Token', res.data.token)
           localStorage.setItem('uid', VueJwtDecode.decode(res.data.token).uid)
-          localStorage.setItem('uid', VueJwtDecode.decode(res.data.token).type)
+          localStorage.setItem('type', VueJwtDecode.decode(res.data.token).type)
           router.push({ name: 'Trang chủ' })
         }
       } catch (error) {

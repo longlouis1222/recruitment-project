@@ -1,12 +1,15 @@
 <script setup>
 import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
+
+import UserProfileApi from '@/moduleApi/modules/UserProfileApi'
+
 import { ElNotification } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
 
-import modelData from '../EmployerCompany/EmployerCompanyInfoModel'
+import modelData from './CandidateProfileModel'
 
 const workFormList = DataService.workFormList
 const certificateList = DataService.certificateList

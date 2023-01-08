@@ -42,7 +42,11 @@ const backToPrev = () => {
 }
 
 const goToJobDetail = () => {
-  router.push({ name: 'Job detail'})
+  router.push({ name: 'Job detail' })
+}
+
+const goToCompanyDetail = () => {
+  router.push({ name: 'Company detail' })
 }
 
 onMounted(() => {
@@ -88,7 +92,7 @@ onMounted(() => {
     <CContainer xl class="mt-4 company_recruitment_block">
       <b-row>
         <b-col md="2">
-          <el-card class="box-card" shadow="hover">
+          <el-card class="box-card" shadow="hover" @click="goToCompanyDetail">
             <div class="d-flex flex-column justify-content-center text-center">
               <img
                 src="../../assets/images/logo-company/04012019-07.jpg"
@@ -100,7 +104,7 @@ onMounted(() => {
           </el-card>
         </b-col>
         <b-col md="2">
-          <el-card class="box-card" shadow="hover">
+          <el-card class="box-card" shadow="hover" @click="goToCompanyDetail">
             <div class="d-flex flex-column justify-content-center text-center">
               <img
                 src="../../assets/images/logo-company/vecteezy_natural-theme-sign-logo_8504086_143.png"
@@ -112,7 +116,7 @@ onMounted(() => {
           </el-card>
         </b-col>
         <b-col md="2">
-          <el-card class="box-card" shadow="hover">
+          <el-card class="box-card" shadow="hover" @click="goToCompanyDetail">
             <div class="d-flex flex-column justify-content-center text-center">
               <img
                 src="../../assets/images/logo-company/vecteezy_circle-abstract-logo_1192263.png"
@@ -175,11 +179,11 @@ onMounted(() => {
             />
             <h4 class="ms-2 me-4">Việc làm tuyển gấp</h4>
             <el-divider direction="vertical" />
-            <p class="m-0 me-4 ms-4">Tất cả</p>
-            <p class="m-0 me-4">Việc làm theo chuyên môn</p>
-            <p class="m-0 me-4">Việc làm quản lý</p>
-            <p class="m-0 me-4">Lao động phổ thông</p>
-            <p class="m-0 me-4">Bán thời gian</p>
+            <el-link :underline="false" class="m-0 me-4 ms-4">Tất cả</el-link>
+            <el-link :underline="false" class="m-0 me-4">Việc làm theo chuyên môn</el-link>
+            <el-link :underline="false" class="m-0 me-4">Việc làm quản lý</el-link>
+            <el-link :underline="false" class="m-0 me-4">Lao động phổ thông</el-link>
+            <el-link :underline="false" class="m-0 me-4">Bán thời gian</el-link>
           </div>
         </template>
         <b-row class="mb-3">
@@ -421,11 +425,11 @@ onMounted(() => {
             />
             <h4 class="ms-2 me-4">Việc làm mới nhất</h4>
             <el-divider direction="vertical" />
-            <p class="m-0 me-4 ms-4">Tất cả</p>
-            <p class="m-0 me-4">Việc làm theo chuyên môn</p>
-            <p class="m-0 me-4">Việc làm quản lý</p>
-            <p class="m-0 me-4">Lao động phổ thông</p>
-            <p class="m-0 me-4">Bán thời gian</p>
+            <el-link :underline="false" class="m-0 me-4 ms-4">Tất cả</el-link>
+            <el-link :underline="false" class="m-0 me-4">Việc làm theo chuyên môn</el-link>
+            <el-link :underline="false" class="m-0 me-4">Việc làm quản lý</el-link>
+            <el-link :underline="false" class="m-0 me-4">Lao động phổ thông</el-link>
+            <el-link :underline="false" class="m-0 me-4">Bán thời gian</el-link>
           </div>
         </template>
         <b-row class="mb-3">
@@ -920,10 +924,22 @@ onMounted(() => {
     // }
   }
 }
-
+.urgent_recruitment_job,
+.new_recruitment_job,
+.container-discovery {
+  .el-card .el-card {
+    cursor: pointer;
+    &:hover {
+      border-color: lightblue;
+    }
+  }
+}
 .company_recruitment_block {
+  .el-card {
+    cursor: pointer;
+  }
   .card__logo {
-    width: 100%;
+    width: auto;
     height: 100px;
   }
   .card__title {
@@ -937,7 +953,7 @@ onMounted(() => {
 }
 .urgent_recruitment_job {
   .card__logo {
-    width: 25%;
+    width: auto;
     height: 75px;
   }
   .card__title-position {
@@ -956,7 +972,7 @@ onMounted(() => {
 }
 .new_recruitment_job {
   .card__logo {
-    width: 22%;
+    width: auto;
     height: 70px;
     border: 1px solid #dadada;
     border-radius: 4px;

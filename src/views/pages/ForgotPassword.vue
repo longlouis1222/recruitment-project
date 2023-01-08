@@ -158,7 +158,7 @@ const backToPrev = () => {
                     </h5>
                     <img
                       class="w-50"
-                      src="../../../src/assets/gifs/mail-download.gif"
+                      src="../../../src/assets/gifs/check-mail.gif"
                       alt="mail..."
                     />
                     <p class="active text-center">

@@ -259,13 +259,13 @@ onMounted(async () => {
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="code" label="Mã ngành nghề" width="150" />
-        <el-table-column prop="name" label="Tên ngành nghề" />
+        <el-table-column prop="code" label="Mã ngành nghề" min-width="150" />
+        <el-table-column prop="name" label="Tên ngành nghề"  min-width="250" />
         <el-table-column
           fixed="right"
           align="center"
           label="Thao tác"
-          width="180"
+          width="140"
         >
           <template #default="scope">
             <div class="">

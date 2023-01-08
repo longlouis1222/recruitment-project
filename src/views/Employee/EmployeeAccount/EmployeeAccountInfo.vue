@@ -33,6 +33,8 @@ const imageUrl = ref('')
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
 const disabled = ref(false)
+const loadImage = ref(false)
+const imgSrc = ref('')
 
 const handleRemove = (file) => {
   console.log(file)
@@ -44,36 +46,31 @@ const handlePictureCardPreview = (file) => {
   dialogVisible.value = true
 }
 
-const beforeAvatarUpload = (rawFile, file) => {
-  console.log('rawFile', rawFile)
-  console.log('file', file)
-  // if (rawFile.type !== 'image/jpg' || rawFile.type !== 'image/jpeg' || rawFile.type !== 'image/png') {
-  //   ElNotification({
-  //     title: 'Info',
-  //     message: 'Ảnh phải có định dạng là .jpg, .jpeg, .png',
-  //     type: 'info',
-  //     duration: 3000,
-  //   })
-  //   return false
-  // }
-  //  else if (rawFile.size / 1024 / 1024 > 2) {
-  //   ElMessage.error('Avatar picture size can not exceed 2MB!')
-  //   return false
-  // }
-  return true
-}
+// const beforeAvatarUpload = (rawFile, file) => {
+//   console.log('rawFile', rawFile)
+//   console.log('file', file)
+//   if (rawFile.type !== 'image/jpg' || rawFile.type !== 'image/jpeg' || rawFile.type !== 'image/png') {
+//     ElNotification({
+//       title: 'Info',
+//       message: 'Ảnh phải có định dạng là .jpg, .jpeg, .png',
+//       type: 'info',
+//       duration: 3000,
+//     })
+//     return false
+//   }
+//    else if (rawFile.size / 1024 / 1024 > 0.3) {
+//     ElMessage.error('Avatar picture size can not exceed 2MB!')
+//     return false
+//   }
+//   return true
+// }
 
 const handleAvatarSuccess = async (response, uploadFile) => {
-  console.log('ZOO')
-  console.log('response', response)
-  console.log('uploadFile', uploadFile)
-  // imageUrl.value = URL.createObjectURL(uploadFile.raw)
-  // let fd = new FormData()
-  // fd.append('image', uploadFile[0].raw, uploadFile[0].raw.name)
-  // console.log(fd)
-  // const fileApiRes = await FileApi.uploadFile(fd)
-  // console.log(fileApiRes)
+  console.log('response >', response)
+  console.log('uploadFile >', uploadFile)
+  console.log('ZOO', formData.value.avatar[0].raw.url)
 }
+
 const c = async () => {
   console.log('formData.value.avatar', formData.value.avatar[0].raw.name)
   let fd = new FormData()
@@ -104,6 +101,7 @@ const c = async () => {
     .then(function (response) {
       //handle success
       console.log('success', response)
+      // loadImage.value = true
     })
     .catch(function (response) {
       //handle error
@@ -158,21 +156,20 @@ const resetForm = (formEl) => {
   if (!formEl) return
   formEl.resetFields()
 }
-const imgSrc = ref('')
 
-// const _arrayBufferToBase64 = ( buffer ) => {
-//     var binary = '';
-//     var bytes = new Uint8Array( buffer );
-//     var len = bytes.byteLength;
-//     for (var i = 0; i < len; i++) {
-//         binary += String.fromCharCode( bytes[ i ] );
-//     }
-//     return window.btoa( binary );
-// }
+const _arrayBufferToBase64 = ( buffer ) => {
+    var binary = '';
+    var bytes = new Uint8Array( buffer );
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode( bytes[ i ] );
+    }
+    return window.btoa( binary );
+}
 
-// const hexToBase64 = (str) => {
-//     return window.btoa(String.fromCharCode.apply(null, str.replace(/\r|\n/g, "").replace(/([\da-fA-F]{2}) ?/g, "0x$1 ").replace(/ +$/, "").split(" ")));
-// }
+const hexToBase64 = (str) => {
+    return window.btoa(String.fromCharCode.apply(null, str.replace(/\r|\n/g, "").replace(/([\da-fA-F]{2}) ?/g, "0x$1 ").replace(/ +$/, "").split(" ")));
+}
 
 const getUserInfo = async () => {
   const userProfileApiRes = await UserProfileApi.findById(
@@ -180,15 +177,20 @@ const getUserInfo = async () => {
   )
   if (userProfileApiRes.status == 200) {
     userProfile.value = userProfileApiRes.data.data
+    console.log('userProfile', userProfile)
+
     const fileApiRes = await FileApi.downloadFile(userProfile.value.userInfoDTO.avatar)
     console.log('fileApiRes', fileApiRes)
-
+    // if (userProfile.value.userInfoDTO.avatar) {
+    //   const fileApiRes = await FileApi.getImgById(userProfile.value.userInfoDTO.avatar)
+    //   if (fileApiRes.status == 200) {
+    //     console.log();
+    //     // imgSrc.value = fileApiRes.data.data.thumbnailLink
+    //   }
+    // }
+    // imgSrc.value = 'data:image/png;base64,' + hexToBase64(fileApiRes.data)
     // imgSrc.value = 'data:image/png;base64,' + fileApiRes.data
-    // imgSrc.value = 'data:image/png;base64,' + _arrayBufferToBase64(fileApiRes.data)
-
-    // var img = document.createElement('img');
-    // img.src = 'data:image/jpeg;base64,' + _arrayBufferToBase64(fileApiRes.data);
-    // document.body.appendChild(img);
+    imgSrc.value = 'data:image/png;base64,' + _arrayBufferToBase64(fileApiRes.data)
 
     formData.value = {
       companyDTO: userProfile.value.companyDTO,
@@ -210,15 +212,11 @@ const getUserInfo = async () => {
       },
       username: userProfile.value.username ? userProfile.value.username : '',
     }
-    console.log('userProfile', userProfile)
   }
 }
-const flag = ref(false)
+
 onMounted(() => {
   getUserInfo()
-  setTimeout(() => {
-    flag.value = true
-  }, 5000);
 })
 </script>
 
@@ -265,68 +263,57 @@ onMounted(() => {
 
         <b-row>
           <h5 class="mb-4">Thông tin cá nhân</h5>
-          <!-- <b-col md="6">
-            <el-form-item label="Ảnh đại diện" prop="avatar">
+          <b-col md="6">
+            <!-- v-if="!formData.value.avatar || formData.value.avatar.length == 0" -->
+            <img :src="imgSrc" alt="" class="avatar__image me-4">
+            <div class="d-flex flex-row align-items-center">
               <el-upload
-                class="avatar-uploader d-flex"
-                action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-                :show-file-list="false"
+                v-model:file-list="formData.value.avatar"
+                action
+                list-type="picture-card"
+                limit="1"
+                accept=".jpg,.jpeg,.png"
+                :auto-upload="false"
                 :on-success="handleAvatarSuccess"
                 :before-upload="beforeAvatarUpload"
+                :on-change="handleAvatarSuccess"
               >
-                <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-                <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-                <template #tip>
-                  <div class="el-upload__tip ms-2">
-                    Dạng file .jpg, .jpeg, .png <br />
-                    dung lượng tối đa là 300KB <br />
-                    và kích thước tối thiểu 300x300 pixel.
+                <el-icon><Plus /></el-icon>
+
+                <template #file="{ file }">
+                  <div>
+                    <img
+                      class="el-upload-list__item-thumbnail"
+                      :src="file.url"
+                      alt=""
+                    />
+                    <span class="el-upload-list__item-actions">
+                      <span
+                        class="el-upload-list__item-preview"
+                        @click="handlePictureCardPreview(file)"
+                      >
+                        <el-icon><zoom-in /></el-icon>
+                      </span>
+                      <span
+                        v-if="!disabled"
+                        class="el-upload-list__item-delete"
+                        @click="handleRemove(file)"
+                      >
+                        <el-icon><Delete /></el-icon>
+                      </span>
+                    </span>
                   </div>
                 </template>
               </el-upload>
-            </el-form-item>
-          </b-col> -->
-          <b-col md="6">
-            <!-- v-if="!formData.value.avatar || formData.value.avatar.length == 0" -->
-            <el-button type="primary" @click="c()">Cập nhật</el-button>
-            <img src="https://lh3.googleusercontent.com/cxBM-ylQa5a9f8CWB57y8rz7TaKG6C1eoKiFa_NNRZDFm90yzCKklRs5tfRpsPdjUmNEnhJky3rbTME=s220" alt="ảnh">
-            <el-upload
-              v-model:file-list="formData.value.avatar"
-              action="#"
-              list-type="picture-card"
-              limit="1"
-              :auto-upload="false"
-              :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload"
-              :on-change="handleAvatarSuccess"
-            >
-              <el-icon><Plus /></el-icon>
 
-              <template #file="{ file }">
-                <div>
-                  <img
-                    class="el-upload-list__item-thumbnail"
-                    :src="file.url"
-                    alt=""
-                  />
-                  <span class="el-upload-list__item-actions">
-                    <span
-                      class="el-upload-list__item-preview"
-                      @click="handlePictureCardPreview(file)"
-                    >
-                      <el-icon><zoom-in /></el-icon>
-                    </span>
-                    <span
-                      v-if="!disabled"
-                      class="el-upload-list__item-delete"
-                      @click="handleRemove(file)"
-                    >
-                      <el-icon><Delete /></el-icon>
-                    </span>
-                  </span>
-                </div>
-              </template>
-            </el-upload>
+              <div class="el-upload__tip ms-3">
+                Dạng file .jpg, .jpeg, .png <br />
+                dung lượng tối đa là 300KB <br />
+                và kích thước tối thiểu 300x300 pixel.
+              </div>
+            </div>
+
+            <el-button v-if="formData.value.avatar && formData.value.avatar.length > 0" class="mt-3" type="primary" @click="c()">Cập nhật ảnh đại diện</el-button>
 
             <el-dialog v-model="dialogVisible">
               <img w-full :src="dialogImageUrl" alt="Preview Image" />
@@ -453,5 +440,16 @@ onMounted(() => {
   width: 120px;
   height: 120px;
   text-align: center;
+}
+
+.avatar__image {
+  width: 150px;
+  height: auto;
+  border: 1px solid #bebebe;
+  border-radius: 8px;
+  box-shadow: 0 0 3px 0px #bebebe;
+  :hover {
+    cursor: pointer;
+  }
 }
 </style>

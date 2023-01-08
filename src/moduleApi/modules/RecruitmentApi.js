@@ -15,5 +15,8 @@ export default {
   },
   delete(id) {
     return Api().delete(`recruitments/${id}`)
+  },
+  getCurrentUserCV(id) {
+    return Api().get(`recruitments/${id}`)
   }
 }

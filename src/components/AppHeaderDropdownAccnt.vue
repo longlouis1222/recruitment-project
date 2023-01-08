@@ -27,7 +27,9 @@
       <CDropdownHeader component="h6" class="bg-light fw-semibold py-2">
         Settings
       </CDropdownHeader>
-      <CDropdownItem @click="gotoUserProfile"> <CIcon icon="cil-user" /> Thông tin cá nhân </CDropdownItem>
+      <CDropdownItem class="cursor-pointer" @click="gotoUserProfile">
+        <CIcon icon="cil-user" /> Thông tin cá nhân
+      </CDropdownItem>
       <!-- <CDropdownItem> <CIcon icon="cil-settings" /> Settings </CDropdownItem> -->
       <!-- <CDropdownItem>
         <CIcon icon="cil-dollar" /> Payments
@@ -41,7 +43,7 @@
       <!-- <CDropdownItem>
         <CIcon icon="cil-shield-alt" /> Lock Account
       </CDropdownItem> -->
-      <CDropdownItem @click="logout">
+      <CDropdownItem @click="logout" class="cursor-pointer">
         <CIcon icon="cil-lock-locked" /> Đăng xuất
       </CDropdownItem>
     </CDropdownMenu>
@@ -50,6 +52,7 @@
 
 <script setup>
 import avatar from '@/assets/images/avatars/3.jpg'
+import { ElMessageBox, ElNotification } from 'element-plus'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
@@ -57,14 +60,34 @@ const store = useStore()
 const router = useRouter()
 
 const logout = () => {
-  console.log('Log out from App Header')
-  store.dispatch('logout')
+  ElMessageBox.confirm(
+    'Bạn có chắc muốn đăng xuất khỏi tài khoản này ?',
+    'Cảnh báo',
+    {
+      // if you want to disable its autofocus
+      // autofocus: false,
+      confirmButtonText: 'Đồng ý',
+      cancelButtonText: 'Hủy',
+      type: 'warning',
+    },
+  )
+    .then(() => {
+      ElNotification({
+        title: 'Success',
+        message: 'Đang xuất thành công.',
+        type: 'success',
+        duration: 3000,
+      })
+      setTimeout(() => {
+        console.log('Log out from App Header')
+        store.dispatch('logout')
+      }, 1500)
+    })
+    .catch(() => {})
 }
 
 const gotoUserProfile = () => {
   console.log('Log out from App Header')
-  router.push({ name: 'Tài khoản ứng viên'})
+  router.push({ name: 'Tài khoản ứng viên' })
 }
-
-
 </script>

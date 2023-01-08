@@ -49,7 +49,7 @@ const options = [
 
 const tableData = [
   {
-    name: 'Tin tức 24h siêu hot',
+    name: 'Tin tức 24h',
     date_post: '12/02/2022',
     end_date: '20/02/2022',
     approve_time: '22',
@@ -59,7 +59,7 @@ const tableData = [
     others: 'Tin tức tuyển dụng',
   },
   {
-    name: 'Tin tức 24h siêu hot',
+    name: 'Tin tức 24h',
     date_post: '12/02/2022',
     end_date: '20/02/2022',
     approve_time: '22',
@@ -69,7 +69,7 @@ const tableData = [
     others: 'Tin tức tuyển dụng',
   },
   {
-    name: 'Tin tức 24h siêu hot',
+    name: 'Tin tức 24h',
     date_post: '12/02/2022',
     end_date: '20/02/2022',
     approve_time: '22',
@@ -79,7 +79,7 @@ const tableData = [
     others: 'Tin tức tuyển dụng',
   },
   {
-    name: 'Tin tức 24h siêu hot',
+    name: 'Tin tức 24h',
     date_post: '12/02/2022',
     end_date: '20/02/2022',
     approve_time: '22',
@@ -89,7 +89,7 @@ const tableData = [
     others: 'Tin tức tuyển dụng',
   },
   {
-    name: 'Tin tức 24h siêu hot',
+    name: 'Tin tức 24h',
     date_post: '12/02/2022',
     end_date: '20/02/2022',
     approve_time: '22',

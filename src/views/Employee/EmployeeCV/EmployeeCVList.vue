@@ -17,6 +17,9 @@ const validForm = modelData.validForm
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
 const formData = reactive(MethodService.copyObject(modelData.dataForm))
 
+const switch1 = ref(true)
+const switch2 = ref(false)
+
 const updateOnlineCV = () => {
   router.push({
     name: 'Hồ sơ ứng viên',
@@ -53,7 +56,7 @@ onMounted(() => {})
           <el-divider direction="vertical" />
           <p class="mb-0 mx-3">Lượt xem: 11</p>
           <el-divider direction="vertical" />
-          <el-switch v-model="value1" active-text="Cho phép tìm kiếm" />
+          <el-switch v-model="switch1" active-text="Cho phép tìm kiếm" />
           <el-tooltip
             class="box-item"
             effect="dark"
@@ -87,9 +90,9 @@ onMounted(() => {})
             >Đã duyệt</el-tag
           >
           <el-divider direction="vertical" />
-          <p class="mb-0 mx-3">Lượt xem: 11</p>
+          <p class="mb-0 mx-3">Lượt xem: 2</p>
           <el-divider direction="vertical" />
-          <el-switch v-model="value1" active-text="Cho phép tìm kiếm" />
+          <el-switch v-model="switch2" active-text="Cho phép tìm kiếm" />
           <el-tooltip
             class="box-item"
             effect="dark"

@@ -384,6 +384,11 @@ export default [
         name: 'Job detail',
         component: () => import('@/views/pages/JobDetail'),
       },
+      {
+        path: 'company-detail',
+        name: 'Company detail',
+        component: () => import('@/views/pages/CompanyDetail'),
+      },
     ],
   },
 ]
