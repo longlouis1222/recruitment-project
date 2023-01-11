@@ -389,6 +389,11 @@ export default [
         name: 'Company detail',
         component: () => import('@/views/pages/CompanyDetail'),
       },
+      {
+        path: 'find-jobs',
+        name: 'Find jobs',
+        component: () => import('@/views/pages/FindJobs'),
+      },
     ],
   },
 ]

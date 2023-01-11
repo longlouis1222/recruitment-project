@@ -38,7 +38,7 @@ const backToPrev = () => {
 <template>
   <div class="min-vh-100">
     <AppHeaderLanding />
-    <!-- Start Job mutual info -->
+    <!-- Start Header banner -->
     <div class="header__banner">
       <CContainer xxl class="pb-4">
         <img
@@ -65,9 +65,12 @@ const backToPrev = () => {
         </div>
       </CContainer>
     </div>
+    <!-- End Header banner -->
 
-    <div class="container_banner py-4 mb-4">
-      <CContainer xxl class="">
+    <!-- Start Body banner -->
+    <div class="container_banner py-4">
+      <!-- Start Job hiring jobs -->
+      <CContainer xxl class="mb-4">
         <h3 class="fw-bold mb-3" style="margin-left: 160px">
           Vị trí đang tuyển
         </h3>
@@ -118,29 +121,33 @@ const backToPrev = () => {
           </div>
         </div>
       </CContainer>
-    </div>
+      <!-- End Job hiring jobs -->
 
-    <CContainer xxl class="pb-4">
-      <h3 class="fw-bold mb-3" style="margin-left: 160px">Liên hệ</h3>
-      <div class="card__subtitle mx-5">
-        <span class="text-black-50 me-1"
-          ><el-icon :size="18"><Location /></el-icon>Địa chỉ:</span
-        >
-        <span>số 18 Lũy Bán Bích, Phường Tân Thới Hòa, Quận Tân Phú, TP.HCM</span>
-      </div>
-      <div class="card__subtitle mx-5">
-        <span class="text-black-50 me-1"
-          ><el-icon :size="18"><Location /></el-icon>Địa chỉ:</span
-        >
-        <span>số 18 Lũy Bán Bích, Phường Tân Thới Hòa, Quận Tân Phú, TP.HCM</span>
-      </div>
-      <div class="card__subtitle mx-5">
-        <span class="text-black-50 me-1"
-          ><el-icon :size="18"><Location /></el-icon>Địa chỉ:</span
-        >
-        <span>số 18 Lũy Bán Bích, Phường Tân Thới Hòa, Quận Tân Phú, TP.HCM</span>
-      </div>
-    </CContainer>
+      <!-- Start company contact info -->
+      <CContainer xxl class="company__contact-info">
+        <h3 class="fw-bold mb-3">Liên hệ</h3>
+        <div class="card__subtitle">
+          <span class="text-black-50 me-1"
+            ><el-icon :size="18"><Location /></el-icon>Địa chỉ:</span
+          >
+          <span>số 18 Lũy Bán Bích, Phường Tân Thới Hòa, Quận Tân Phú, TP.HCM</span>
+        </div>
+        <div class="card__subtitle">
+          <span class="text-black-50 me-1"
+            ><el-icon :size="18"><Avatar /></el-icon>Quy mô:</span
+          >
+          <span>200 Người</span>
+        </div>
+        <div class="card__subtitle">
+          <span class="text-black-50 me-1"
+            ><el-icon :size="18"><Briefcase /></el-icon>Lĩnh vực:</span
+          >
+          <span>IT Phần mềm</span>
+        </div>
+      </CContainer>
+      <!-- End company contact info -->
+    </div>
+    <!-- End Body banner -->
 
     <AppFooterLanding />
   </div>
@@ -223,6 +230,13 @@ const backToPrev = () => {
           }
         }
       }
+    }
+  }
+  .company__contact-info {
+    margin-left: 160px;
+    .card__subtitle {
+      font-weight: 600;
+      margin-bottom: 10px;
     }
   }
 }

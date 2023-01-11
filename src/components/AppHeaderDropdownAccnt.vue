@@ -88,6 +88,9 @@ const logout = () => {
 
 const gotoUserProfile = () => {
   console.log('Log out from App Header')
-  router.push({ name: 'Tài khoản ứng viên' })
+  const accType = localStorage.getItem('type')
+  if (accType == 'CANDIDATE') {
+    router.push({ name: 'Tài khoản ứng viên' })
+  } else router.push({ name: 'Tài khoản nhà tuyển dụng' })
 }
 </script>

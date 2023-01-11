@@ -190,7 +190,9 @@ const getUserInfo = async () => {
     // }
     // imgSrc.value = 'data:image/png;base64,' + hexToBase64(fileApiRes.data)
     // imgSrc.value = 'data:image/png;base64,' + fileApiRes.data
-    imgSrc.value = 'data:image/png;base64,' + _arrayBufferToBase64(fileApiRes.data)
+    const url = _arrayBufferToBase64(fileApiRes.data)
+    console.log("URL >", url)
+    imgSrc.value = 'data:image/jpeg;base64,' + url
 
     formData.value = {
       companyDTO: userProfile.value.companyDTO,

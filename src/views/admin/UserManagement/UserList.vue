@@ -337,8 +337,8 @@ onMounted(() => {
             <b-form-checkbox
               class="mt-1"
               v-model="scope.row.status"
-              :value="1"
-              :unchecked-value="-1"
+              :value="-1"
+              :unchecked-value="1"
               :disabled="scope.row.status == 0"
               @change="changeAccountStatus(scope.row)"
             >
