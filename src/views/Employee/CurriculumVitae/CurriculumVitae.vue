@@ -88,38 +88,21 @@ const getUserInfo = async () => {
     localStorage.getItem('uid'),
   )
   if (userProfileApiRes.status == 200) {
-    // console.log('userProfileApiRes', userProfileApiRes.data.data)
     userProfile.value = userProfileApiRes.data.data
-    console.log('userProfile', userProfile)
-
     formData.value = { ...formData.value, ...userProfile.value }
-    console.log('formData.value', formData.value)
+  }
+}
 
-    // formData.value = {
-    //   email: userProfile.value.email,
-    //   password: userProfile.value.password,
-    //   listRole: userProfile.value.listRole,
-    //   type: userProfile.value.type,
-    //   userInfoDTO: {
-    //     address: userProfile.value.userInfoDTO.address,
-    //     avatar: userProfile.value.userInfoDTO.avatar,
-    //     companyId: userProfile.value.userInfoDTO.companyId,
-    //     dateOfBirth: userProfile.value.userInfoDTO.dateOfBirth,
-    //     fullName: userProfile.value.userInfoDTO.fullName,
-    //     gender: userProfile.value.userInfoDTO.gender,
-    //     marriageStatus: userProfile.value.userInfoDTO.marriageStatus,
-    //     phoneNumber: userProfile.value.userInfoDTO.phoneNumber,
-    //     town: userProfile.value.userInfoDTO.town,
-    //   },
-    //   workExperienceDTO: userProfile.value.workExperienceDTO
-    //     ? userProfile.value.workExperienceDTO
-    //     : { ...formData.value.workExperienceDTO },
-    // }
+const getCurrentUserCV = async () => {
+  const res = await RecruitmentApi.getCurrentUserCV()
+  if (res.status == 200) {
+    formData.value = { ...formData.value, ...res.data.data }
   }
 }
 
 onMounted(() => {
   getUserInfo()
+  getCurrentUserCV()
 })
 </script>
 

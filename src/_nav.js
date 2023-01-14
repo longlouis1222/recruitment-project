@@ -53,7 +53,7 @@ export default [
   },
   {
     component: 'CNavItem',
-    name: 'Danh sách hồ sơ',
+    name: 'Hồ sơ đã lưu',
     to: '/employer/candidate-profile/candidate-profile-list',
     icon: 'cilStorage',
   },

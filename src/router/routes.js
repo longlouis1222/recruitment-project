@@ -61,7 +61,7 @@ export default [
       },
       {
         path: '/employer/candidate-profile/candidate-profile-list',
-        name: 'Danh sách hồ sơ',
+        name: 'Hồ sơ đã lưu',
         component: () =>
           import('@/views/Employer/CandidateProfile/CandidateProfileList.vue'),
       },

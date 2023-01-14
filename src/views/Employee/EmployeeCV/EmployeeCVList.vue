@@ -1,7 +1,9 @@
 <script setup>
 import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
-import { ElNotification } from 'element-plus'
+import RecruitmentApi from '@/moduleApi/modules/RecruitmentApi'
+
+import { ElNotification, ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
@@ -17,8 +19,11 @@ const validForm = modelData.validForm
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
 const formData = reactive(MethodService.copyObject(modelData.dataForm))
 
-const switch1 = ref(true)
+const switch1 = ref(false)
 const switch2 = ref(false)
+const view = ref(0)
+const dataCv = reactive({ value: {} })
+const currentUserId = localStorage.getItem('uid')
 
 const updateOnlineCV = () => {
   router.push({
@@ -27,7 +32,73 @@ const updateOnlineCV = () => {
   })
 }
 
-onMounted(() => {})
+const fileList = ref([
+  {
+    name: 'NguyenHuyLong.pdf',
+    // url: 'https://element-plus.org/images/element-plus-logo.svg',
+    url: 'https://pdfsimpli.com/userdocument/view-b?ofn=document.pdf&unqn=document_d86653657a0d4c1891c51d85d456316c.pdf&frm=pdf&to=PDF&fskb=82&npdf=document_d86653657a0d4c1891c51d85d456316c.pdf&smb_plan=1',
+  },
+])
+
+const handleRemove = (file, uploadFiles) => {
+  console.log(file, uploadFiles)
+}
+
+const handlePreview = (uploadFile) => {
+  console.log(uploadFile)
+}
+
+const handleExceed = (files, uploadFiles) => {
+  ElMessage.warning(
+    `Giới hạn file tải lên là ${files.length}`
+  )
+}
+
+const beforeRemove = (uploadFile, uploadFiles) => {
+  return ElMessageBox.confirm(
+    `Bạn có chắc chắn muốn bỏ hồ sơ đính kèm ${uploadFile.name} ?`
+  ).then(
+    () => true,
+    () => false
+  )
+}
+
+const getCurrentUserCV = async () => {
+  const res = await RecruitmentApi.getCurrentUserCV()
+  if (res.status == 200) {
+    console.log(res.data.data)
+    dataCv.value = res.data.data
+    switch1.value = dataCv.value.permissionSearch
+    switch2.value = dataCv.value.permissionSearch
+    view.value = dataCv.value.view
+  }
+}
+
+const activeSearchUserCV = async () => {
+  const res = await RecruitmentApi.activeSearchUserCV(switch1.value)
+  if (res.status == 200) {
+    switch2.value = switch1.value
+    if (switch1.value) {
+      ElNotification({
+        title: 'Success',
+        message: 'Bật tìm việc cho hồ sơ thành công.',
+        type: 'success',
+        duration: 3000,
+      })
+    } else {
+      ElNotification({
+        title: 'Success',
+        message: 'Tắt tìm việc cho hồ sơ thành công.',
+        type: 'success',
+        duration: 3000,
+      })
+    }
+  }
+}
+
+onMounted(async () => {
+  await getCurrentUserCV()
+})
 </script>
 
 <template>
@@ -49,14 +120,14 @@ onMounted(() => {})
             style="width: 64px"
             alt="icons8-resume-64.png"
           />
-          <p class="mb-0 ms-2 me-3">Thực Tập Sinh IT Phần Mềm</p>
+          <p class="mb-0 ms-2 me-3">{{ dataCv.value.positionOffer ? dataCv.value.positionOffer : 'Vị trí ứng tuyển' }}</p>
           <el-tag :type="'success'" disable-transitions class="ms-2 me-5"
             >Đã duyệt</el-tag
           >
           <el-divider direction="vertical" />
-          <p class="mb-0 mx-3">Lượt xem: 11</p>
+          <p class="mb-0 mx-3">Lượt xem: {{ view }}</p>
           <el-divider direction="vertical" />
-          <el-switch v-model="switch1" active-text="Cho phép tìm kiếm" />
+          <el-switch v-model="switch1" active-text="Cho phép tìm kiếm" @change="activeSearchUserCV" />
           <el-tooltip
             class="box-item"
             effect="dark"
@@ -85,14 +156,14 @@ onMounted(() => {})
             style="width: 64px"
             alt="PDF-CV.png"
           />
-          <p class="mb-0 ms-2 me-3">Thực Tập Sinh IT Phần Mềm</p>
+          <p class="mb-0 ms-2 me-3">{{ dataCv.value.positionOffer ? dataCv.value.positionOffer : 'Vị trí ứng tuyển' }}</p>
           <el-tag :type="'success'" disable-transitions class="ms-2 me-5"
             >Đã duyệt</el-tag
           >
           <el-divider direction="vertical" />
-          <p class="mb-0 mx-3">Lượt xem: 2</p>
+          <p class="mb-0 mx-3">Lượt xem: {{ view }}</p>
           <el-divider direction="vertical" />
-          <el-switch v-model="switch2" active-text="Cho phép tìm kiếm" />
+          <el-switch v-model="switch2" active-text="Cho phép tìm kiếm" disabled />
           <el-tooltip
             class="box-item"
             effect="dark"
@@ -102,14 +173,32 @@ onMounted(() => {})
             <el-icon class="mx-1"><InfoFilled /></el-icon>
           </el-tooltip>
           <el-divider direction="vertical" />
-          <el-button
+          <!-- <el-button
             type="primary"
             class="btn btn-soft-secondary btn-border ms-4"
             @click="updateOnlineCV"
           >
             <CIcon icon="cil-pencil" class="me-2" />
             Cập nhật hồ sơ
-          </el-button>
+          </el-button> -->
+          <el-upload
+            v-model:file-list="fileList"
+            class="upload-demo"
+            action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+            multiple
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :before-remove="beforeRemove"
+            :limit="1"
+            :on-exceed="handleExceed"
+          >
+            <el-button type="primary"><CIcon icon="cil-pencil" class="me-2" />Cập nhật hồ sơ</el-button>
+            <template #tip>
+              <div class="el-upload__tip">
+                Định dạng file tải lên là PDF.
+              </div>
+            </template>
+          </el-upload>
         </div>
       </el-card>
     </el-card>

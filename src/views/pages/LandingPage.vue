@@ -140,7 +140,7 @@ onMounted(() => {
           </el-card>
         </b-col>
         <b-col md="2">
-          <el-card class="box-card" shadow="hover">
+          <el-card class="box-card" shadow="hover" @click="goToCompanyDetail">
             <div class="d-flex flex-column justify-content-center text-center">
               <img
                 src="../../assets/images/logo-company/vecteezy_triangle_1200707.png"
@@ -260,10 +260,10 @@ onMounted(() => {
         <b-row class="mb-3">
           <b-col md="4">
             <el-card class="box-card" shadow="hover">
-              <p class="card__title-position mb-2">Front-end developer</p>
+              <p class="card__title-position mb-2">Fullstack developer</p>
               <div class="d-flex align-items-center">
                 <img
-                  src="../../assets/images/logo-company/vecteezy_triangle_1200707.png"
+                  src="../../assets/images/logo-company/icons8-canvas-student-250.png"
                   alt="logo-company"
                   class="card__logo"
                 />
@@ -272,7 +272,7 @@ onMounted(() => {
                     Công ty cổ phần Phần mềm ABC
                   </p>
                   <span class="card__subtitle me-3">
-                    <el-icon><Money /></el-icon> 10 - 20 triệu</span
+                    <el-icon><Money /></el-icon> 18 - 23 triệu</span
                   >
                   <span class="card__subtitle"
                     ><el-icon><Location /></el-icon>Hà Nội</span
@@ -283,10 +283,10 @@ onMounted(() => {
           </b-col>
           <b-col md="4">
             <el-card class="box-card" shadow="hover">
-              <p class="card__title-position mb-2">Front-end developer</p>
+              <p class="card__title-position mb-2">Back-end developer</p>
               <div class="d-flex align-items-center">
                 <img
-                  src="../../assets/images/logo-company/04012019-07.jpg"
+                  src="../../assets/images/logo-company/icons8-bbb-150.png"
                   alt="logo-company"
                   class="card__logo"
                 />
@@ -295,7 +295,7 @@ onMounted(() => {
                     Công ty cổ phần Phần mềm ABC
                   </p>
                   <span class="card__subtitle me-3">
-                    <el-icon><Money /></el-icon> 10 - 20 triệu</span
+                    <el-icon><Money /></el-icon> 10 - 22 triệu</span
                   >
                   <span class="card__subtitle"
                     ><el-icon><Location /></el-icon>Hà Nội</span
@@ -306,10 +306,10 @@ onMounted(() => {
           </b-col>
           <b-col md="4">
             <el-card class="box-card" shadow="hover">
-              <p class="card__title-position mb-2">Front-end developer</p>
+              <p class="card__title-position mb-2">Bussiness Analystic</p>
               <div class="d-flex align-items-center">
                 <img
-                  src="../../assets/images/logo-company/vecteezy_circle-abstract-logo_1192263.png"
+                  src="../../assets/images/logo-company/icons8-monzo-250.png"
                   alt="logo-company"
                   class="card__logo"
                 />
@@ -331,10 +331,10 @@ onMounted(() => {
         <b-row class="mb-3">
           <b-col md="4">
             <el-card class="box-card" shadow="hover">
-              <p class="card__title-position mb-2">Front-end developer</p>
+              <p class="card__title-position mb-2">Project manager</p>
               <div class="d-flex align-items-center">
                 <img
-                  src="../../assets/images/logo-company/vecteezy_triangle_1200707.png"
+                  src="../../assets/images/logo-company/icons8-powerschool-250.png"
                   alt="logo-company"
                   class="card__logo"
                 />
@@ -343,7 +343,7 @@ onMounted(() => {
                     Công ty cổ phần Phần mềm ABC
                   </p>
                   <span class="card__subtitle me-3">
-                    <el-icon><Money /></el-icon> 10 - 20 triệu</span
+                    <el-icon><Money /></el-icon> 19 - 30 triệu</span
                   >
                   <span class="card__subtitle"
                     ><el-icon><Location /></el-icon>Hà Nội</span
@@ -354,10 +354,10 @@ onMounted(() => {
           </b-col>
           <b-col md="4">
             <el-card class="box-card" shadow="hover">
-              <p class="card__title-position mb-2">Front-end developer</p>
+              <p class="card__title-position mb-2">Tester</p>
               <div class="d-flex align-items-center">
                 <img
-                  src="../../assets/images/logo-company/04012019-07.jpg"
+                  src="../../assets/images/logo-company/icons8-magento-250.png"
                   alt="logo-company"
                   class="card__logo"
                 />
@@ -366,7 +366,7 @@ onMounted(() => {
                     Công ty cổ phần Phần mềm ABC
                   </p>
                   <span class="card__subtitle me-3">
-                    <el-icon><Money /></el-icon> 10 - 20 triệu</span
+                    <el-icon><Money /></el-icon> 15 - 20 triệu</span
                   >
                   <span class="card__subtitle"
                     ><el-icon><Location /></el-icon>Hà Nội</span
@@ -377,10 +377,10 @@ onMounted(() => {
           </b-col>
           <b-col md="4">
             <el-card class="box-card" shadow="hover">
-              <p class="card__title-position mb-2">Front-end developer</p>
+              <p class="card__title-position mb-2">Security Config</p>
               <div class="d-flex align-items-center">
                 <img
-                  src="../../assets/images/logo-company/vecteezy_circle-abstract-logo_1192263.png"
+                  src="../../assets/images/logo-company/icons8-notion-256.png"
                   alt="logo-company"
                   class="card__logo"
                 />
@@ -389,7 +389,7 @@ onMounted(() => {
                     Công ty cổ phần Phần mềm ABC
                   </p>
                   <span class="card__subtitle me-3">
-                    <el-icon><Money /></el-icon> 10 - 20 triệu</span
+                    <el-icon><Money /></el-icon> 25 - 30 triệu</span
                   >
                   <span class="card__subtitle"
                     ><el-icon><Location /></el-icon>Hà Nội</span
@@ -437,7 +437,37 @@ onMounted(() => {
             <el-card class="box-card" shadow="hover">
               <div class="d-flex align-items-start">
                 <img
-                  src="../../assets/images/logo-company/vecteezy_natural-theme-sign-logo_8504087_507.png"
+                  src="../../assets/images/logo-company/icons8-notion-256.png"
+                  alt="logo-company"
+                  class="card__logo"
+                />
+                <div>
+                  <p class="card__title-position mb-1 ms-2">
+                    Fresher
+                  </p>
+                  <p class="card__title-company ms-2">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
+                  <div class="ms-2 mt-2">
+                    <p class="card__subtitle mb-1">
+                      <el-icon><LocationInformation /></el-icon>Hà Nội
+                    </p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><Money /></el-icon> 10 - 12 triệu
+                    </p>
+                    <p class="card__subtitle mb-0">
+                      <el-icon><Timer /></el-icon>09/12/2023
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </el-card>
+          </b-col>
+          <b-col md="4">
+            <el-card class="box-card" shadow="hover">
+              <div class="d-flex align-items-start">
+                <img
+                  src="../../assets/images/logo-company/icons8-magento-250.png"
                   alt="logo-company"
                   class="card__logo"
                 />
@@ -453,7 +483,69 @@ onMounted(() => {
                       <el-icon><LocationInformation /></el-icon>Hà Nội
                     </p>
                     <p class="card__subtitle mb-1">
-                      <el-icon><Money /></el-icon> 10 - 20 triệu
+                      <el-icon><Money /></el-icon> 15 - 20 triệu
+                    </p>
+                    <p class="card__subtitle mb-0">
+                      <el-icon><Timer /></el-icon>09/12/2023
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </el-card>
+          </b-col>
+          <b-col md="4">
+            <el-card class="box-card" shadow="hover">
+              <div class="d-flex align-items-start">
+                <img
+                  src="../../assets/images/logo-company/icons8-canvas-student-250.png"
+                  alt="logo-company"
+                  class="card__logo"
+                />
+                <div>
+                  <p class="card__title-position mb-1 ms-2">
+                    Front-end developer
+                  </p>
+                  <p class="card__title-company ms-2">
+                    Công ty cổ phần Phần mềm LL
+                  </p>
+                  <div class="ms-2 mt-2">
+                    <p class="card__subtitle mb-1">
+                      <el-icon><LocationInformation /></el-icon>Hà Nội
+                    </p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><Money /></el-icon> 20 - 30 triệu
+                    </p>
+                    <p class="card__subtitle mb-0">
+                      <el-icon><Timer /></el-icon>09/12/2023
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </el-card>
+          </b-col>
+        </b-row>
+        <b-row class="mb-3">
+          <b-col md="4">
+            <el-card class="box-card" shadow="hover">
+              <div class="d-flex align-items-start">
+                <img
+                  src="../../assets/images/logo-company/icons8-powerschool-250.png"
+                  alt="logo-company"
+                  class="card__logo"
+                />
+                <div>
+                  <p class="card__title-position mb-1 ms-2">
+                    Tester (QA)
+                  </p>
+                  <p class="card__title-company ms-2">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
+                  <div class="ms-2 mt-2">
+                    <p class="card__subtitle mb-1">
+                      <el-icon><LocationInformation /></el-icon>Hà Nội
+                    </p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><Money /></el-icon> 14 - 22 triệu
                     </p>
                     <p class="card__subtitle mb-0">
                       <el-icon><Timer /></el-icon>09/12/2023
@@ -473,7 +565,7 @@ onMounted(() => {
                 />
                 <div>
                   <p class="card__title-position mb-1 ms-2">
-                    Front-end developer
+                    Project management
                   </p>
                   <p class="card__title-company ms-2">
                     Công ty cổ phần Phần mềm ABC
@@ -483,7 +575,7 @@ onMounted(() => {
                       <el-icon><LocationInformation /></el-icon>Hà Nội
                     </p>
                     <p class="card__subtitle mb-1">
-                      <el-icon><Money /></el-icon> 10 - 20 triệu
+                      <el-icon><Money /></el-icon> 22 - 30 triệu
                     </p>
                     <p class="card__subtitle mb-0">
                       <el-icon><Timer /></el-icon>09/12/2023
@@ -503,7 +595,7 @@ onMounted(() => {
                 />
                 <div>
                   <p class="card__title-position mb-1 ms-2">
-                    Front-end developer
+                    Fullstack developer
                   </p>
                   <p class="card__title-company ms-2">
                     Công ty cổ phần Phần mềm ABC
@@ -513,7 +605,7 @@ onMounted(() => {
                       <el-icon><LocationInformation /></el-icon>Hà Nội
                     </p>
                     <p class="card__subtitle mb-1">
-                      <el-icon><Money /></el-icon> 10 - 20 triệu
+                      <el-icon><Money /></el-icon> 19 - 25 triệu
                     </p>
                     <p class="card__subtitle mb-0">
                       <el-icon><Timer /></el-icon>09/12/2023
@@ -535,7 +627,7 @@ onMounted(() => {
                 />
                 <div>
                   <p class="card__title-position mb-1 ms-2">
-                    Front-end developer
+                    Fullstack developer (Senior)
                   </p>
                   <p class="card__title-company ms-2">
                     Công ty cổ phần Phần mềm ABC
@@ -559,13 +651,13 @@ onMounted(() => {
             <el-card class="box-card" shadow="hover">
               <div class="d-flex align-items-start">
                 <img
-                  src="../../assets/images/logo-company/04012019-07.jpg"
+                  src="../../assets/images/logo-company/icons8-monzo-250.png"
                   alt="logo-company"
                   class="card__logo"
                 />
                 <div>
                   <p class="card__title-position mb-1 ms-2">
-                    Front-end developer
+                    Vue.js developer (Middle)
                   </p>
                   <p class="card__title-company ms-2">
                     Công ty cổ phần Phần mềm ABC
@@ -575,7 +667,7 @@ onMounted(() => {
                       <el-icon><LocationInformation /></el-icon>Hà Nội
                     </p>
                     <p class="card__subtitle mb-1">
-                      <el-icon><Money /></el-icon> 10 - 20 triệu
+                      <el-icon><Money /></el-icon> 18 - 25 triệu
                     </p>
                     <p class="card__subtitle mb-0">
                       <el-icon><Timer /></el-icon>09/12/2023
@@ -589,13 +681,13 @@ onMounted(() => {
             <el-card class="box-card" shadow="hover">
               <div class="d-flex align-items-start">
                 <img
-                  src="../../assets/images/logo-company/vecteezy_natural-theme-sign-logo_8504086_143.png"
+                  src="../../assets/images/logo-company/icons8-bbb-150.png"
                   alt="logo-company"
                   class="card__logo"
                 />
                 <div>
                   <p class="card__title-position mb-1 ms-2">
-                    Front-end developer
+                    Front-end developer (Reactjs)
                   </p>
                   <p class="card__title-company ms-2">
                     Công ty cổ phần Phần mềm ABC
@@ -605,99 +697,7 @@ onMounted(() => {
                       <el-icon><LocationInformation /></el-icon>Hà Nội
                     </p>
                     <p class="card__subtitle mb-1">
-                      <el-icon><Money /></el-icon> 10 - 20 triệu
-                    </p>
-                    <p class="card__subtitle mb-0">
-                      <el-icon><Timer /></el-icon>09/12/2023
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </el-card>
-          </b-col>
-        </b-row>
-        <b-row class="mb-3">
-          <b-col md="4">
-            <el-card class="box-card" shadow="hover">
-              <div class="d-flex align-items-start">
-                <img
-                  src="../../assets/images/logo-company/vecteezy_natural-theme-sign-logo_8504087_507.png"
-                  alt="logo-company"
-                  class="card__logo"
-                />
-                <div>
-                  <p class="card__title-position mb-1 ms-2">
-                    Front-end developer
-                  </p>
-                  <p class="card__title-company ms-2">
-                    Công ty cổ phần Phần mềm ABC
-                  </p>
-                  <div class="ms-2 mt-2">
-                    <p class="card__subtitle mb-1">
-                      <el-icon><LocationInformation /></el-icon>Hà Nội
-                    </p>
-                    <p class="card__subtitle mb-1">
-                      <el-icon><Money /></el-icon> 10 - 20 triệu
-                    </p>
-                    <p class="card__subtitle mb-0">
-                      <el-icon><Timer /></el-icon>09/12/2023
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </el-card>
-          </b-col>
-          <b-col md="4">
-            <el-card class="box-card" shadow="hover">
-              <div class="d-flex align-items-start">
-                <img
-                  src="../../assets/images/logo-company/04012019-07.jpg"
-                  alt="logo-company"
-                  class="card__logo"
-                />
-                <div>
-                  <p class="card__title-position mb-1 ms-2">
-                    Front-end developer
-                  </p>
-                  <p class="card__title-company ms-2">
-                    Công ty cổ phần Phần mềm ABC
-                  </p>
-                  <div class="ms-2 mt-2">
-                    <p class="card__subtitle mb-1">
-                      <el-icon><LocationInformation /></el-icon>Hà Nội
-                    </p>
-                    <p class="card__subtitle mb-1">
-                      <el-icon><Money /></el-icon> 10 - 20 triệu
-                    </p>
-                    <p class="card__subtitle mb-0">
-                      <el-icon><Timer /></el-icon>09/12/2023
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </el-card>
-          </b-col>
-          <b-col md="4">
-            <el-card class="box-card" shadow="hover">
-              <div class="d-flex align-items-start">
-                <img
-                  src="../../assets/images/logo-company/vecteezy_natural-theme-sign-logo_8504086_143.png"
-                  alt="logo-company"
-                  class="card__logo"
-                />
-                <div>
-                  <p class="card__title-position mb-1 ms-2">
-                    Front-end developer
-                  </p>
-                  <p class="card__title-company ms-2">
-                    Công ty cổ phần Phần mềm ABC
-                  </p>
-                  <div class="ms-2 mt-2">
-                    <p class="card__subtitle mb-1">
-                      <el-icon><LocationInformation /></el-icon>Hà Nội
-                    </p>
-                    <p class="card__subtitle mb-1">
-                      <el-icon><Money /></el-icon> 10 - 20 triệu
+                      <el-icon><Money /></el-icon> 15 - 20 triệu
                     </p>
                     <p class="card__subtitle mb-0">
                       <el-icon><Timer /></el-icon>09/12/2023

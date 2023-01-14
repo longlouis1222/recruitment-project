@@ -16,7 +16,13 @@ export default {
   delete(id) {
     return Api().delete(`recruitments/${id}`)
   },
-  getCurrentUserCV(id) {
-    return Api().get(`recruitments/${id}`)
-  }
+  getCurrentUserCV() {
+    return Api().get(`recruitments/user-id`)
+  },
+  activeSearchUserCV(data) {
+    return Api().get(`recruitments/active-search?check=${data}`)
+  },
+  saveList(arr) {
+    return Api.get(`recruitments/save-list?ids=${arr}`)
+  },
 }

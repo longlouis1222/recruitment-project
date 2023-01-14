@@ -1,29 +1,27 @@
 <script setup>
 import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
+
+import RecruitmentApi from '@/moduleApi/modules/RecruitmentApi'
+import UserProfileApi from '@/moduleApi/modules/UserProfileApi'
+
 import { ElNotification } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
 
-import modelData from '../EmployerCompany/EmployerCompanyInfoModel'
+import modelData from './FindCandidateModel'
 
-const workFormList = DataService.workFormList
-const certificateList = DataService.certificateList
-const experienceList = DataService.experienceList
-const rankList = DataService.rankList
-const ageRequirementList = DataService.ageRequirementList
-const genderRequirementList = DataService.genderRequirementList
-const mainJobList = DataService.mainJobList
-const secondJobList = DataService.secondJobList
-const workPlaceList = DataService.workPlaceList
-const minSalaryList = DataService.minSalaryList
-const maxSalaryList = DataService.minSalaryList
+const moduleName = 'Tìm ứng viên'
+const router = useRouter()
 
 const ruleFormRef = ref(FormInstance)
-const validForm = modelData.validForm
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
-const formData = reactive(MethodService.copyObject(modelData.dataForm))
+const formData = reactive({
+  value: MethodService.copyObject(modelData.dataForm),
+})
+const validForm = modelData.validForm
+
 const options = [
   {
     value: 'Option1',
@@ -47,58 +45,7 @@ const options = [
   },
 ]
 
-const tableData = [
-  {
-    name: 'Tin tức 24h',
-    date_post: '12/02/2022',
-    end_date: '20/02/2022',
-    approve_time: '22',
-    read_time: '10',
-    post_status: 'Nổi bật',
-    status: 'Đã duyệt',
-    others: 'Tin tức tuyển dụng',
-  },
-  {
-    name: 'Tin tức 24h',
-    date_post: '12/02/2022',
-    end_date: '20/02/2022',
-    approve_time: '22',
-    read_time: '10',
-    post_status: 'Nổi bật',
-    status: 'Đã duyệt',
-    others: 'Tin tức tuyển dụng',
-  },
-  {
-    name: 'Tin tức 24h',
-    date_post: '12/02/2022',
-    end_date: '20/02/2022',
-    approve_time: '22',
-    read_time: '10',
-    post_status: 'Nổi bật',
-    status: 'Đã duyệt',
-    others: 'Tin tức tuyển dụng',
-  },
-  {
-    name: 'Tin tức 24h',
-    date_post: '12/02/2022',
-    end_date: '20/02/2022',
-    approve_time: '22',
-    read_time: '10',
-    post_status: 'Nổi bật',
-    status: 'Đã duyệt',
-    others: 'Tin tức tuyển dụng',
-  },
-  {
-    name: 'Tin tức 24h',
-    date_post: '12/02/2022',
-    end_date: '20/02/2022',
-    approve_time: '22',
-    read_time: '10',
-    post_status: 'Nổi bật',
-    status: 'Đã duyệt',
-    others: 'Tin tức tuyển dụng',
-  },
-]
+const userProfile = reactive({ value: {}})
 
 const submitForm = async (formEl) => {
   if (!formEl) return
@@ -122,32 +69,101 @@ const toggleSearchBox = () => {
 
 // phân trang
 const fn_tableSizeChange = (limit) => {
-  tableRules.limit = limit;
-  fn_tableChangeOffset(1);
-};
+  tableRules.limit = limit
+  fn_tableChangeOffset(1)
+}
 const fn_tableCurentChange = (page) => {
-  fn_tableChangeOffset(page);
-};
+  fn_tableChangeOffset(page)
+}
 const fn_tablePrevClick = () => {
   // fn_tableChangeOffset(page);
-};
+}
 const fn_tableNextClick = () => {
   // fn_tableChangeOffset(page);
-};
+}
 const fn_tableChangeOffset = (page) => {
-  tableRules.page = page;
-  tableRules.offset = (tableRules.page - 1) * tableRules.limit;
+  tableRules.page = page
+  tableRules.skip = (tableRules.page - 1) * tableRules.limit
   // getService();
-};
+}
 const fn_tableSortChange = (column, tableSort) => {
-  tableSort = tableRules;
-  MethodService.tableSortChange(column, tableSort);
+  tableSort = tableRules
+  MethodService.tableSortChange(column, tableSort)
   // getService();
-};
+}
+
+const getRecruitmentList = async () => {
+  let dataFilter = {
+    limit: tableRules.limit,
+    skip: tableRules.skip,
+    page: tableRules.page > 0 ? tableRules.page - 1 : tableRules.page,
+    // sort: tableRules.sort,
+    ...tableRules.filters,
+  }
+  router.replace({
+    name: moduleName,
+    query: {
+      ...dataFilter,
+    },
+  })
+  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
+  const recruitmentApiRes = await RecruitmentApi.list(filter)
+  if (recruitmentApiRes.status == 200) {
+    tableRules.data = await changeData(recruitmentApiRes.data.data.data)
+    tableRules.total = recruitmentApiRes.data.data.totalElements
+  }
+}
+
+const changeData = (data) => {
+  data.forEach(item => {
+    item.offerSalaryFormat = item.offerSalary ? MethodService.formatCurrency(item.offerSalary) + " VND" : 0
+  })
+  return data
+}
+
+const getUserInfo = async () => {
+  if (!localStorage.getItem('uid')) return;
+  const userProfileApiRes = await UserProfileApi.findById(
+    localStorage.getItem('uid'),
+  )
+  if (userProfileApiRes.status == 200) {
+    userProfile.value = userProfileApiRes.data.data
+  }
+}
+
+const saveRecruitment = async (rowData) => {
+  try {
+    const res = await RecruitmentApi.saveList([...userProfile.value.userInfoDTO.arrProfileIds, rowData.id])
+    if (res.status === 200) {
+      ElNotification({
+        title: 'Success',
+        message: 'Lưu hồ sơ thành công.',
+        type: 'success',
+        duration: 3000,
+      })
+    }
+  } catch (error) {
+    if (error.error_code === 404) {
+      ElNotification({
+        title: 'Error',
+        message: `${error.errorMessage}.`,
+        type: 'error',
+        duration: 3000,
+      })
+      return;
+    }
+    ElNotification({
+        title: 'Error',
+        message: 'Lưu hồ sơ thất bại.',
+        type: 'error',
+        duration: 3000,
+      })
+  }
+}
 
 onMounted(() => {
-  tableRules.total = tableData.length;
-  // console.log('tableRules.showFormSearch', tableRules.showFormSearch)
+  getUserInfo()
+  getRecruitmentList()
 })
 </script>
 
@@ -330,31 +346,65 @@ onMounted(() => {
         </b-collapse>
       </div>
 
-      <el-table :data="tableData">
-        <el-table-column prop="name" label="Tên tin đăng" min-width="180" />
+      <el-table :data="tableRules.data">
+        <el-table-column prop="name" label="Họ và tên" min-width="150" />
         <el-table-column
-          prop="date_post"
-          label="Ngày đăng"
-          min-width="100"
+          prop="career"
+          label="Lĩnh vực ứng tuyển"
+          min-width="130"
+        />
+        <el-table-column
+          prop="positionOffer"
+          label="Vị trí ứng tuyển"
+          min-width="180"
+        />
+        <el-table-column
+          prop="offerSalaryFormat"
+          label="Mức lương"
+          min-width="180"
+          align="right"
+        />
+        <el-table-column
+          prop="experienceNumber"
+          label="Số năm kinh nghiệm"
+          min-width="180"
           align="center"
         />
         <el-table-column
-          prop="end_date"
-          label="Thời hạn nộp"
-          min-width="100"
-          align="center"
+          prop="workAddress"
+          label="Địa điểm làm việc"
+          min-width="130"
         />
-        <el-table-column prop="approve_time" label="Lượt nộp" align="center" />
-        <el-table-column prop="read_time" label="Lượt xem" align="center" />
         <el-table-column
-          prop="post_status"
-          label="Tình trạng tin"
-          min-width="100"
-          show-overflow-tooltip
+          fixed="right"
           align="center"
-        />
-        <el-table-column prop="status" label="Trạng thái" align="center" />
-        <el-table-column prop="others" label="Khác" />
+          label="Thao tác"
+          width="140"
+        >
+          <template #default="scope">
+            <div class="">
+              <!-- <el-button
+                size="small"
+                @click="handleEdit(scope.$index, scope.row)"
+                ><CIcon icon="cilFindInPage"
+              /></el-button> -->
+              <el-button
+                size="small"
+                type="warning"
+                plain
+                @click="saveRecruitment(scope.row)"
+                ><CIcon icon="cilStar"
+              /></el-button>
+              <!-- <el-button
+                size="small"
+                type="danger"
+                plain
+                @click="deletePost(scope.row)"
+                ><CIcon icon="cilTrash"
+              /></el-button> -->
+            </div>
+          </template>
+        </el-table-column>
       </el-table>
       <div class="mt-3 mb-3" style="float: right">
         <el-pagination
@@ -364,7 +414,7 @@ onMounted(() => {
           :page-sizes="tableRules.lengthMenu"
           background
           layout="total, sizes, prev, pager, next, jumper"
-          :total="tableRules.total"
+          :total="Number(tableRules.total)"
           @size-change="fn_tableSizeChange"
           @current-change="fn_tableCurentChange"
           @prev-click="fn_tablePrevClick"
