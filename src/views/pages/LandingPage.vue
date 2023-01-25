@@ -872,7 +872,7 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-::v-deep .container-recommend {
+:deep .container-recommend {
   .el-card {
     background-color: aliceblue;
   }
@@ -881,7 +881,7 @@ onMounted(() => {
     overflow: auto;
   }
 }
-// ::v-deep .container-recommend {
+// :deep .container-recommend {
 //   //
 // }
 .icon-block {

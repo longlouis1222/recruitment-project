@@ -391,10 +391,10 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-::v-deep .form-check .form-check-input {
+:deep .form-check .form-check-input {
   float: none !important;
 }
-::v-deep .form-check-label {
+:deep .form-check-label {
   display: none
 }
 </style>

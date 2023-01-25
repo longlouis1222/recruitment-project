@@ -75,24 +75,42 @@ const getCurrentUserCV = async () => {
 }
 
 const activeSearchUserCV = async () => {
-  const res = await RecruitmentApi.activeSearchUserCV(switch1.value)
-  if (res.status == 200) {
-    switch2.value = switch1.value
-    if (switch1.value) {
-      ElNotification({
-        title: 'Success',
-        message: 'Bật tìm việc cho hồ sơ thành công.',
-        type: 'success',
-        duration: 3000,
-      })
-    } else {
-      ElNotification({
-        title: 'Success',
-        message: 'Tắt tìm việc cho hồ sơ thành công.',
-        type: 'success',
-        duration: 3000,
-      })
+  try {
+    const res = await RecruitmentApi.activeSearchUserCV(switch1.value)
+    if (res.status == 200) {
+      switch2.value = switch1.value
+      if (switch1.value) {
+        ElNotification({
+          title: 'Success',
+          message: 'Bật tìm việc cho hồ sơ thành công.',
+          type: 'success',
+          duration: 3000,
+        })
+      } else {
+        ElNotification({
+          title: 'Success',
+          message: 'Tắt tìm việc cho hồ sơ thành công.',
+          type: 'success',
+          duration: 3000,
+        })
+      }
     }
+  } catch (error) {
+    if (error.error_code === 404) {
+      ElNotification({
+        title: 'Error',
+        message: `${error.errorMessage}.`,
+        type: 'error',
+        duration: 3000,
+      })
+      return;
+    }
+    ElNotification({
+      title: 'Error',
+      message: 'Thay đổi trạng thái tìm việc cho hồ sơ thật bại.',
+      type: 'error',
+      duration: 3000,
+    })
   }
 }
 
@@ -206,12 +224,12 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
-::v-deep .avatar-uploader .avatar {
+:deep .avatar-uploader .avatar {
   width: 120px;
   height: 120px;
   display: block;
 }
-::v-deep .avatar-uploader .el-upload {
+:deep .avatar-uploader .el-upload {
   border: 1px dashed #dcdfe6;
   border-radius: 6px;
   cursor: pointer;
@@ -220,11 +238,11 @@ onMounted(async () => {
   transition: 0.1s ease;
 }
 
-::v-deep .avatar-uploader .el-upload:hover {
+:deep .avatar-uploader .el-upload:hover {
   border-color: #409eff;
 }
 
-::v-deep .el-icon.avatar-uploader-icon {
+:deep .el-icon.avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
   width: 120px;

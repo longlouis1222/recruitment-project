@@ -418,12 +418,12 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-::v-deep .avatar-uploader .avatar {
+:deep .avatar-uploader .avatar {
   width: 120px;
   height: 120px;
   display: block;
 }
-::v-deep .avatar-uploader .el-upload {
+:deep .avatar-uploader .el-upload {
   border: 1px dashed #dcdfe6;
   border-radius: 6px;
   cursor: pointer;
@@ -432,11 +432,11 @@ onMounted(() => {
   transition: 0.1s ease;
 }
 
-::v-deep .avatar-uploader .el-upload:hover {
+:deep .avatar-uploader .el-upload:hover {
   border-color: #409eff;
 }
 
-::v-deep .el-icon.avatar-uploader-icon {
+:deep .el-icon.avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
   width: 120px;

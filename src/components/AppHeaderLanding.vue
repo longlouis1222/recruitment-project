@@ -13,6 +13,7 @@ const dialogAllIndustries = ref(false)
 const mainJobList = DataService.mainJobList
 
 const isShowAvatar = ref(false)
+const isEmployer = ref(false)
 
 const toggleDialogAllIndustries = () => {
   dialogAllIndustries.value = true
@@ -39,6 +40,9 @@ onMounted(() => {
   // console.log(localStorage.getItem('Token'))
   if (localStorage.getItem('Token') && localStorage.getItem('uid')) {
     isShowAvatar.value = true
+  }
+  if (localStorage.getItem('Token') && localStorage.getItem('type') === 'EMPLOYER') {
+    isEmployer.value = true
   }
 })
 </script>
@@ -127,7 +131,7 @@ onMounted(() => {
         </CNavItem>
       </CHeaderNav>
       <CHeaderNav class="align-items-center">
-        <CNavItem @click="goToCreateCV" style="cursor: pointer">
+        <CNavItem @click="goToCreateCV" style="cursor: pointer" v-if="isEmployer">
           <CNavLink
             class="d-flex align-items-center"
           >

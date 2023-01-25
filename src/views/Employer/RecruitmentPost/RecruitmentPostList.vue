@@ -90,6 +90,12 @@ const submitFormSearch = async (formEl) => {
   })
 }
 
+const updatePost = () => {
+  // router.push({
+  //   name: ''
+  // })
+}
+
 const deletePost = async (rowData) => {
   ElMessageBox.alert('Bạn có chắc muốn xóa bài viết này ?', 'Cảnh báo', {
     // if you want to disable its autofocus

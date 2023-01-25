@@ -235,11 +235,11 @@ const backToPrev = () => {
   border-radius: 4px;
   box-shadow: 0px 0px 5px 0px #bebebe;
 }
-::v-deep .el-divider--vertical {
+:deep .el-divider--vertical {
   height: 35px;
 }
 
-::v-deep .container__job-description {
+:deep .container__job-description {
   ul li {
     list-style: disc;
   }

@@ -28,28 +28,7 @@ const maxSalaryList = DataService.minSalaryList
 
 const formData = reactive({ value: MethodService.copyObject(modelData.dataForm)})
 const validForm = modelData.validForm
-const options = [
-  {
-    value: 'Option1',
-    label: 'Option1',
-  },
-  {
-    value: 'Option2',
-    label: 'Option2',
-  },
-  {
-    value: 'Option3',
-    label: 'Option3',
-  },
-  {
-    value: 'Option4',
-    label: 'Option4',
-  },
-  {
-    value: 'Option5',
-    label: 'Option5',
-  },
-]
+const industryList = reactive({ value: []})
 
 const submitForm = async (formEl) => {
   if (!formEl) return
@@ -81,7 +60,6 @@ const resetForm = (formEl) => {
   formEl.resetFields()
 }
 
-const industryList = reactive({ value: []})
 const getIndustryList = async () => {
   const industryApiRes = await IndustryApi.list()
   if (industryApiRes.status == 200) {

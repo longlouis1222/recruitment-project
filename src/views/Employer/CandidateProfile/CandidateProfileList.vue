@@ -10,70 +10,17 @@ import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
 
 import modelData from './CandidateProfileModel'
+import RecruitmentApi from '@/moduleApi/modules/RecruitmentApi'
 
-const workFormList = DataService.workFormList
-const certificateList = DataService.certificateList
-const experienceList = DataService.experienceList
-const rankList = DataService.rankList
-const ageRequirementList = DataService.ageRequirementList
-const genderRequirementList = DataService.genderRequirementList
 const mainJobList = DataService.mainJobList
-const secondJobList = DataService.secondJobList
+const experienceList = DataService.experienceList
 const workPlaceList = DataService.workPlaceList
-const minSalaryList = DataService.minSalaryList
-const maxSalaryList = DataService.minSalaryList
+const workFormList = DataService.workFormList
 
 const ruleFormRef = ref(FormInstance)
 const validForm = modelData.validForm
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
-const formData = reactive(MethodService.copyObject(modelData.dataForm))
-const statusList = [
-  {
-    value: 'Option1',
-    label: 'Chờ duyệt',
-  },
-  {
-    value: 'Option2',
-    label: 'Đã duyệt',
-  },
-  {
-    value: 'Option3',
-    label: 'Từ chối',
-  },
-]
-
-const tableData = [
-  {
-    name: 'Hồ sơ Front-dev',
-    status: 'Đã duyệt',
-    date_save: '12/02/2022',
-    candidate_status: 'Nổi bật',
-  },
-  {
-    name: 'Hồ sơ Back-dev',
-    status: 'Từ chối',
-    date_save: '13/02/2022',
-    candidate_status: 'Ẩn',
-  },
-  {
-    name: 'Hồ sơ Fullstack-dev',
-    status: 'Đã duyệt',
-    date_save: '14/02/2022',
-    candidate_status: 'Nổi bật',
-  },
-  {
-    name: 'Hồ sơ BA',
-    status: 'Chờ duyệt',
-    date_save: '15/02/2022',
-    candidate_status: 'Nổi bật',
-  },
-  {
-    name: 'Hồ sơ Designer',
-    status: 'Đã duyệt',
-    date_save: '11/02/2022',
-    candidate_status: 'Ẩn',
-  },
-]
+const formSearchData = reactive({value: MethodService.copyObject(modelData.dataForm)})
 
 const submitForm = async (formEl) => {
   if (!formEl) return
@@ -89,6 +36,24 @@ const submitForm = async (formEl) => {
 const resetForm = (formEl) => {
   if (!formEl) return
   formEl.resetFields()
+}
+
+const submitFormSearch = async (formEl) => {
+  if (!formEl) return
+  await formEl.validate(async (valid, fields) => {
+    if (valid) {
+      try {
+        tableRules.filters = formSearchData.value
+        tableRules.skip = 0
+        tableRules.page = 1
+        await getRecruitmentList()
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      console.log('error submit!', fields)
+    }
+  })
 }
 
 const toggleSearchBox = () => {
@@ -120,9 +85,25 @@ const fn_tableSortChange = (column, tableSort) => {
   // getService();
 }
 
+const getRecruitmentSavedList = async () => {
+  const res = await RecruitmentApi.getRecruitmentSavedList()
+  if (res.status == 200) {
+    tableRules.data = changeData(res.data.data)
+  }
+}
+
+const changeData = (data) => {
+  data.forEach((item) => {
+    item.offerSalaryFormat = item.offerSalary
+      ? MethodService.formatCurrency(item.offerSalary) + ' VND'
+      : 0
+    item.timeSubmitFormat = item.timeSubmit ? MethodService.formatDate(item.timeSubmit, 'date') : ''
+  })
+  return data
+}
+
 onMounted(() => {
-  tableRules.total = tableData.length
-  // console.log('tableRules.showFormSearch', tableRules.showFormSearch)
+  getRecruitmentSavedList()
 })
 </script>
 
@@ -154,31 +135,23 @@ onMounted(() => {
           <el-card>
             <el-form
               ref="ruleFormRef"
-              :model="formData"
-              :rules="validForm"
+              :model="formSearchData.value"
+              :rules="validSearchForm"
               label-width="140px"
               label-position="top"
               class="demo-ruleForm"
               status-icon
             >
               <b-row>
-                <b-col md="3">
-                  <el-form-item label="Tên hồ sơ" prop="">
-                    <el-input
-                      clearable
-                      v-model="tableRules.dataSearch.value['name']"
-                    ></el-input>
-                  </el-form-item>
-                </b-col>
-                <b-col md="3">
-                  <el-form-item label="Tình trạng" prop="">
+                <b-col md="4">
+                  <el-form-item label="Lĩnh vực làm việc" prop="">
                     <el-select
-                      v-model="formData.field_of_acitvity"
+                      v-model="formSearchData.value.career"
                       placeholder="Chọn"
                       clearable
                     >
                       <el-option
-                        v-for="item in statusList"
+                        v-for="item in mainJobList"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value"
@@ -186,19 +159,26 @@ onMounted(() => {
                     </el-select>
                   </el-form-item>
                 </b-col>
-                <b-col md="3">
-                  <el-form-item label="Ngày lưu" prop="">
-                    <el-date-picker
-                      v-model="formData.field_of_acitvity"
-                      type="date"
-                      placeholder="Chọn"
-                    />
+                <b-col md="4">
+                  <el-form-item label="Vị trí ứng tuyển" prop="">
+                    <el-input
+                      v-model="formSearchData.value.positionOffer"
+                      clearable
+                    ></el-input>
                   </el-form-item>
                 </b-col>
-                <b-col md="3">
-                  <el-form-item label="Trạng thái" prop="">
+                <b-col md="4">
+                  <el-form-item label="Mức lương" prop="">
+                    <el-input
+                      v-model="formSearchData.value.offerSalary"
+                      clearable
+                    ></el-input>
+                  </el-form-item>
+                </b-col>
+                <b-col md="4">
+                  <el-form-item label="Kinh nghiệm" prop="">
                     <el-select
-                      v-model="formData.field_of_acitvity"
+                      v-model="formSearchData.value.experienceNumber"
                       placeholder="Chọn"
                       clearable
                     >
@@ -211,9 +191,42 @@ onMounted(() => {
                     </el-select>
                   </el-form-item>
                 </b-col>
+                <b-col md="4">
+                  <el-form-item label="Địa điểm làm việc" prop="">
+                    <el-select
+                      v-model="formSearchData.value.workAddress"
+                      placeholder="Chọn"
+                      clearable
+                    >
+                      <el-option
+                        v-for="item in workPlaceList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </b-col>
+                <b-col md="4">
+                  <el-form-item label="Hình thức làm việc" prop="">
+                    <el-select
+                      v-model="formSearchData.value.workForm"
+                      placeholder="Chọn"
+                      clearable
+                    >
+                      <el-option
+                        v-for="item in workFormList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </b-col>
               </b-row>
+
               <div class="text-center">
-                <el-button type="primary" @click="submitForm(ruleFormRef)"
+                <el-button type="primary" @click="submitFormSearch(ruleFormRef)"
                   >Tìm kiếm</el-button
                 >
               </div>
@@ -222,48 +235,58 @@ onMounted(() => {
         </b-collapse>
       </div>
 
-      <el-table :data="tableData">
-        <el-table-column prop="name" label="Tên hồ sơ" min-width="180" />
+      <el-table :data="tableRules.data">
         <el-table-column
-          prop="status"
-          label="Tình trạng"
-          min-width="100"
-          align="center"
-        >
-          <template #default="scope">
-            <el-tag
-              :type="
-                scope.row.status === 'Đã duyệt'
-                  ? 'success'
-                  : scope.row.status === 'Chờ duyệt'
-                  ? 'warning'
-                  : 'info'
-              "
-              disable-transitions
-              >{{ scope.row.status }}</el-tag
-            >
-          </template>
-        </el-table-column>
+          prop="userDTO.userInfoDTO.fullName"
+          label="Họ và tên"
+          min-width="150"
+        />
         <el-table-column
-          prop="date_save"
-          label="Ngày lưu"
-          min-width="100"
+          prop="career"
+          label="Lĩnh vực ứng tuyển"
+          min-width="150"
+        />
+        <el-table-column
+          prop="positionOffer"
+          label="Vị trí ứng tuyển"
+          min-width="180"
+        />
+        <el-table-column
+          prop="timeSubmitFormat"
+          label="Thời gian nộp"
+          min-width="120"
           align="center"
         />
         <el-table-column
-          prop="candidate_status"
-          label="Trạng thái"
+          prop="offerSalaryFormat"
+          label="Mức lương"
+          min-width="130"
+          align="right"
+        />
+        <el-table-column
+          prop="experienceNumber"
+          label="Số năm kinh nghiệm"
+          min-width="180"
           align="center"
-        >
-        </el-table-column>
+        />
+        <el-table-column
+          prop="workAddress"
+          label="Địa điểm làm việc"
+          min-width="140"
+        />
+        <el-table-column
+          prop="workForm"
+          label="Hình thức làm việc"
+          min-width="180"
+        />
         <el-table-column
           fixed="right"
           align="center"
           label="Thao tác"
           width="180"
         >
-          <template #default>
-            <div class="d-flex">
+          <template #default="scope">
+            <div class="">
               <el-button
                 size="small"
                 @click="handleEdit(scope.$index, scope.row)"
@@ -271,16 +294,16 @@ onMounted(() => {
               /></el-button>
               <el-button
                 size="small"
-                type="primary"
+                type="warning"
                 plain
-                @click="handleEdit(scope.$index, scope.row)"
-                ><CIcon icon="cilPencil"
+                @click="saveRecruitment(scope.row)"
+                ><CIcon icon="cilStar"
               /></el-button>
               <el-button
                 size="small"
                 type="danger"
                 plain
-                @click="handleDelete(scope.$index, scope.row)"
+                @click="deletePost(scope.row)"
                 ><CIcon icon="cilTrash"
               /></el-button>
             </div>
@@ -295,7 +318,7 @@ onMounted(() => {
           :page-sizes="tableRules.lengthMenu"
           background
           layout="total, sizes, prev, pager, next, jumper"
-          :total="tableRules.total"
+          :total="Number(tableRules.total)"
           @size-change="fn_tableSizeChange"
           @current-change="fn_tableCurentChange"
           @prev-click="fn_tablePrevClick"
@@ -307,12 +330,12 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-::v-deep .avatar-uploader .avatar {
+:deep .avatar-uploader .avatar {
   width: 120px;
   height: 120px;
   display: block;
 }
-::v-deep .avatar-uploader .el-upload {
+:deep .avatar-uploader .el-upload {
   border: 1px dashed #dcdfe6;
   border-radius: 6px;
   cursor: pointer;
@@ -321,11 +344,11 @@ onMounted(() => {
   transition: 0.1s ease;
 }
 
-::v-deep .avatar-uploader .el-upload:hover {
+:deep .avatar-uploader .el-upload:hover {
   border-color: #409eff;
 }
 
-::v-deep .el-icon.avatar-uploader-icon {
+:deep .el-icon.avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
   width: 120px;

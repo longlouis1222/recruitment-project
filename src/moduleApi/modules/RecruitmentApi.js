@@ -22,7 +22,10 @@ export default {
   activeSearchUserCV(data) {
     return Api().get(`recruitments/active-search?check=${data}`)
   },
-  saveList(arr) {
-    return Api.get(`recruitments/save-list?ids=${arr}`)
+  saveList(data) {
+    return Api().post(`recruitments/save-list`, data)
+  },
+  getRecruitmentSavedList(data) {
+    return Api().get(`recruitments/get-list-id`)
   },
 }
