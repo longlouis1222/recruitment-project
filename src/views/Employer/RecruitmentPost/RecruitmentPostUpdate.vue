@@ -4,15 +4,18 @@ import DataService from '@/service/DataService'
 
 import IndustryApi from '@/moduleApi/modules/IndustryApi'
 import PostApi from '@/moduleApi/modules/PostApi'
+import UserProfileApi from '@/moduleApi/modules/UserProfileApi'
 
 import { ElNotification } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
 
 import modelData from './RecruitmentPostModel'
 
+const route = useRoute()
 const router = useRouter()
+
 const ruleFormRef = ref(FormInstance)
 
 const workFormList = DataService.workFormList
@@ -36,19 +39,18 @@ const submitForm = async (formEl) => {
   if (!formEl) return
   await formEl.validate(async (valid, fields) => {
     try {
-      formData.value.status = 'WAITING_APPROVE'
-      const postApiRes = await PostApi.create(formData.value)
+      const postApiRes = await PostApi.update(formData.value)
       if (postApiRes.status == 200) {
         ElNotification({
           title: 'Success',
-          message: 'Thêm mới thành công.',
+          message: 'Cập nhật thành công.',
           type: 'success',
           duration: 3000,
         })
+        setTimeout(() => {
+          backToPrev()
+        }, 500);
       }
-      setTimeout(() => {
-        backToPrev()
-      }, 500);
     } catch (error) {
       ElNotification({
         title: 'Error',
@@ -72,12 +74,32 @@ const getIndustryList = async () => {
   }
 }
 
+const getPostById = async () => {
+  const industryApiRes = await PostApi.findById(route.params.id)
+  if (industryApiRes.status == 200) {
+    formData.value = industryApiRes.data.data
+  }
+}
+
+const getUserInfo = async () => {
+  const userProfileApiRes = await UserProfileApi.findById(localStorage.getItem('uid'))
+  if (userProfileApiRes.status == 200) {
+    const res = userProfileApiRes.data.data
+    formData.value.fullNameContactor = res.userInfoDTO.fullName,
+    formData.value.emailContactor = res.email,
+    formData.value.phoneNumberContactor = res.userInfoDTO.phoneNumber,
+    formData.value.addressContactor = res.companyDTO.companyAddress
+  }
+}
+
 const backToPrev = () => {
   router.go(-1)
 }
 
-onMounted(() => {
-  getIndustryList()
+onMounted(async () => {
+  await getIndustryList()
+  await getPostById()
+  await getUserInfo()
 })
 </script>
 
@@ -393,28 +415,29 @@ onMounted(() => {
         <b-row>
           <h5>Thông tin người liên hệ</h5>
           <b-col md="4">
-            <el-form-item label="Họ và tên" prop="company_name">
-              <el-input v-model="formData.value.company_name" />
+            <el-form-item label="Họ và tên" prop="">
+              <el-input v-model="formData.value.fullNameContactor" disabled />
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item label="Email" prop="company_name">
-              <el-input v-model="formData.value.company_name" />
+            <el-form-item label="Email" prop="">
+              <el-input v-model="formData.value.emailContactor" disabled />
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item label="Điện thoại" prop="personnel_size">
-              <el-input v-model="formData.value.personnel_size" />
+            <el-form-item label="Điện thoại" prop="">
+              <el-input v-model="formData.value.phoneNumberContactor" disabled />
             </el-form-item>
           </b-col>
         </b-row>
         <b-row>
           <b-col md="12">
-            <el-form-item label="Địa chỉ liên hệ" prop="landline_phone">
+            <el-form-item label="Địa chỉ liên hệ" prop="">
               <el-input
-                v-model="formData.value.landline_phone"
+                v-model="formData.value.addressContactor"
                 type="textarea"
                 :autosize="{ minRows: 2, maxRows: 4 }"
+                disabled
               />
             </el-form-item>
           </b-col>
@@ -423,7 +446,7 @@ onMounted(() => {
         <div class="text-right">
           <el-button @click="backToPrev">Hủy bỏ</el-button>
           <el-button type="primary" @click="submitForm(ruleFormRef)"
-            >Tiếp tục</el-button
+            >Cập nhật</el-button
           >
         </div>
       </el-form>

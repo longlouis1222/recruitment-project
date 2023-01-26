@@ -65,35 +65,66 @@ DataService.certificateList = [
 DataService.experienceList = [
   {
     label: 'Chưa có kinh nghiệm',
-    value: 0
+    value: 'Chưa có kinh nghiệm'
   },
-  // {
-  //   label: 'Dưới 1 năm',
-  //   value: 1
-  // },
+  {
+    label: 'Dưới 1 năm',
+    value: 'Dưới 1 năm'
+  },
   {
     label: '1 năm',
-    value: 1
+    value: '1 năm'
   },
   {
     label: '2 năm',
-    value: 2
+    value: '2 năm'
   },
   {
     label: '3 năm',
-    value: 3
+    value: '3 năm'
   },
   {
     label: '4 năm',
-    value: 4
+    value: '4 năm'
   },
   {
     label: '5 năm',
-    value: 5
+    value: '5 năm'
   },
   {
     label: 'Trên 5 năm',
-    value: 6
+    value: 'Trên 5 năm'
+  },
+]
+
+DataService.probationaryPeriodList = [
+  {
+    label: 'Không cần thử việc',
+    value: 'Không cần thử việc'
+  },
+  {
+    label: '1 tháng',
+    value: '1 tháng'
+  },
+  {
+    label: '2 tháng',
+    value: '2 tháng'
+  },
+  {
+    label: '3 tháng',
+    value: '3 tháng'
+  },
+  {
+    label: '4 tháng',
+    value: '4 tháng'
+  },
+  {
+    label: '5 tháng',
+    value: '5 tháng'
+  },
+  {
+    label: 'Trên 5 tháng',
+    value: 'Trên 5 tháng'
   },
 ]
 
@@ -574,6 +605,17 @@ DataService.postStatusList = [
   {
     label: 'Từ chối',
     value: 'REJECT'
+  },
+]
+
+DataService.postOutstandingList = [
+  {
+    label: 'Không',
+    value: 'false'
+  },
+  {
+    label: 'Có',
+    value: 'true'
   },
 ]
 

@@ -38,6 +38,11 @@ model.dataForm = {
   title: null,
   status: null,
   workingForm: null,
+
+  fullNameContactor: null,
+  emailContactor: null,
+  phoneNumberContactor: null,
+  addressContactor: null,
 }
 
 // validation form

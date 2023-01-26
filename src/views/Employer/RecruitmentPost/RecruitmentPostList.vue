@@ -64,9 +64,19 @@ const getPostList = async () => {
 }
 
 const changeData = (data) => {
-  data.forEach(post => {
-    post.created = post.created ? MethodService.formatDate(post.created, 'date') : ''
-    post.jobApplicationDeadline = post.jobApplicationDeadline ? MethodService.formatDate(post.jobApplicationDeadline, 'date') : ''
+  data.forEach((post) => {
+    post.created = post.created
+      ? MethodService.formatDate(post.created, 'date')
+      : ''
+    post.jobApplicationDeadline = post.jobApplicationDeadline
+      ? MethodService.formatDate(post.jobApplicationDeadline, 'date')
+      : ''
+    post.salaryMinFormat = post.salaryMin
+      ? MethodService.formatCurrency(post.salaryMin)
+      : '---'
+    post.salaryMaxFormat = post.salaryMax
+      ? MethodService.formatCurrency(post.salaryMax)
+      : '---'
   })
   return data
 }
@@ -90,10 +100,28 @@ const submitFormSearch = async (formEl) => {
   })
 }
 
-const updatePost = () => {
-  // router.push({
-  //   name: ''
-  // })
+const handleAction = (action, rowData) => {
+  if (action === 'approve') {
+    approvePost(rowData)
+  } else if (action === 'update') {
+    updatePost(rowData)
+  } else if (action === 'delete') {
+    deletePost(rowData)
+  }
+}
+
+const approvePost = (rowData) => {
+  router.push({
+    name: 'Duyệt tin tuyển dụng',
+    params: { id: rowData.id }
+  })
+}
+
+const updatePost = (rowData) => {
+  router.push({
+    name: 'Cập nhật tin tuyển dụng',
+    params: { id: rowData.id }
+  })
 }
 
 const deletePost = async (rowData) => {
@@ -167,7 +195,6 @@ onMounted(async () => {
             <h4>Danh sách bài tuyển dụng</h4>
             <el-button
               type="primary"
-              class="btn btn-soft-secondary btn-border"
               @click="toggleSearchBox"
             >
               <el-icon class="me-2"><Search /></el-icon>
@@ -239,14 +266,47 @@ onMounted(async () => {
         />
         <!-- <el-table-column prop="approve_time" label="Lượt nộp" align="center" />
         <el-table-column prop="read_time" label="Lượt xem" align="center" /> -->
-        <el-table-column prop="numberOfRecruits" label="Số lượng tuyển" align="center" min-width="130" />
+        <el-table-column
+          prop="numberOfRecruits"
+          label="Số lượng tuyển"
+          align="center"
+          min-width="130"
+        />
         <el-table-column prop="level" label="Cấp bậc" min-width="120" />
-        <el-table-column prop="recruitmentArea" label="Khu vực tuyển" min-width="120" />
-        <el-table-column prop="recruitmentArea" label="Khu vực tuyển" min-width="120" />
-        <el-table-column prop="recruitmentAge" label="Độ tuổi" align="center" min-width="100px" />
-        <el-table-column prop="recruitmentGender" label="Giới tính" align="center" min-width="120" />
-        <el-table-column prop="salaryMin" label="Thu nhập tối thiểu" align="right" min-width="150" />
-        <el-table-column prop="salaryMax" label="Thu nhập tối đa" align="right" min-width="150" />
+        <el-table-column
+          prop="recruitmentArea"
+          label="Khu vực tuyển"
+          min-width="120"
+        />
+        <el-table-column
+          prop="recruitmentArea"
+          label="Khu vực tuyển"
+          min-width="120"
+        />
+        <el-table-column
+          prop="recruitmentAge"
+          label="Độ tuổi"
+          align="center"
+          min-width="100px"
+        />
+        <el-table-column
+          prop="recruitmentGender"
+          label="Giới tính"
+          align="center"
+          min-width="120"
+        />
+        <el-table-column
+          prop="salaryMinFormat"
+          label="Thu nhập tối thiểu"
+          align="right"
+          min-width="150"
+        />
+        <el-table-column
+          prop="salaryMaxFormat"
+          label="Thu nhập tối đa"
+          align="right"
+          min-width="150"
+        />
         <!-- <el-table-column
           prop="post_status"
           label="Tình trạng tin"
@@ -254,7 +314,12 @@ onMounted(async () => {
           show-overflow-tooltip
           align="center"
         /> -->
-        <el-table-column prop="status" label="Trạng thái" align="center" min-width="120">
+        <el-table-column
+          prop="status"
+          label="Trạng thái"
+          align="center"
+          min-width="120"
+        >
           <template #default="scope">
             <el-tag
               :type="
@@ -265,40 +330,42 @@ onMounted(async () => {
                   : 'danger'
               "
               disable-transitions
-              >{{ scope.row.status === 'APPROVED'
+              >{{
+                scope.row.status === 'APPROVED'
                   ? 'Đã duyệt'
                   : scope.row.status === 'WAITING_APPROVE'
                   ? 'Chờ duyệt'
-                  : 'Từ chối' }}</el-tag
+                  : 'Từ chối'
+              }}</el-tag
             >
           </template>
         </el-table-column>
-        <el-table-column prop="necessarySkills" label="Khác" min-width="200"/>
+        <el-table-column prop="necessarySkills" label="Khác" min-width="200" />
         <el-table-column
           fixed="right"
           align="center"
           label="Thao tác"
-          width="140"
+          width="170"
         >
           <template #default="scope">
             <div class="">
-              <!-- <el-button
+              <el-button
                 size="small"
-                @click="handleEdit(scope.$index, scope.row)"
-                ><CIcon icon="cilFindInPage"
-              /></el-button> -->
+                @click="handleAction('approve', scope.row)"
+                ><CIcon icon="cilBrushAlt"
+              /></el-button>
               <el-button
                 size="small"
                 type="primary"
                 plain
-                @click="updatePost(scope.row)"
+                @click="handleAction('update', scope.row)"
                 ><CIcon icon="cilPencil"
               /></el-button>
               <el-button
                 size="small"
                 type="danger"
                 plain
-                @click="deletePost(scope.row)"
+                @click="handleAction('delete', scope.row)"
                 ><CIcon icon="cilTrash"
               /></el-button>
             </div>

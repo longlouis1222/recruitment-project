@@ -48,10 +48,40 @@ export default [
           import('@/views/Employer/RecruitmentPost/RecruitmentPostCreate.vue'),
       },
       {
-        path: '/employer/recruitment-post/recuitment-post-list',
-        name: 'Danh sách bài tuyển dụng',
-        component: () =>
-          import('@/views/Employer/RecruitmentPost/RecruitmentPostList.vue'),
+        path: '/employer/recruitment-post',
+        name: 'Tin tuyển dụng',
+        redirect: '/employer/recruitment-post/recuitment-post-list',
+        component: {
+          render() {
+            return h(resolveComponent('router-view'))
+          },
+        },
+          children: [
+            {
+              path: 'recuitment-post-list',
+              name: 'Danh sách bài tuyển dụng',
+              component: () =>
+                import('@/views/Employer/RecruitmentPost/RecruitmentPostList.vue'),
+            },
+            {
+              path: 'recuitment-post-create',
+              name: 'Tạo tin tuyển dụng',
+              component: () =>
+                import('@/views/Employer/RecruitmentPost/RecruitmentPostCreate.vue'),
+            },
+            {
+              path: 'recuitment-post-update/:id',
+              name: 'Cập nhật tin tuyển dụng',
+              component: () =>
+                import('@/views/Employer/RecruitmentPost/RecruitmentPostUpdate.vue'),
+            },
+            {
+              path: 'recuitment-post-approve/:id',
+              name: 'Duyệt tin tuyển dụng',
+              component: () =>
+                import('@/views/Employer/RecruitmentPost/RecruitmentPostApprove.vue'),
+            },
+          ]
       },
       {
         path: '/employer/find-candidate/find-candidate-list',
