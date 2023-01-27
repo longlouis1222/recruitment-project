@@ -3,14 +3,16 @@ import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
 
 import UserProfileApi from '@/moduleApi/modules/UserProfileApi'
+import RecruitmentApi from '@/moduleApi/modules/RecruitmentApi'
 
 import { ElNotification } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
 
+import xlsx from 'xlsx/dist/xlsx.full.min'
+
 import modelData from './CandidateProfileModel'
-import RecruitmentApi from '@/moduleApi/modules/RecruitmentApi'
 
 const mainJobList = DataService.mainJobList
 const experienceList = DataService.experienceList
@@ -20,7 +22,51 @@ const workFormList = DataService.workFormList
 const ruleFormRef = ref(FormInstance)
 const validForm = modelData.validForm
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
-const formSearchData = reactive({value: MethodService.copyObject(modelData.dataForm)})
+const formSearchData = reactive({
+  value: MethodService.copyObject(modelData.dataForm),
+})
+
+const convertDataExport = (data) => {
+  let arr = []
+  data.forEach((record) => {
+    const o = {
+      'Họ và tên': record.userDTO.userInfoDTO.fullName,
+      'Lĩnh vực ứng tuyển': record.career,
+      'Vị trí ứng tuyển': record.positionOffer,
+      'Thời gian nộp': record.timeSubmitFormat,
+      'Mức lương': record.offerSalary ? MethodService.formatCurrency(record.offerSalary) : 0,
+      'Số năm kinh nghiêm': record.experienceNumber,
+      'Địa điểm làm việc': record.workAddress,
+      'Hình thức làm việc': record.workForm,
+    }
+    arr.push(o)
+  })
+  return arr
+}
+
+const exportExcel = () => {
+  const dataExport = convertDataExport(tableRules.data)
+  if (!dataExport || dataExport.length == 0) {
+    return
+  }
+  const XLSX = xlsx
+  const workbook = XLSX.utils.book_new()
+  const worksheet = XLSX.utils.json_to_sheet(dataExport)
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Data')
+  // Set column width
+  worksheet['!cols'] = []
+  for (const property in dataExport[0]) {
+    if (property === 'Địa điểm làm việc' || property === 'Lĩnh vực ứng tuyển') {
+      const max_width = dataExport.reduce((w, r) => Math.max(w, property.length), 10)
+      worksheet['!cols'].push({ wch: max_width })
+    } else {
+      const max_width = dataExport.reduce((w, r) => Math.max(w, r[`${property}`].length), 10)
+      worksheet['!cols'].push({ wch: max_width })
+    }
+  }
+
+  XLSX.writeFile(workbook, 'Hồ sơ đã lưu.xlsx', { compression: true })
+}
 
 const submitForm = async (formEl) => {
   if (!formEl) return
@@ -97,7 +143,9 @@ const changeData = (data) => {
     item.offerSalaryFormat = item.offerSalary
       ? MethodService.formatCurrency(item.offerSalary) + ' VND'
       : 0
-    item.timeSubmitFormat = item.timeSubmit ? MethodService.formatDate(item.timeSubmit, 'date') : ''
+    item.timeSubmitFormat = item.timeSubmit
+      ? MethodService.formatDate(item.timeSubmit, 'date')
+      : ''
   })
   return data
 }
@@ -114,14 +162,16 @@ onMounted(() => {
         <div class="card-header">
           <div class="d-flex justify-content-between">
             <h4>Hồ sơ ứng viên</h4>
-            <el-button
-              type="primary"
-              class="btn btn-soft-secondary btn-border"
-              @click="toggleSearchBox"
-            >
-              <el-icon class="me-2"><Search /></el-icon>
-              Ẩn/hiện tìm kiếm
-            </el-button>
+            <div class="d-flex">
+              <el-button type="primary" @click="toggleSearchBox">
+                <el-icon class="me-2"><Search /></el-icon>
+                Ẩn/hiện tìm kiếm
+              </el-button>
+              <el-button type="primary" plain @click="exportExcel" :disabled="tableRules.data.length == 0">
+                <el-icon class="me-2"><Download /></el-icon>
+                Tải danh sách
+              </el-button>
+            </div>
           </div>
         </div>
       </template>

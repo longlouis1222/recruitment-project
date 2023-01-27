@@ -352,6 +352,7 @@ onMounted(async () => {
               <el-button
                 size="small"
                 @click="handleAction('approve', scope.row)"
+                :disabled="scope.row.status == 'APPROVED' || scope.row.status == 'REJECT'"
                 ><CIcon icon="cilBrushAlt"
               /></el-button>
               <el-button
@@ -359,6 +360,7 @@ onMounted(async () => {
                 type="primary"
                 plain
                 @click="handleAction('update', scope.row)"
+                :disabled="scope.row.status == 'APPROVED' || scope.row.status == 'REJECT'"
                 ><CIcon icon="cilPencil"
               /></el-button>
               <el-button

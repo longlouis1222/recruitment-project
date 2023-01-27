@@ -404,23 +404,23 @@ onMounted(async () => {
       <h3 class="fw-bold mb-3">Việc làm theo ngành nghề</h3>
       <b-row>
         <b-col md="4">
-          <ul class="ps-2"  v-for="(job, i) in mainJobList" :key="job.value">
-            <li class="pb-1">
-              <el-link v-if="i<6">Việc làm {{ job.label }}</el-link>
+          <ul class="ps-2">
+            <li class="pb-1" v-for="(job, i) in mainJobList" :key="job.value" :style="i>6 ? 'display: none;' : ''">
+              <el-link>Việc làm {{ job.label }}</el-link>
             </li>
           </ul>
         </b-col>
         <b-col md="4">
-          <ul class="ps-2" v-for="(job, i) in mainJobList" :key="job.value">
-            <li class="pb-1">
-              <el-link v-if="i>=6 && i<13">Việc làm {{ job.label }}</el-link>
+          <ul class="ps-2">
+            <li class="pb-1" v-for="(job, i) in mainJobList" :key="job.value" :style="i<=6 || i>13 ? 'display: none;' : ''">
+              <el-link>Việc làm {{ job.label }}</el-link>
             </li>
           </ul>
         </b-col>
         <b-col md="4">
-          <ul class="ps-2" v-for="(job, i) in mainJobList" :key="job.value">
-            <li class="pb-1">
-              <el-link v-if="i>=13">Việc làm {{ job.label }}</el-link>
+          <ul class="ps-2">
+            <li class="pb-1" v-for="(job, i) in mainJobList" :key="job.value" :style="i<13 ? 'display: none;' : ''">
+              <el-link>Việc làm {{ job.label }}</el-link>
             </li>
           </ul>
         </b-col>
