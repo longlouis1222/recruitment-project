@@ -188,7 +188,6 @@ onMounted(async () => {
             <div>
               <el-button
                 type="primary"
-                class="btn btn-soft-secondary btn-border"
                 @click="toggleSearchBox"
               >
                 <el-icon class="me-2"><Search /></el-icon>
@@ -196,7 +195,6 @@ onMounted(async () => {
               </el-button>
               <el-button
                 type="primary"
-                class="btn btn-soft-secondary btn-border"
                 @click="openDialogAddIndustry"
               >
                 <!-- <el-icon class="me-2"><Search /></el-icon> -->

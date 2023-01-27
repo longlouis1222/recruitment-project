@@ -2,6 +2,8 @@
 import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
 import RecruitmentApi from '@/moduleApi/modules/RecruitmentApi'
+import FileApi from '@/moduleApi/modules/FileApi'
+import axios from 'axios'
 
 import { ElNotification, ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
@@ -33,12 +35,66 @@ const updateOnlineCV = () => {
 }
 
 const fileList = ref([
-  {
-    name: 'NguyenHuyLong.pdf',
-    // url: 'https://element-plus.org/images/element-plus-logo.svg',
-    url: 'https://pdfsimpli.com/userdocument/view-b?ofn=document.pdf&unqn=document_d86653657a0d4c1891c51d85d456316c.pdf&frm=pdf&to=PDF&fskb=82&npdf=document_d86653657a0d4c1891c51d85d456316c.pdf&smb_plan=1',
-  },
+  // {
+  //   name: 'NguyenHuyLong.pdf',
+  //   url: 'https://pdfsimpli.com/userdocument/view-b?ofn=document.pdf&unqn=document_d86653657a0d4c1891c51d85d456316c.pdf&frm=pdf&to=PDF&fskb=82&npdf=document_d86653657a0d4c1891c51d85d456316c.pdf&smb_plan=1',
+  // },
 ])
+
+const uploadFileToDb = async () => {
+  console.log('fileList.value[0].raw.name', fileList.value[0].raw.name)
+  let fd = new FormData()
+  fd.append('filePath', 'https://drive.google.com/drive/folders/1Evc0_Wr5g0ehP9nRPyiSYM_DFXxoHuMm?usp=share_link')
+  fd.append(
+    'fileUpload',
+    fileList.value[0].raw,
+    fileList.value[0].raw.name,
+  )
+  fd.append('shared', true)
+
+  console.log('fd', fd)
+  // const fileApiRes = await FileApi.uploadFile(fd)
+  // console.log(fileApiRes)
+
+  axios({
+    method: 'post',
+    url: 'http://localhost:8085/api/v1/recruitments/upload-profile',
+    data: fd,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization:
+        localStorage.getItem('Token') && localStorage.getItem('uid')
+          ? 'Bearer ' + localStorage.getItem('Token')
+          : '',
+    },
+  })
+    .then(async (response) => {
+      //handle success
+      console.log('success', response)
+      // loadImage.value = true
+      await getFileById(response.data.data)
+    })
+    .catch((response) => {
+      //handle error
+      console.log('error', response)
+    })
+}
+
+const getFileById = async (id) => {
+  try {
+    const res = await FileApi.getFileById(id)
+    if (res.status === 200) {
+      fileList.value = [
+        {
+          name: res.data.data.name,
+          url: res.data.data.link
+        }
+      ]
+    }
+  } catch (error) {
+    console.log('error:>', error)
+  }
+}
 
 const handleRemove = (file, uploadFiles) => {
   console.log(file, uploadFiles)
@@ -46,6 +102,7 @@ const handleRemove = (file, uploadFiles) => {
 
 const handlePreview = (uploadFile) => {
   console.log(uploadFile)
+  window.open(uploadFile.url)
 }
 
 const handleExceed = (files, uploadFiles) => {
@@ -71,6 +128,7 @@ const getCurrentUserCV = async () => {
     switch1.value = dataCv.value.permissionSearch
     switch2.value = dataCv.value.permissionSearch
     view.value = dataCv.value.view
+    await getFileById(res.data.data.fileId)
   }
 }
 
@@ -179,8 +237,8 @@ onMounted(async () => {
             >Đã duyệt</el-tag
           >
           <el-divider direction="vertical" />
-          <p class="mb-0 mx-3">Lượt xem: {{ view }}</p>
-          <el-divider direction="vertical" />
+          <!-- <p class="mb-0 mx-3">Lượt xem: {{ view }}</p> -->
+          <!-- <el-divider direction="vertical" /> -->
           <el-switch v-model="switch2" active-text="Cho phép tìm kiếm" disabled />
           <el-tooltip
             class="box-item"
@@ -202,15 +260,21 @@ onMounted(async () => {
           <el-upload
             v-model:file-list="fileList"
             class="upload-demo"
-            action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+            action
             multiple
             :on-preview="handlePreview"
             :on-remove="handleRemove"
             :before-remove="beforeRemove"
             :limit="1"
             :on-exceed="handleExceed"
+            :auto-upload="false"
           >
-            <el-button type="primary"><CIcon icon="cil-pencil" class="me-2" />Cập nhật hồ sơ</el-button>
+            <template #trigger>
+              <el-button type="primary"><CIcon icon="cil-pencil" class="me-2" />Tải lên hồ sơ</el-button>
+            </template>
+            <el-button class="ml-3 mb-2 ms-2" type="success" @click="uploadFileToDb">
+              Cập nhật
+            </el-button>
             <template #tip>
               <div class="el-upload__tip">
                 Định dạng file tải lên là PDF.

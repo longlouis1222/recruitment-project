@@ -12,7 +12,7 @@ export default {
   downloadFile(id) {
     return Api().get(`google-driver/download/file/${id}`)
   },
-  getImgById(id) {
+  getFileById(id) {
     return Api().get(`google-driver/file/get-by-id/${id}`)
   }
 }

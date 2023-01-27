@@ -186,7 +186,6 @@ onMounted(() => {
             <h4>Danh sách người dùng</h4>
             <el-button
               type="primary"
-              class="btn btn-soft-secondary btn-border"
               @click="toggleSearchBox"
             >
               <el-icon class="me-2"><Search /></el-icon>

@@ -35,7 +35,7 @@ const convertDataExport = (data) => {
       'Vị trí ứng tuyển': record.positionOffer,
       'Thời gian nộp': record.timeSubmitFormat,
       'Mức lương': record.offerSalary ? MethodService.formatCurrency(record.offerSalary) : 0,
-      'Số năm kinh nghiêm': record.experienceNumber,
+      'Số năm kinh nghiệm': record.experienceNumber,
       'Địa điểm làm việc': record.workAddress,
       'Hình thức làm việc': record.workForm,
     }
@@ -161,7 +161,7 @@ onMounted(() => {
       <template #header>
         <div class="card-header">
           <div class="d-flex justify-content-between">
-            <h4>Hồ sơ ứng viên</h4>
+            <h4>Hồ sơ ứng viên đã lưu</h4>
             <div class="d-flex">
               <el-button type="primary" @click="toggleSearchBox">
                 <el-icon class="me-2"><Search /></el-icon>
@@ -342,13 +342,13 @@ onMounted(() => {
                 @click="handleEdit(scope.$index, scope.row)"
                 ><CIcon icon="cilFindInPage"
               /></el-button>
-              <el-button
+              <!-- <el-button
                 size="small"
                 type="warning"
                 plain
                 @click="saveRecruitment(scope.row)"
                 ><CIcon icon="cilStar"
-              /></el-button>
+              /></el-button> -->
               <el-button
                 size="small"
                 type="danger"

@@ -138,6 +138,14 @@ const getUserInfo = async () => {
   }
 }
 
+const handleAction = (action, rowData) => {
+  if (action === 'view') {
+    console.log('ZOOO view')
+  } else if (action === 'save') {
+    saveRecruitment(rowData)
+  }
+}
+
 const saveRecruitment = async (rowData) => {
   try {
     let dataBody = {
@@ -231,7 +239,6 @@ onMounted(() => {
             <h4>Tìm ứng viên</h4>
             <el-button
               type="primary"
-              class="btn btn-soft-secondary btn-border"
               @click="toggleSearchBox"
             >
               <el-icon class="me-2"><Search /></el-icon>
@@ -396,16 +403,16 @@ onMounted(() => {
         >
           <template #default="scope">
             <div class="">
-              <!-- <el-button
+              <el-button
                 size="small"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleAction('view', scope.row)"
                 ><CIcon icon="cilFindInPage"
-              /></el-button> -->
+              /></el-button>
               <el-button
                 size="small"
                 type="warning"
                 plain
-                @click="saveRecruitment(scope.row)"
+                @click="handleAction(save, scope.row)"
                 ><CIcon icon="cilStar"
               /></el-button>
               <!-- <el-button
