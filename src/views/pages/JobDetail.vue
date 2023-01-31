@@ -22,15 +22,30 @@ const backToPrev = () => {
     <CContainer xxl>
       <el-card class="box-card">
         <template #header>
-          <div class="card-header d-flex align-items-center">
-            <img
-              src="../../assets/images/logo-company/04012019-07.jpg"
-              alt="logo-company"
-              class="card__logo"
-            />
-            <div>
-              <h5 class="ms-3">Công ty CP Phần mềm LL</h5>
-              <p class="text-black-50 ms-3 mb-0">12 người</p>
+          <div
+            class="
+              card-header
+              d-flex
+              align-items-center
+              justify-content-between
+            "
+          >
+            <div class="d-flex align-items-center">
+              <img
+                src="../../assets/images/logo-company/04012019-07.jpg"
+                alt="logo-company"
+                class="card__logo"
+              />
+              <div>
+                <h5 class="ms-3">Công ty CP Phần mềm LL</h5>
+                <p class="text-black-50 ms-3 mb-0">12 người</p>
+              </div>
+            </div>
+            <div class="d-flex align-items-center" @click="backToPrev">
+              <el-link :underline="false"
+                ><span>Quay lại</span>
+                <el-icon class="mt-1 ms-2"><Right /></el-icon
+              ></el-link>
             </div>
           </div>
         </template>
@@ -41,10 +56,12 @@ const backToPrev = () => {
             ><span>Hạn nộp hồ sơ: 12/02/2023</span>
           </div>
           <div class="d-flex align-items-center mb-3 me-4">
-            <el-icon class="text-black-50"><View /></el-icon><span>Lượt xem: 45</span>
+            <el-icon class="text-black-50"><View /></el-icon
+            ><span>Lượt xem: 45</span>
           </div>
           <div class="d-flex align-items-center mb-3">
-            <el-icon class="text-black-50"><Clock /></el-icon><span>Ngày đăng: 12/02/2023</span>
+            <el-icon class="text-black-50"><Clock /></el-icon
+            ><span>Ngày đăng: 12/02/2023</span>
           </div>
         </div>
 
@@ -222,7 +239,14 @@ const backToPrev = () => {
       </el-card>
     </CContainer>
     <!-- End Company info -->
-
+    <CContainer xxl class="mt-3 mb-4">
+      <div class="d-flex align-items-center mt-3 mb-4" @click="backToPrev">
+        <el-link :underline="false"
+          ><el-icon class="mt-1 ms-2"><Back /></el-icon
+          ><span>Quay lại</span></el-link
+        >
+      </div>
+    </CContainer>
     <AppFooterLanding />
   </div>
 </template>

@@ -146,9 +146,16 @@ const backToPrev = () => {
         </div>
       </CContainer>
       <!-- End company contact info -->
+      <CContainer xl class="mt-3 mb-4" style="margin-left: 160px;">
+        <div class="d-flex align-items-center mt-4 mb-4" @click="backToPrev">
+          <el-link :underline="false"
+            ><el-icon class="mt-1"><Back /></el-icon
+            ><span>Quay lại</span></el-link
+          >
+        </div>
+      </CContainer>
     </div>
     <!-- End Body banner -->
-
     <AppFooterLanding />
   </div>
 </template>
