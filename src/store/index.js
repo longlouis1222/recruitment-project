@@ -10,9 +10,9 @@ export default createStore({
     user: null,
   },
   getters: {
-    currentUser (state) {
+    currentUser(state) {
       return state.user
-    }
+    },
   },
   mutations: {
     toggleSidebar(state) {
@@ -40,16 +40,18 @@ export default createStore({
         )
         const res = await AuthService.login(credentials)
         if (res.status == 200) {
-          console.log('login RES', res)
           console.log(
             'this.$jwtDec("<your jwt>")',
             VueJwtDecode.decode(res.data.token),
           )
-          commit('SET_CURRENT_USER', VueJwtDecode.decode(res.data.token))
+          const userInfo = VueJwtDecode.decode(res.data.token)
+          commit('SET_CURRENT_USER', userInfo)
           localStorage.setItem('Token', res.data.token)
-          localStorage.setItem('uid', VueJwtDecode.decode(res.data.token).uid)
-          localStorage.setItem('type', VueJwtDecode.decode(res.data.token).type)
-          router.push({ name: 'Trang chủ' })
+          localStorage.setItem('uid', userInfo.uid)
+          localStorage.setItem('type', userInfo.type)
+          if (userInfo.type !== 'CANDIDATE' && userInfo.type !== 'EMPLOYER') {
+            router.push({ name: 'Danh sách người dùng' })
+          } else router.push({ name: 'Trang chủ' })
         }
       } catch (error) {
         console.log(error)
@@ -118,7 +120,7 @@ export default createStore({
       } catch (error) {
         console.log(error)
       }
-    }
+    },
   },
   modules: {},
   // modules,

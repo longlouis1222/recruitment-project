@@ -179,8 +179,8 @@ const getUserInfo = async () => {
     userProfile.value = userProfileApiRes.data.data
     console.log('userProfile', userProfile)
 
-    const fileApiRes = await FileApi.downloadFile(userProfile.value.userInfoDTO.avatar)
-    console.log('fileApiRes', fileApiRes)
+    // const fileApiRes = await FileApi.downloadFile(userProfile.value.userInfoDTO.avatar)
+    // console.log('fileApiRes', fileApiRes)
     // if (userProfile.value.userInfoDTO.avatar) {
     //   const fileApiRes = await FileApi.getImgById(userProfile.value.userInfoDTO.avatar)
     //   if (fileApiRes.status == 200) {
@@ -190,9 +190,9 @@ const getUserInfo = async () => {
     // }
     // imgSrc.value = 'data:image/png;base64,' + hexToBase64(fileApiRes.data)
     // imgSrc.value = 'data:image/png;base64,' + fileApiRes.data
-    const url = _arrayBufferToBase64(fileApiRes.data)
-    console.log("URL >", url)
-    imgSrc.value = 'data:image/jpeg;base64,' + url
+    // const url = _arrayBufferToBase64(fileApiRes.data)
+    // console.log("URL >", url)
+    // imgSrc.value = 'data:image/jpeg;base64,' + url
 
     formData.value = {
       companyDTO: userProfile.value.companyDTO,

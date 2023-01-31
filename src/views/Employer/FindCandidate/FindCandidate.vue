@@ -415,13 +415,6 @@ onMounted(() => {
                 @click="handleAction(save, scope.row)"
                 ><CIcon icon="cilStar"
               /></el-button>
-              <!-- <el-button
-                size="small"
-                type="danger"
-                plain
-                @click="deletePost(scope.row)"
-                ><CIcon icon="cilTrash"
-              /></el-button> -->
             </div>
           </template>
         </el-table-column>
