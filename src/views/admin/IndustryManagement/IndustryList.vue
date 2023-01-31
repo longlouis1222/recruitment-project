@@ -253,7 +253,7 @@ onMounted(async () => {
         <el-table-column prop="" label="STT" width="70" align="center">
           <template #default="scope">
             <div class="text-center">
-              {{ scope.$index + 1 }}
+              {{ tableRules.skip + scope.$index + 1 }}
             </div>
           </template>
         </el-table-column>
@@ -267,11 +267,6 @@ onMounted(async () => {
         >
           <template #default="scope">
             <div class="">
-              <!-- <el-button
-                size="small"
-                @click="handleEdit(scope.$index, scope.row)"
-                ><CIcon icon="cilFindInPage"
-              /></el-button> -->
               <el-button
                 size="small"
                 type="primary"

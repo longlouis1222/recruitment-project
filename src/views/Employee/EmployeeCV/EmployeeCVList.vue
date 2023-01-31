@@ -34,15 +34,9 @@ const updateOnlineCV = () => {
   })
 }
 
-const fileList = ref([
-  // {
-  //   name: 'NguyenHuyLong.pdf',
-  //   url: 'https://pdfsimpli.com/userdocument/view-b?ofn=document.pdf&unqn=document_d86653657a0d4c1891c51d85d456316c.pdf&frm=pdf&to=PDF&fskb=82&npdf=document_d86653657a0d4c1891c51d85d456316c.pdf&smb_plan=1',
-  // },
-])
+const fileList = ref([])
 
 const uploadFileToDb = async () => {
-  console.log('fileList.value[0].raw.name', fileList.value[0].raw.name)
   let fd = new FormData()
   fd.append('filePath', 'https://drive.google.com/drive/folders/1Evc0_Wr5g0ehP9nRPyiSYM_DFXxoHuMm?usp=share_link')
   fd.append(
@@ -51,10 +45,6 @@ const uploadFileToDb = async () => {
     fileList.value[0].raw.name,
   )
   fd.append('shared', true)
-
-  console.log('fd', fd)
-  // const fileApiRes = await FileApi.uploadFile(fd)
-  // console.log(fileApiRes)
 
   axios({
     method: 'post',

@@ -219,8 +219,8 @@ DataService.mainJobList = [
     value: 'Xây dựng'
   },
   {
-    label: 'Kiêm toán - kế toán',
-    value: 'Kiêm toán - kế toán'
+    label: 'Kiểm toán - kế toán',
+    value: 'Kiểm toán - kế toán'
   },
   {
     label: 'Nhân sự',

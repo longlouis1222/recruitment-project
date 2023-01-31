@@ -4,7 +4,7 @@ import DataService from '@/service/DataService'
 
 import UserProfileApi from '@/moduleApi/modules/UserProfileApi'
 
-import { ElNotification } from 'element-plus'
+import { ElNotification, ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
@@ -81,6 +81,63 @@ const getUserInfo = async () => {
   }
 }
 
+const handleRemove = (file, uploadFiles) => {
+  console.log(file, uploadFiles)
+}
+
+const handlePreview = (uploadFile) => {
+  console.log(uploadFile)
+  window.open(uploadFile.url)
+}
+
+const handleExceed = (files, uploadFiles) => {
+  ElMessage.warning(
+    `Giới hạn file tải lên là ${files.length}`
+  )
+}
+
+const beforeRemove = (uploadFile, uploadFiles) => {
+  return ElMessageBox.confirm(
+    `Bạn có chắc chắn muốn bỏ hồ sơ đính kèm ${uploadFile.name} ?`
+  ).then(
+    () => true,
+    () => false
+  )
+}
+
+const uploadFileToDb = async () => {
+  let fd = new FormData()
+  fd.append('filePath', 'https://drive.google.com/drive/folders/1Evc0_Wr5g0ehP9nRPyiSYM_DFXxoHuMm?usp=share_link')
+  fd.append(
+    'fileUpload',
+    fileList.value[0].raw,
+    fileList.value[0].raw.name,
+  )
+  fd.append('shared', true)
+
+  axios({
+    method: 'post',
+    url: 'http://localhost:8085/api/v1/recruitments/upload-profile',
+    data: fd,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization:
+        localStorage.getItem('Token') && localStorage.getItem('uid')
+          ? 'Bearer ' + localStorage.getItem('Token')
+          : '',
+    },
+  })
+    .then(async (response) => {
+      //handle success
+      console.log('success', response)
+      await getFileById(response.data.data)
+    })
+    .catch((response) => {
+      //handle error
+      console.log('error', response)
+    })
+}
+
 onMounted(() => {
   getUserInfo()
 })
@@ -144,7 +201,33 @@ onMounted(() => {
 
         <b-row>
           <h5 class="mb-4">Giấy phép kinh doanh</h5>
-          <b-col md="7">
+          <b-col md="12">
+            <el-upload
+              v-model:file-list="fileList"
+              class="upload-demo"
+              action
+              multiple
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :before-remove="beforeRemove"
+              :limit="1"
+              :on-exceed="handleExceed"
+              :auto-upload="false"
+            >
+              <template #trigger>
+                <el-button type="primary"><el-icon><UploadFilled /></el-icon>Tải lên hồ sơ</el-button>
+              </template>
+              <el-button v-if="fileList" class="ml-3 mb-2 ms-2" type="success" @click="uploadFileToDb">
+                Cập nhật
+              </el-button>
+              <template #tip>
+                <div class="el-upload__tip">
+                  Định dạng file tải lên là PDF.
+                </div>
+              </template>
+            </el-upload>
+          </b-col>
+          <b-col md="12">
             <p>Giấy phép kinh doanh hợp lệ</p>
             <p><el-icon color="green"><CircleCheck /></el-icon> Có dấu giáp lai của cơ quan có thẩm quyền.</p>
             <p><el-icon color="green"><CircleCheck /></el-icon> Trường hợp giấy phép kinh doanh là bản photo thì phải có dấu công chứng.</p>
