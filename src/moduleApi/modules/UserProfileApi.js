@@ -18,5 +18,5 @@ export default {
   },
   inactiveAccount(data) {
     return Api().get(`users/inactive?check=${data.status}&userId=${data.id}`)
-  }
+  },
 }

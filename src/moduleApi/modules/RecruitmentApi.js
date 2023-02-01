@@ -28,4 +28,7 @@ export default {
   getRecruitmentSavedList(data) {
     return Api().get(`recruitments/get-list-id`)
   },
+  getView(id) {
+    return Api().get(`recruitments/get-view?id=${id}`)
+  }
 }

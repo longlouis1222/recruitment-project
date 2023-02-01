@@ -12,6 +12,7 @@ model.dataForm = {
     location: null,
     name: null,
     taxCode: null,
+    businessIntroduction: null
   },
 }
 
@@ -26,6 +27,7 @@ model.validForm = {
     location: [ValidService.required],
     name: [ValidService.required],
     taxCode: [ValidService.required],
+    businessIntroduction: [ValidService.required],
   },
 }
 

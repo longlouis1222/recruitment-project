@@ -3,6 +3,9 @@ import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
 
 import UserProfileApi from '@/moduleApi/modules/UserProfileApi'
+import FileApi from '@/moduleApi/modules/FileApi'
+
+import axios from 'axios'
 
 import { ElNotification, ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive, onMounted, computed } from 'vue'
@@ -12,11 +15,14 @@ import { FormInstance } from 'element-plus'
 import modelData from './EmployerCompanyInfoModel'
 
 const ruleFormRef = ref(FormInstance)
-const formData = reactive({ value: MethodService.copyObject(modelData.dataForm)})
+const formData = reactive({
+  value: MethodService.copyObject(modelData.dataForm),
+})
 const validForm = modelData.validForm
 
 const mainJobList = DataService.mainJobList
 const userProfile = reactive({})
+const fileList = ref([])
 
 const submitForm = async (formEl) => {
   if (!formEl) return
@@ -27,7 +33,7 @@ const submitForm = async (formEl) => {
         email: userProfile.value.email,
         password: userProfile.value.password,
         listRole: null,
-        type: "EMPLOYER",
+        type: 'EMPLOYER',
 
         userInfoRequest: userProfile.value.userInfoDTO,
         // userInfoRequest: {
@@ -58,11 +64,13 @@ const resetForm = (formEl) => {
 }
 
 const getUserInfo = async () => {
-  const userProfileApiRes = await UserProfileApi.findById(localStorage.getItem('uid'))
+  const userProfileApiRes = await UserProfileApi.findById(
+    localStorage.getItem('uid'),
+  )
   if (userProfileApiRes.status == 200) {
     userProfile.value = userProfileApiRes.data.data
     formData.value = {
-      type: "EMPLOYER",
+      type: 'EMPLOYER',
       userInfoRequest: {
         address: userProfile.value.userInfoDTO.address,
         avatar: null,
@@ -75,9 +83,15 @@ const getUserInfo = async () => {
         town: userProfile.value.userInfoDTO.town,
       },
       // companyRequest: userProfile.value.companyDTO,
-      companyRequest: { ...userProfile.value.companyDTO }
+      companyRequest: { ...userProfile.value.companyDTO },
     }
-    console.log("userProfile", userProfile)
+    console.log('userProfile', userProfile)
+    if (
+      !userProfile.value.companyDTO ||
+      (userProfile.value.companyDTO && !userProfile.value.companyDTO.fileId)
+    )
+      return
+    await getFileById(userProfile.value.companyDTO.fileId)
   }
 }
 
@@ -91,33 +105,30 @@ const handlePreview = (uploadFile) => {
 }
 
 const handleExceed = (files, uploadFiles) => {
-  ElMessage.warning(
-    `Giới hạn file tải lên là ${files.length}`
-  )
+  ElMessage.warning(`Giới hạn file tải lên là ${files.length}`)
 }
 
 const beforeRemove = (uploadFile, uploadFiles) => {
   return ElMessageBox.confirm(
-    `Bạn có chắc chắn muốn bỏ hồ sơ đính kèm ${uploadFile.name} ?`
+    `Bạn có chắc chắn muốn bỏ hồ sơ đính kèm ${uploadFile.name} ?`,
   ).then(
     () => true,
-    () => false
+    () => false,
   )
 }
 
 const uploadFileToDb = async () => {
   let fd = new FormData()
-  fd.append('filePath', 'https://drive.google.com/drive/folders/1Evc0_Wr5g0ehP9nRPyiSYM_DFXxoHuMm?usp=share_link')
   fd.append(
-    'fileUpload',
-    fileList.value[0].raw,
-    fileList.value[0].raw.name,
+    'filePath',
+    'https://drive.google.com/drive/folders/1Evc0_Wr5g0ehP9nRPyiSYM_DFXxoHuMm?usp=share_link',
   )
+  fd.append('fileUpload', fileList.value[0].raw, fileList.value[0].raw.name)
   fd.append('shared', true)
 
   axios({
     method: 'post',
-    url: 'http://localhost:8085/api/v1/recruitments/upload-profile',
+    url: 'http://localhost:8085/api/v1/users/company-profile',
     data: fd,
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -136,6 +147,22 @@ const uploadFileToDb = async () => {
       //handle error
       console.log('error', response)
     })
+}
+
+const getFileById = async (id) => {
+  try {
+    const res = await FileApi.getFileById(id)
+    if (res.status === 200) {
+      fileList.value = [
+        {
+          name: res.data.data.name,
+          url: res.data.data.link,
+        },
+      ]
+    }
+  } catch (error) {
+    console.log('error:>', error)
+  }
 }
 
 onMounted(() => {
@@ -169,19 +196,34 @@ onMounted(() => {
             <el-form-item label="Tên công ty" prop="companyRequest.name">
               <el-input v-model="formData.value.companyRequest.name" />
             </el-form-item>
-            <el-form-item label="Quy mô nhân sự" prop="companyRequest.employeeNumber">
-              <el-input v-model="formData.value.companyRequest.employeeNumber" />
+            <el-form-item
+              label="Quy mô nhân sự"
+              prop="companyRequest.employeeNumber"
+            >
+              <el-input
+                v-model="formData.value.companyRequest.employeeNumber"
+              />
             </el-form-item>
             <el-form-item label="Địa điểm" prop="companyRequest.location">
               <el-input v-model="formData.value.companyRequest.location" />
             </el-form-item>
             <el-form-item label="Địa chỉ" prop="companyRequest.companyAddress">
-              <el-input v-model="formData.value.companyRequest.companyAddress" />
+              <el-input
+                v-model="formData.value.companyRequest.companyAddress"
+              />
             </el-form-item>
-            <el-form-item label="Điện thoại cố định" prop="companyRequest.companyPhoneNumber">
-              <el-input v-model="formData.value.companyRequest.companyPhoneNumber" />
+            <el-form-item
+              label="Điện thoại cố định"
+              prop="companyRequest.companyPhoneNumber"
+            >
+              <el-input
+                v-model="formData.value.companyRequest.companyPhoneNumber"
+              />
             </el-form-item>
-            <el-form-item label="Lĩnh vực hoạt động" prop="companyRequest.fieldOfActivity">
+            <el-form-item
+              label="Lĩnh vực hoạt động"
+              prop="companyRequest.fieldOfActivity"
+            >
               <el-select
                 v-model="formData.value.companyRequest.fieldOfActivity"
                 placeholder="Chọn"
@@ -193,6 +235,12 @@ onMounted(() => {
                   :value="item.value"
                 />
               </el-select>
+            </el-form-item>
+            <el-form-item label="Giới thiệu công ty" prop="companyRequest.businessIntroduction">
+              <el-input
+                type="textarea"
+                v-model="formData.value.companyRequest.businessIntroduction"
+              />
             </el-form-item>
           </b-col>
         </b-row>
@@ -215,22 +263,33 @@ onMounted(() => {
               :auto-upload="false"
             >
               <template #trigger>
-                <el-button type="primary"><el-icon><UploadFilled /></el-icon>Tải lên hồ sơ</el-button>
+                <el-button type="primary"
+                  ><el-icon><UploadFilled /></el-icon>Tải lên hồ sơ</el-button
+                >
               </template>
-              <el-button v-if="fileList" class="ml-3 mb-2 ms-2" type="success" @click="uploadFileToDb">
+              <el-button
+                v-if="fileList"
+                class="ml-3 mb-2 ms-2"
+                type="success"
+                @click="uploadFileToDb"
+              >
                 Cập nhật
               </el-button>
               <template #tip>
-                <div class="el-upload__tip">
-                  Định dạng file tải lên là PDF.
-                </div>
+                <div class="el-upload__tip">Định dạng file tải lên là PDF.</div>
               </template>
             </el-upload>
           </b-col>
           <b-col md="12">
             <p>Giấy phép kinh doanh hợp lệ</p>
-            <p><el-icon color="green"><CircleCheck /></el-icon> Có dấu giáp lai của cơ quan có thẩm quyền.</p>
-            <p><el-icon color="green"><CircleCheck /></el-icon> Trường hợp giấy phép kinh doanh là bản photo thì phải có dấu công chứng.</p>
+            <p>
+              <el-icon color="green"><CircleCheck /></el-icon> Có dấu giáp lai
+              của cơ quan có thẩm quyền.
+            </p>
+            <p>
+              <el-icon color="green"><CircleCheck /></el-icon> Trường hợp giấy
+              phép kinh doanh là bản photo thì phải có dấu công chứng.
+            </p>
           </b-col>
         </b-row>
         <div>

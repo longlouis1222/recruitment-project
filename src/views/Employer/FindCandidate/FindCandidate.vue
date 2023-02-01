@@ -140,9 +140,16 @@ const getUserInfo = async () => {
 
 const handleAction = (action, rowData) => {
   if (action === 'view') {
-    console.log('ZOOO view')
+    viewCandidateProfile(rowData)
   } else if (action === 'save') {
     saveRecruitment(rowData)
+  }
+}
+
+const viewCandidateProfile = async (rowData) => {
+  const res = await RecruitmentApi.getView(rowData.id)
+  if (res.status === 200) {
+    // Go to detail
   }
 }
 

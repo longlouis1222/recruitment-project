@@ -1,11 +1,16 @@
 <script setup>
 import DataService from '@/service/DataService'
+import MethodService from '@/service/MethodService'
+
+import PostApi from '@/moduleApi/modules/PostApi'
 
 import { useRouter } from 'vue-router'
 import AppHeaderLanding from '@/components/AppHeaderLanding.vue'
 import AppFooterLanding from '@/components/AppFooterLanding.vue'
-import { onMounted, computed } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { useStore } from 'vuex'
+
+import modelData from './FindJobsModel'
 
 const router = useRouter()
 const store = useStore()
@@ -13,6 +18,10 @@ const store = useStore()
 const mainJobList = DataService.mainJobList
 const secondJobList = DataService.secondJobList
 const workPlaceList = DataService.workPlaceList
+
+const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
+const outstandingPostList = reactive({ value: [] })
+const newPostList = reactive({ value: [] })
 
 const bannerList = [
   {
@@ -37,6 +46,7 @@ const bannerList = [
   },
 ]
 
+const care = ref(false)
 const backToPrev = () => {
   router.go(-1)
 }
@@ -49,9 +59,49 @@ const goToCompanyDetail = () => {
   router.push({ name: 'Company detail' })
 }
 
+const fn_tableSizeChange = (limit) => {
+  tableRules.limit = limit
+  fn_tableChangeOffset(1)
+}
+const fn_tableCurentChange = (page) => {
+  fn_tableChangeOffset(page)
+}
+const fn_tablePrevClick = () => {
+  // fn_tableChangeOffset(page);
+}
+const fn_tableNextClick = () => {
+  // fn_tableChangeOffset(page);
+}
+const fn_tableChangeOffset = (page) => {
+  tableRules.page = page
+  tableRules.skip = (tableRules.page - 1) * tableRules.limit
+  getOutstandingJob()
+}
+
+const getOutstandingJob = async () => {
+  let dataFilter = {
+    limit: tableRules.limit,
+    skip: tableRules.skip,
+    page: tableRules.page > 0 ? tableRules.page - 1 : tableRules.page,
+    isOutstanding: true,
+    ...tableRules.filters,
+  }
+  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
+  const postApiRes = await PostApi.list(filter)
+  if (postApiRes.status === 200) {
+    outstandingPostList.value = postApiRes.data.data.data
+    tableRules.total = postApiRes.data.data.totalElements
+  }
+}
+
+const saveToCareList = () => {
+  care.value = !care.value
+}
+
 onMounted(() => {
   const userInfo = computed(() => store.state.user)
   console.log(userInfo)
+  getOutstandingJob()
 })
 </script>
 
@@ -180,31 +230,61 @@ onMounted(() => {
             <h4 class="ms-2 me-4">Việc làm tuyển gấp</h4>
             <el-divider direction="vertical" />
             <el-link :underline="false" class="m-0 me-4 ms-4">Tất cả</el-link>
-            <el-link :underline="false" class="m-0 me-4">Việc làm theo chuyên môn</el-link>
-            <el-link :underline="false" class="m-0 me-4">Việc làm quản lý</el-link>
-            <el-link :underline="false" class="m-0 me-4">Lao động phổ thông</el-link>
+            <el-link :underline="false" class="m-0 me-4"
+              >Việc làm theo chuyên môn</el-link
+            >
+            <el-link :underline="false" class="m-0 me-4"
+              >Việc làm quản lý</el-link
+            >
+            <el-link :underline="false" class="m-0 me-4"
+              >Lao động phổ thông</el-link
+            >
             <el-link :underline="false" class="m-0 me-4">Bán thời gian</el-link>
           </div>
         </template>
         <b-row class="mb-3">
           <b-col md="4">
-            <el-card class="box-card" shadow="hover" @click="goToJobDetail">
-              <p class="card__title-position mb-2">Front-end developer</p>
+            <el-card
+              v-for="post in outstandingPostList.value"
+              :key="post.id"
+              class="box-card"
+              shadow="hover"
+              @click="goToJobDetail"
+            >
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="card__title-position mb-2">{{ post.title }}</p>
+                <CIcon
+                  icon="cibMacys"
+                  :class="{ 'mb-2': true, 'c-turquoise': care }"
+                  @click="saveToCareList"
+                />
+              </div>
               <div class="d-flex align-items-center">
                 <img
                   src="../../assets/images/logo-company/vecteezy_triangle_1200707.png"
                   alt="logo-company"
                   class="card__logo"
                 />
-                <div class="">
-                  <p class="card__title-company">
-                    Công ty cổ phần Phần mềm ABC
-                  </p>
+                <div class="w-100">
+                  <div class="d-flex justify-content-between">
+                    <p class="card__title-company">
+                      {{ post.companyDTO.name }}
+                    </p>
+                    <el-tag type="danger" v-if="post.isOutstanding">
+                      HOT
+                    </el-tag>
+                  </div>
                   <span class="card__subtitle me-3">
-                    <el-icon><Money /></el-icon> 10 - 20 triệu</span
+                    <el-icon><Money /></el-icon
+                    >{{
+                      MethodService.formatCurrency(post.salaryMin) +
+                      ' - ' +
+                      MethodService.formatCurrency(post.salaryMax)
+                    }}
+                  </span
                   >
                   <span class="card__subtitle"
-                    ><el-icon><Location /></el-icon>Hà Nội</span
+                    ><el-icon><Location /></el-icon>{{ post.workplace }}</span
                   >
                 </div>
               </div>
@@ -399,6 +479,21 @@ onMounted(() => {
             </el-card>
           </b-col>
         </b-row>
+        <div class="mt-3 mb-3">
+          <el-pagination
+            small
+            v-model:currentPage="tableRules.page"
+            v-model:pageSize="tableRules.limit"
+            :page-sizes="tableRules.lengthMenu"
+            background
+            layout="prev, pager, next"
+            :total="Number(tableRules.total)"
+            @size-change="fn_tableSizeChange"
+            @current-change="fn_tableCurentChange"
+            @prev-click="fn_tablePrevClick"
+            @next-click="fn_tableNextClick"
+          />
+        </div>
       </el-card>
     </CContainer>
     <!-- End Urgent recruitment Job -->
@@ -426,9 +521,15 @@ onMounted(() => {
             <h4 class="ms-2 me-4">Việc làm mới nhất</h4>
             <el-divider direction="vertical" />
             <el-link :underline="false" class="m-0 me-4 ms-4">Tất cả</el-link>
-            <el-link :underline="false" class="m-0 me-4">Việc làm theo chuyên môn</el-link>
-            <el-link :underline="false" class="m-0 me-4">Việc làm quản lý</el-link>
-            <el-link :underline="false" class="m-0 me-4">Lao động phổ thông</el-link>
+            <el-link :underline="false" class="m-0 me-4"
+              >Việc làm theo chuyên môn</el-link
+            >
+            <el-link :underline="false" class="m-0 me-4"
+              >Việc làm quản lý</el-link
+            >
+            <el-link :underline="false" class="m-0 me-4"
+              >Lao động phổ thông</el-link
+            >
             <el-link :underline="false" class="m-0 me-4">Bán thời gian</el-link>
           </div>
         </template>
@@ -442,9 +543,7 @@ onMounted(() => {
                   class="card__logo"
                 />
                 <div>
-                  <p class="card__title-position mb-1 ms-2">
-                    Fresher
-                  </p>
+                  <p class="card__title-position mb-1 ms-2">Fresher</p>
                   <p class="card__title-company ms-2">
                     Công ty cổ phần Phần mềm ABC
                   </p>
@@ -534,9 +633,7 @@ onMounted(() => {
                   class="card__logo"
                 />
                 <div>
-                  <p class="card__title-position mb-1 ms-2">
-                    Tester (QA)
-                  </p>
+                  <p class="card__title-position mb-1 ms-2">Tester (QA)</p>
                   <p class="card__title-company ms-2">
                     Công ty cổ phần Phần mềm ABC
                   </p>
@@ -708,6 +805,21 @@ onMounted(() => {
             </el-card>
           </b-col>
         </b-row>
+        <div class="mt-3 mb-3">
+          <el-pagination
+            small
+            v-model:currentPage="tableRules.page"
+            v-model:pageSize="tableRules.limit"
+            :page-sizes="tableRules.lengthMenu"
+            background
+            layout="prev, pager, next"
+            :total="Number(tableRules.total)"
+            @size-change="fn_tableSizeChange"
+            @current-change="fn_tableCurentChange"
+            @prev-click="fn_tablePrevClick"
+            @next-click="fn_tableNextClick"
+          />
+        </div>
       </el-card>
     </CContainer>
     <!-- End New recruitment Job -->
@@ -951,7 +1063,7 @@ onMounted(() => {
     font-weight: 600;
   }
 }
-.urgent_recruitment_job {
+:deep .urgent_recruitment_job {
   .card__logo {
     width: auto;
     height: 75px;
@@ -969,8 +1081,14 @@ onMounted(() => {
     font-size: 13px;
     font-weight: 600;
   }
+  .el-pagination {
+    justify-content: center;
+    .el-icon {
+      margin-right: initial !important;
+    }
+  }
 }
-.new_recruitment_job {
+:deep .new_recruitment_job {
   .card__logo {
     width: auto;
     height: 70px;
@@ -989,6 +1107,12 @@ onMounted(() => {
   .card__subtitle {
     font-size: 13px;
     font-weight: 600;
+  }
+  .el-pagination {
+    justify-content: center;
+    .el-icon {
+      margin-right: initial !important;
+    }
   }
 }
 </style>

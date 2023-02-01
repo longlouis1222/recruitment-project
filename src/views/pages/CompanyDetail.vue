@@ -123,6 +123,15 @@ const backToPrev = () => {
       </CContainer>
       <!-- End Job hiring jobs -->
 
+      <!-- Start company info -->
+      <CContainer xxl class="company__contact-info">
+        <h3 class="fw-bold mb-3">Giới thiệu về công ty</h3>
+        <div class="card__subtitle">
+          <span>số 18 Lũy Bán Bích, Phường Tân Thới Hòa, Quận Tân Phú, TP.HCM</span>
+        </div>
+      </CContainer>
+      <!-- End company info -->
+
       <!-- Start company contact info -->
       <CContainer xxl class="company__contact-info">
         <h3 class="fw-bold mb-3">Liên hệ</h3>
