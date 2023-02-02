@@ -37,12 +37,8 @@ const submitForm = async (formEl) => {
         type: 'EMPLOYER',
 
         userInfoRequest: userProfile.value.userInfoDTO,
-        // userInfoRequest: {
-        //   ...userProfile.value.userInfoDTO
-        // },
         companyRequest: formData.value.companyRequest,
       }
-      console.log('data', data)
       const userProfileApiRes = await UserProfileApi.update(data)
       if (userProfileApiRes.status == 200) {
         ElNotification({

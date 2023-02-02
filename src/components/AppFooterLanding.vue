@@ -3,10 +3,10 @@
     <CContainer xl class="mt-4">
       <b-row>
         <b-col md="6">
-          <h5 class="mb-4">Hotline cho <span class="fw-bold">Nhà tuyển dụng</span></h5>
+          <h5 class="mb-4">Hotline cho <span class="fw-bold text-info">Nhà tuyển dụng</span></h5>
           <div class="d-flex align-items-center">
             <div class="d-flex align-items-center">
-              <el-icon class="footer__icon"><Headset /></el-icon>
+              <el-icon class="footer__icon text-info "><Headset /></el-icon>
               <div class="ms-3">
                 <p class="mb-1">Hotline hỗ trợ miền Bắc</p>
                 <p class="fw-bold">HN: (024) 2567 6969</p>
@@ -14,7 +14,7 @@
             </div>
             <el-divider direction="vertical" class="mx-3 divider-hotline" />
             <div class="d-flex align-items-center">
-              <el-icon class="footer__icon"><Headset /></el-icon>
+              <el-icon class="footer__icon text-info"><Headset /></el-icon>
               <div class="ms-3">
                 <p class="mb-1">Hotline hỗ trợ miền Nam</p>
                 <p class="fw-bold">HCM: (0248) 2667 6969</p>
@@ -23,10 +23,10 @@
           </div>
         </b-col>
         <b-col md="6">
-          <h5 class="mb-4">Hotline cho <span class="fw-bold">Người tìm việc</span></h5>
+          <h5 class="mb-4">Hotline cho <span class="fw-bold text-info">Người tìm việc</span></h5>
           <div class="d-flex align-items-center">
             <div class="d-flex align-items-center">
-              <el-icon class="footer__icon"><Headset /></el-icon>
+              <el-icon class="footer__icon text-info"><Headset /></el-icon>
               <div class="ms-3">
                 <p class="mb-1">Hotline hỗ trợ miền Bắc</p>
                 <p class="fw-bold">HN: (024) 2567 6969</p>
@@ -34,7 +34,7 @@
             </div>
             <el-divider direction="vertical" class="mx-3 divider-hotline" />
             <div class="d-flex align-items-center">
-              <el-icon class="footer__icon"><Headset /></el-icon>
+              <el-icon class="footer__icon text-info"><Headset /></el-icon>
               <div class="ms-3">
                 <p class="mb-1">Hotline hỗ trợ miền Nam</p>
                 <p class="fw-bold">HCM: (0248) 2667 6969</p>
@@ -61,7 +61,7 @@
             Động Thương Binh & Xã Hội TP.HCM cấp
           </p>
           <p class="small fw-lighter">
-            Điện thoại:(024) 2567 6969
+            Điện thoại: (024) 2567 6969
             <el-divider direction="vertical" class="mx-1" /> (0248) 2667 6969
           </p>
           <p class="small fw-lighter">

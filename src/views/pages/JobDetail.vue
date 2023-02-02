@@ -1,18 +1,37 @@
 <script setup>
 import DataService from '@/service/DataService'
+import MethodService from '@/service/MethodService'
 
-import { useRouter } from 'vue-router'
 import AppHeaderLanding from '@/components/AppHeaderLanding.vue'
 import AppFooterLanding from '@/components/AppFooterLanding.vue'
 
+import PostApi from '@/moduleApi/modules/PostApi'
+
+import { useRoute, useRouter } from 'vue-router'
+import { ref, reactive, onMounted } from 'vue'
+
+const route = useRoute()
 const router = useRouter()
 const mainJobList = DataService.mainJobList
 const secondJobList = DataService.secondJobList
 const workPlaceList = DataService.workPlaceList
 
+const postInfo = ref(null)
+
 const backToPrev = () => {
   router.go(-1)
 }
+
+const getPostById = async () => {
+  const res = await PostApi.findById(route.params.id)
+  if (res.status === 200) {
+    postInfo.value = res.data.data
+  }
+}
+
+onMounted(() => {
+  getPostById()
+})
 </script>
 
 <template>
@@ -37,8 +56,16 @@ const backToPrev = () => {
                 class="card__logo"
               />
               <div>
-                <h5 class="ms-3">Công ty CP Phần mềm LL</h5>
-                <p class="text-black-50 ms-3 mb-0">12 người</p>
+                <h5 class="ms-3">
+                  {{
+                    postInfo && postInfo.companyDTO && companyDTO.name
+                      ? companyDTO.name
+                      : 'Công ty Cổ Phần Phần mềm LL'
+                  }}
+                </h5>
+                <p class="text-black-50 ms-3 mb-0">
+                  {{ postInfo ? postInfo.numberOfRecruits : '12 người' }}
+                </p>
               </div>
             </div>
             <div class="d-flex align-items-center" @click="backToPrev">
@@ -49,19 +76,42 @@ const backToPrev = () => {
             </div>
           </div>
         </template>
-        <h3 class="mb-2">Nhân viên Kỹ thuật (Fullstack Developer)</h3>
+        <h3 class="mb-2">
+          {{
+            postInfo && postInfo.title
+              ? postInfo.title
+              : 'Nhân viên Kỹ thuật (Fullstack Developer)'
+          }}
+        </h3>
         <div class="d-flex align-items-center small mb-3">
           <div class="d-flex align-items-center mb-3 me-4">
             <el-icon class="text-black-50"><Calendar /></el-icon
-            ><span>Hạn nộp hồ sơ: 12/02/2023</span>
+            ><span
+              >Hạn nộp hồ sơ:
+              {{
+                postInfo && postInfo.jobApplicationDeadline
+                  ? postInfo.jobApplicationDeadline
+                  : '12/02/2023'
+              }}</span
+            >
           </div>
           <div class="d-flex align-items-center mb-3 me-4">
             <el-icon class="text-black-50"><View /></el-icon
-            ><span>Lượt xem: 45</span>
+            ><span
+              >Lượt xem:
+              {{ postInfo && postInfo.view ? postInfo.view : 0 }}</span
+            >
           </div>
           <div class="d-flex align-items-center mb-3">
             <el-icon class="text-black-50"><Clock /></el-icon
-            ><span>Ngày đăng: 12/02/2023</span>
+            ><span
+              >Ngày đăng:
+              {{
+                postInfo && postInfo.dateSubmit
+                  ? MethodService.formatDate(postInfo.dateSubmit, 'date')
+                  : '12/02/2023'
+              }}</span
+            >
           </div>
         </div>
 
@@ -77,22 +127,48 @@ const backToPrev = () => {
         <div class="d-flex align-items-center justify-content-between">
           <div>
             <p class="text-black-50">Yêu cầu kinh nghiệm</p>
-            <p>1 năm</p>
+            <p>
+              {{
+                postInfo && postInfo.recruitmentExperience
+                  ? postInfo.recruitmentExperience
+                  : '1 năm'
+              }}
+            </p>
           </div>
           <el-divider direction="vertical" />
           <div>
             <p class="text-black-50">Mức lương</p>
-            <p>20 - 30 triệu</p>
+            <p>
+              {{
+                postInfo && postInfo.salaryMin && postInfo.salaryMax
+                  ? MethodService.formatCurrency(postInfo.salaryMin) +
+                    ' - ' +
+                    MethodService.formatCurrency(postInfo.salaryMax)
+                  : '20 - 30 triệu'
+              }}
+            </p>
           </div>
           <el-divider direction="vertical" />
           <div>
             <p class="text-black-50">Cấp bậc</p>
-            <p>chuyên viên - nhân viên</p>
+            <p>
+              {{
+                postInfo && postInfo.level
+                  ? postInfo.level
+                  : 'chuyên viên - nhân viên'
+              }}
+            </p>
           </div>
           <el-divider direction="vertical" />
           <div>
             <p class="text-black-50">Hình thức làm việc</p>
-            <p>Toàn thời gian cố định</p>
+            <p>
+              {{
+                postInfo && postInfo.workingForm
+                  ? postInfo.workingForm
+                  : 'Toàn thời gian cố định'
+              }}
+            </p>
           </div>
         </div>
 
@@ -106,7 +182,13 @@ const backToPrev = () => {
                 <p class="text-black-50">Nghề nghiệp:</p>
               </b-col>
               <b-col md="7">
-                <p>Nhân viên kỹ thuật (Fullstack Developer)</p>
+                <p>
+                  {{
+                    postInfo && postInfo.title
+                      ? postInfo.title
+                      : 'Nhân viên Kỹ thuật (Fullstack Developer)'
+                  }}
+                </p>
               </b-col>
             </b-row>
 
@@ -115,7 +197,7 @@ const backToPrev = () => {
                 <p class="text-black-50">Số lượng tuyển:</p>
               </b-col>
               <b-col md="7">
-                <p>12</p>
+                <p>{{ postInfo ? postInfo.numberOfRecruits : '12 người' }}</p>
               </b-col>
             </b-row>
 
@@ -124,7 +206,13 @@ const backToPrev = () => {
                 <p class="text-black-50">Hạn nộp hồ sơ:</p>
               </b-col>
               <b-col md="7">
-                <p>12/02/2023</p>
+                <p>
+                  {{
+                    postInfo && postInfo.jobApplicationDeadline
+                      ? postInfo.jobApplicationDeadline
+                      : '12/02/2023'
+                  }}
+                </p>
               </b-col>
             </b-row>
           </b-col>
@@ -134,7 +222,13 @@ const backToPrev = () => {
                 <p class="text-black-50">Khu vực tuyển:</p>
               </b-col>
               <b-col md="7">
-                <p>Hà Nội</p>
+                <p>
+                  {{
+                    postInfo && postInfo.recruitmentArea
+                      ? postInfo.recruitmentArea
+                      : 'Hà Nội'
+                  }}
+                </p>
               </b-col>
             </b-row>
 
@@ -143,7 +237,13 @@ const backToPrev = () => {
                 <p class="text-black-50">Yêu cầu bằng cấp:</p>
               </b-col>
               <b-col md="7">
-                <p>Đại học</p>
+                <p>
+                  {{
+                    postInfo && postInfo.recruitmentDegree
+                      ? postInfo.recruitmentDegree
+                      : 'Đại học'
+                  }}
+                </p>
               </b-col>
             </b-row>
           </b-col>
@@ -157,6 +257,13 @@ const backToPrev = () => {
       <el-card class="box-card">
         <h4 class="mb-3">Mô tả công việc</h4>
         <ul>
+          <li>
+            {{
+              postInfo && postInfo.jobDescription ? postInfo.jobDescription : ''
+            }}
+          </li>
+        </ul>
+        <ul v-if="!postInfo || (postInfo && !postInfo.jobDescription)">
           <li>
             Tìm kiếm dự án để giới thiệu và marketing sản phẩm, xây dựng mối
             quan hệ với các đối tác của dự án
@@ -174,11 +281,22 @@ const backToPrev = () => {
 
         <p class="mt-2">Nơi làm việc</p>
         <ul>
-          <li>86 Mễ Trì Hạ, Nam Từ Liêm, Hà Nội</li>
+          <li>
+            {{ postInfo && postInfo.workplace ? postInfo.workplace : 'Hà Nội' }}
+          </li>
         </ul>
 
         <h4 class="mt-4 mb-3">Yêu cầu công việc</h4>
         <ul>
+          <li>
+            {{
+              postInfo && postInfo.jobRequirements
+                ? postInfo.jobRequirements
+                : ''
+            }}
+          </li>
+        </ul>
+        <ul v-if="!postInfo || (postInfo && !postInfo.jobRequirements)">
           <li>
             Nam/Nữ tốt nghiệp đại học các chuyên ngành liên quan có quan hệ tốt,
             biết đến các dự án xây dựng lớn.
@@ -191,6 +309,11 @@ const backToPrev = () => {
 
         <h4 class="mt-4 mb-3">Quyền lợi</h4>
         <ul>
+          <li>
+            {{ postInfo && postInfo.benefits ? postInfo.benefits : '' }}
+          </li>
+        </ul>
+        <ul v-if="!postInfo || (postInfo && !postInfo.benefits)">
           <li>
             Thu nhập: Lương cơ bản 18 - 20 triệu + thưởng % doanh số trên từng
             dự án. Thu nhập trung bình 20-30 Triệu tùy theo năng lực.
@@ -223,14 +346,26 @@ const backToPrev = () => {
     <!-- Start Company info -->
     <CContainer xxl class="mt-3 mb-4">
       <el-card class="box-card">
-        <h3 class="mb-3">Công ty CP Phần mềm LL</h3>
+        <h3 class="mb-3">
+          {{
+            postInfo && postInfo.companyDTO && companyDTO.name
+              ? companyDTO.name
+              : 'Công ty Cổ Phần Phần mềm LL'
+          }}
+        </h3>
         <div class="d-flex align-items-center">
           <p class="text-black-50 me-1">Địa chỉ:</p>
-          <p>Số 86 Mễ Trì Hạ, Nam Từ Liêm, Hà Nội</p>
+          <p>
+            {{
+              postInfo && postInfo.companyDTO && companyDTO.companyAddress
+                ? companyDTO.companyAddress
+                : 'Số 86 Mễ Trì Hạ, Nam Từ Liêm, Hà Nội'
+            }}
+          </p>
         </div>
         <div class="d-flex align-items-center">
           <p class="text-black-50 me-1">Số lượng tuyển:</p>
-          <p>12 người</p>
+          <p>{{ postInfo ? postInfo.numberOfRecruits : '12 người' }}</p>
         </div>
         <div class="d-flex align-items-center">
           <p class="text-black-50 me-1">Người liên hệ:</p>

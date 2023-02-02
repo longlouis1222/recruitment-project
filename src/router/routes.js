@@ -410,12 +410,12 @@ export default [
         component: () => import('@/views/pages/LandingPage'),
       },
       {
-        path: 'job-detail',
+        path: 'job-detail/:id',
         name: 'Job detail',
         component: () => import('@/views/pages/JobDetail'),
       },
       {
-        path: 'company-detail',
+        path: 'company-detail/:id',
         name: 'Company detail',
         component: () => import('@/views/pages/CompanyDetail'),
       },

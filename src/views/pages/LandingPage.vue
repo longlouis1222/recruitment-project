@@ -3,6 +3,7 @@ import DataService from '@/service/DataService'
 import MethodService from '@/service/MethodService'
 
 import PostApi from '@/moduleApi/modules/PostApi'
+import CompanyApi from '@/moduleApi/modules/CompanyApi'
 
 import { useRouter } from 'vue-router'
 import AppHeaderLanding from '@/components/AppHeaderLanding.vue'
@@ -20,8 +21,9 @@ const secondJobList = DataService.secondJobList
 const workPlaceList = DataService.workPlaceList
 
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
+const companyList = reactive({ value: [], total: 0 })
 const outstandingPostList = reactive({ value: [] })
-const newPostList = reactive({ value: [] })
+const newestPostList = reactive({ value: [], total: 0 })
 
 const bannerList = [
   {
@@ -55,8 +57,8 @@ const goToJobDetail = () => {
   router.push({ name: 'Job detail' })
 }
 
-const goToCompanyDetail = () => {
-  router.push({ name: 'Company detail' })
+const goToCompanyDetail = (id) => {
+  router.push({ name: 'Company detail', params: { id: id ? id : 1 } })
 }
 
 const fn_tableSizeChange = (limit) => {
@@ -90,7 +92,36 @@ const getOutstandingJob = async () => {
   const postApiRes = await PostApi.list(filter)
   if (postApiRes.status === 200) {
     outstandingPostList.value = postApiRes.data.data.data
-    tableRules.total = postApiRes.data.data.totalElements
+    outstandingPostList.total = postApiRes.data.data.totalElements
+  }
+}
+
+const getNewestJob = async () => {
+  let dataFilter = {
+    limit: tableRules.limit,
+    skip: tableRules.skip,
+    page: tableRules.page > 0 ? tableRules.page - 1 : tableRules.page,
+    ...tableRules.filters,
+  }
+  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
+  const postApiRes = await PostApi.list(filter)
+  if (postApiRes.status === 200) {
+    newestPostList.value = postApiRes.data.data.data
+    newestPostList.total = postApiRes.data.data.totalElements
+  }
+}
+
+const getCompanyList = async () => {
+  let dataFilter = {
+    limit: tableRules.limit,
+    skip: tableRules.skip,
+    page: tableRules.page > 0 ? tableRules.page - 1 : tableRules.page,
+    ...tableRules.filters,
+  }
+  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
+  const companyApires = await CompanyApi.list(filter)
+  if (companyApires.status === 200) {
+    companyList.value = companyApires.data.data.data
   }
 }
 
@@ -101,7 +132,9 @@ const saveToCareList = () => {
 onMounted(() => {
   const userInfo = computed(() => store.state.user)
   console.log(userInfo)
+  getCompanyList()
   getOutstandingJob()
+  getNewestJob()
 })
 </script>
 
@@ -140,6 +173,28 @@ onMounted(() => {
 
     <!-- Start Company recruitment BLock -->
     <CContainer xl class="mt-4 company_recruitment_block">
+      <!-- Start Real data -->
+      <b-row>
+        <b-col md="2" v-for="company in companyList.value" :key="company.id">
+          <el-card
+            class="box-card"
+            shadow="hover"
+            @click="goToCompanyDetail(company.id)"
+          >
+            <div class="d-flex flex-column justify-content-center text-center">
+              <img
+                src="../../assets/images/logo-company/04012019-07.jpg"
+                alt="logo-company"
+                class="card__logo mx-auto"
+              />
+              <p class="card__title">22 vị trí đang tuyển</p>
+            </div>
+          </el-card>
+        </b-col>
+      </b-row>
+      <!-- End Real data -->
+
+      <!-- Start Fake data -->
       <b-row>
         <b-col md="2">
           <el-card class="box-card" shadow="hover" @click="goToCompanyDetail">
@@ -214,6 +269,7 @@ onMounted(() => {
           </el-card>
         </b-col>
       </b-row>
+      <!-- End Fake data -->
     </CContainer>
     <!-- End Company recruitment BLock -->
 
@@ -242,15 +298,16 @@ onMounted(() => {
             <el-link :underline="false" class="m-0 me-4">Bán thời gian</el-link>
           </div>
         </template>
-        <b-row class="mb-3">
-          <b-col md="4">
-            <el-card
-              v-for="post in outstandingPostList.value"
-              :key="post.id"
-              class="box-card"
-              shadow="hover"
-              @click="goToJobDetail"
-            >
+
+        <!-- Start Real data -->
+        <b-row>
+          <b-col
+            md="4"
+            class="mb-3"
+            v-for="post in outstandingPostList.value"
+            :key="post.id"
+          >
+            <el-card class="box-card" shadow="hover" @click="goToJobDetail">
               <div class="d-flex justify-content-between align-items-center">
                 <p class="card__title-position mb-2">{{ post.title }}</p>
                 <CIcon
@@ -268,7 +325,11 @@ onMounted(() => {
                 <div class="w-100">
                   <div class="d-flex justify-content-between">
                     <p class="card__title-company">
-                      {{ post.companyDTO.name }}
+                      {{
+                        post.companyDTO && post.companyDTO.name
+                          ? post.companyDTO.name
+                          : ''
+                      }}
                     </p>
                     <el-tag type="danger" v-if="post.isOutstanding">
                       HOT
@@ -281,10 +342,37 @@ onMounted(() => {
                       ' - ' +
                       MethodService.formatCurrency(post.salaryMax)
                     }}
-                  </span
-                  >
+                  </span>
                   <span class="card__subtitle"
                     ><el-icon><Location /></el-icon>{{ post.workplace }}</span
+                  >
+                </div>
+              </div>
+            </el-card>
+          </b-col>
+        </b-row>
+        <!-- Start Real data -->
+
+        <!-- Start Fake data -->
+        <b-row class="mb-3" v-if="outstandingPostList.value.length === 0">
+          <b-col md="4">
+            <el-card class="box-card" shadow="hover" @click="goToJobDetail">
+              <p class="card__title-position mb-2">Front-end developer</p>
+              <div class="d-flex align-items-center">
+                <img
+                  src="../../assets/images/logo-company/vecteezy_triangle_1200707.png"
+                  alt="logo-company"
+                  class="card__logo"
+                />
+                <div class="">
+                  <p class="card__title-company">
+                    Công ty cổ phần Phần mềm ABC
+                  </p>
+                  <span class="card__subtitle me-3">
+                    <el-icon><Money /></el-icon> 10 - 20 triệu</span
+                  >
+                  <span class="card__subtitle"
+                    ><el-icon><Location /></el-icon>Hà Nội</span
                   >
                 </div>
               </div>
@@ -337,7 +425,7 @@ onMounted(() => {
             </el-card>
           </b-col>
         </b-row>
-        <b-row class="mb-3">
+        <b-row class="mb-3" v-if="outstandingPostList.value.length === 0">
           <b-col md="4">
             <el-card class="box-card" shadow="hover">
               <p class="card__title-position mb-2">Fullstack developer</p>
@@ -408,7 +496,7 @@ onMounted(() => {
             </el-card>
           </b-col>
         </b-row>
-        <b-row class="mb-3">
+        <b-row class="mb-3" v-if="outstandingPostList.value.length === 0">
           <b-col md="4">
             <el-card class="box-card" shadow="hover">
               <p class="card__title-position mb-2">Project manager</p>
@@ -479,6 +567,8 @@ onMounted(() => {
             </el-card>
           </b-col>
         </b-row>
+        <!-- End Fake data -->
+
         <div class="mt-3 mb-3">
           <el-pagination
             small
@@ -487,7 +577,7 @@ onMounted(() => {
             :page-sizes="tableRules.lengthMenu"
             background
             layout="prev, pager, next"
-            :total="Number(tableRules.total)"
+            :total="Number(outstandingPostList.total)"
             @size-change="fn_tableSizeChange"
             @current-change="fn_tableCurentChange"
             @prev-click="fn_tablePrevClick"
@@ -533,7 +623,78 @@ onMounted(() => {
             <el-link :underline="false" class="m-0 me-4">Bán thời gian</el-link>
           </div>
         </template>
-        <b-row class="mb-3">
+        <!-- Start Fake data -->
+        <b-row>
+          <b-col
+            md="4"
+            class="mb-3"
+            v-for="post in newestPostList.value"
+            :key="post.id"
+          >
+            <el-card class="box-card" shadow="hover">
+              <div class="d-flex align-items-start">
+                <img
+                  src="../../assets/images/logo-company/icons8-notion-256.png"
+                  alt="logo-company"
+                  class="card__logo"
+                />
+                <div class="w-100">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <p class="card__title-position mb-1 ms-2">
+                      {{ post.title ? post.title : '' }}
+                    </p>
+                    <CIcon
+                      icon="cibMacys"
+                      :class="{ 'mb-1': true, 'c-turquoise': care }"
+                      @click="saveToCareList"
+                    />
+                  </div>
+                  <div class="d-flex justify-content-between ms-2">
+                    <p class="card__title-company mb-1">
+                      {{
+                        post.companyDTO && post.companyDTO.name
+                          ? post.companyDTO.name
+                          : ''
+                      }}
+                    </p>
+                    <el-tag type="danger" v-if="post.isOutstanding">
+                      HOT
+                    </el-tag>
+                  </div>
+                  <div class="ms-2 mt-2">
+                    <p class="card__subtitle mb-1">
+                      <el-icon><LocationInformation /></el-icon
+                      >{{ post.workplace }}
+                    </p>
+                    <p class="card__subtitle mb-1">
+                      <el-icon><Money /></el-icon>
+                      {{
+                        MethodService.formatCurrency(post.salaryMin) +
+                        ' - ' +
+                        MethodService.formatCurrency(post.salaryMax)
+                      }}
+                    </p>
+                    <p class="card__subtitle mb-0">
+                      <el-icon><Timer /></el-icon>
+                      {{
+                        MethodService.formatDate(
+                          post.jobApplicationDeadline,
+                          'date',
+                        )
+                      }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </el-card>
+          </b-col>
+        </b-row>
+        <!-- End Fake data -->
+
+        <!-- Start Fake data -->
+        <b-row class="mb-3" v-if="newestPostList.value.length === 0">
           <b-col md="4">
             <el-card class="box-card" shadow="hover">
               <div class="d-flex align-items-start">
@@ -623,7 +784,7 @@ onMounted(() => {
             </el-card>
           </b-col>
         </b-row>
-        <b-row class="mb-3">
+        <b-row class="mb-3" v-if="newestPostList.value.length === 0">
           <b-col md="4">
             <el-card class="box-card" shadow="hover">
               <div class="d-flex align-items-start">
@@ -713,7 +874,7 @@ onMounted(() => {
             </el-card>
           </b-col>
         </b-row>
-        <b-row class="mb-3">
+        <b-row class="mb-3" v-if="newestPostList.value.length === 0">
           <b-col md="4">
             <el-card class="box-card" shadow="hover">
               <div class="d-flex align-items-start">
@@ -805,6 +966,7 @@ onMounted(() => {
             </el-card>
           </b-col>
         </b-row>
+        <!-- End Fake data -->
         <div class="mt-3 mb-3">
           <el-pagination
             small
@@ -813,7 +975,7 @@ onMounted(() => {
             :page-sizes="tableRules.lengthMenu"
             background
             layout="prev, pager, next"
-            :total="Number(tableRules.total)"
+            :total="Number(newestPostList.total)"
             @size-change="fn_tableSizeChange"
             @current-change="fn_tableCurentChange"
             @prev-click="fn_tablePrevClick"

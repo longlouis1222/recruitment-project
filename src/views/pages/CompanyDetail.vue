@@ -1,38 +1,85 @@
 <script setup>
 import DataService from '@/service/DataService'
+import MethodService from '@/service/MethodService'
 
 import AppHeaderLanding from '@/components/AppHeaderLanding.vue'
 import AppFooterLanding from '@/components/AppFooterLanding.vue'
 import Loading from '@/components/Loading.vue'
 
-import { useRouter } from 'vue-router'
-import { computed, ref } from 'vue'
+import RecruitmentApi from '@/moduleApi/modules/RecruitmentApi'
+import CompanyApi from '@/moduleApi/modules/CompanyApi'
+import PostApi from '@/moduleApi/modules/PostApi'
 
+import { useRoute, useRouter } from 'vue-router'
+import { computed, ref, reactive, onMounted } from 'vue'
+
+const route = useRoute()
 const router = useRouter()
 const mainJobList = DataService.mainJobList
 const secondJobList = DataService.secondJobList
 const workPlaceList = DataService.workPlaceList
 
+const companyInfo = ref(null)
+
 const count = ref(10)
+const offset = ref(0)
+const size = ref(10)
+const page = ref(0)
+const recruitmentPostList = reactive({ value: [], total: 0 })
 const loading = ref(false)
-const noMore = computed(() => count.value >= 20)
+const noMore = computed(() => count.value >= recruitmentPostList.total)
 const disabled = computed(() => loading.value || noMore.value)
 
 const load = () => {
   loading.value = true
   setTimeout(() => {
-    count.value += 2
-    loading.value = false
+    count.value += 10
+    offset.value += 10
+    // page.value += 1
+    recruitmentPostList.total += 10
   }, 2000)
+  loading.value = false
 }
 
-const goToJobDetail = () => {
-  router.push({ name: 'Job detail' })
+const goToJobDetail = (id) => {
+  router.push({ name: 'Job detail', params: { id: id } })
 }
 
 const backToPrev = () => {
   router.go(-1)
 }
+
+const getRecuitmentPostByCompany = async () => {
+  const dataFilter = {
+    companyId: route.params.id,
+    limit: size.value,
+    skip: offset.value,
+    page: page.value > 0 ? page.value - 1 : page.value,
+  }
+  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
+  const res = await PostApi.list(filter)
+  if (res.status) {
+    page.value = offset.value / size.value + 1
+    recruitmentPostList.value = [
+      ...recruitmentPostList.value,
+      ...res.data.data.data,
+    ]
+    recruitmentPostList.total = res.data.data.totalElements
+  }
+}
+
+const getCompanyById = async () => {
+  const res = await CompanyApi.findById(route.params.id)
+  if (res.status === 200) {
+    companyInfo.value = res.data.data
+    console.log('companyInfo.value', companyInfo.value)
+  }
+}
+
+onMounted(async () => {
+  await getCompanyById()
+  await getRecuitmentPostByCompany()
+})
 </script>
 
 <template>
@@ -54,13 +101,31 @@ const backToPrev = () => {
             class="card__logo"
           />
           <div class="ms-3 mb-3">
-            <p class="card__title-company mb-1">Công ty Cổ Phần Phần mềm LL</p>
-            <span class="card__subtitle"
-              ><el-icon class="text-info"><Location /></el-icon>Hà Nội</span
-            >
-            <span class="card__subtitle ms-5">
-              <el-icon class="text-info"><PhoneFilled /></el-icon>0926676969</span
-            >
+            <p class="card__title-company mb-1">
+              {{
+                companyInfo && companyInfo.name
+                  ? companyInfo.name
+                  : 'Công ty Cổ Phần Phần mềm LL'
+              }}
+            </p>
+            <div class="d-flex">
+              <div class="d-flex align-items-center me-4">
+                <el-icon class="text-info"><Location /></el-icon
+                ><span class="card__subtitle">{{
+                  companyInfo && companyInfo.companyAddress
+                    ? companyInfo.companyAddress
+                    : 'Số 86 Mễ Trì Hạ, Nam Từ Liêm, Hà Nội'
+                }}</span>
+              </div>
+              <div class="d-flex align-items-center">
+                <el-icon class="text-info"><PhoneFilled /></el-icon
+                ><span class="card__subtitle">{{
+                  companyInfo && companyInfo.phonenumber
+                    ? companyInfo.phonenumber
+                    : '0926676969'
+                }}</span>
+              </div>
+            </div>
           </div>
         </div>
       </CContainer>
@@ -81,30 +146,44 @@ const backToPrev = () => {
             class="list"
             :infinite-scroll-disabled="disabled"
           >
-            <li v-for="i in count" :key="i" class="list-item">
-              <el-card class="box-card" shadow="hover" @click="goToJobDetail">
-                <p class="card__item-content mb-2">Front-end developer</p>
+            <li
+              v-for="post in recruitmentPostList.value"
+              :key="post.id"
+              class="list-item"
+            >
+              <el-card
+                class="box-card"
+                shadow="hover"
+                @click="goToJobDetail(post.id)"
+              >
+                <p class="card__item-content mb-2">
+                  {{ post.title ? post.title : 'Vị trí tuyển dụng' }}
+                </p>
                 <div class="d-flex align-items-center">
                   <div class="d-flex align-items-center">
-                    <div class="card__subtitle me-5">
-                      <span class="text-black-50 me-1"
-                        ><el-icon :size="18"><Money /></el-icon>Lương:</span
-                      >
-                      <span>10 - 20 triệu</span>
+                    <div class="card__subtitle me-5 d-flex">
+                      <el-icon :size="18"><Money /></el-icon>
+                      <span class="text-black-50 me-1">Lương:</span>
+                      <span>{{
+                        MethodService.formatCurrency(post.salaryMin) +
+                        ' - ' +
+                        MethodService.formatCurrency(post.salaryMax)
+                      }}</span>
                     </div>
-                    <div class="card__subtitle mx-5">
-                      <span class="text-black-50 me-1"
-                        ><el-icon :size="18"><Location /></el-icon>Nơi làm
-                        việc:</span
-                      >
-                      <span>Hà Nội</span>
+                    <div class="card__subtitle mx-5 d-flex">
+                      <el-icon :size="18"><Location /></el-icon>
+                      <span class="text-black-50 me-1">Nơi làm việc:</span>
+                      <span>{{ post.workplace }}</span>
                     </div>
-                    <div class="card__subtitle ms-5">
-                      <span class="text-black-50 me-1"
-                        ><el-icon :size="18"><AlarmClock /></el-icon>Hạn
-                        nộp:</span
-                      >
-                      <span>05/03/2022</span>
+                    <div class="card__subtitle ms-5 d-flex">
+                      <el-icon :size="18"><AlarmClock /></el-icon>
+                      <span class="text-black-50 me-1">Hạn nộp:</span>
+                      <span>{{
+                        MethodService.formatDate(
+                          post.jobApplicationDeadline,
+                          'date',
+                        )
+                      }}</span>
                     </div>
                   </div>
                 </div>
@@ -125,38 +204,60 @@ const backToPrev = () => {
 
       <!-- Start company info -->
       <CContainer xxl class="company__contact-info">
-        <h3 class="fw-bold mb-3">Giới thiệu về công ty</h3>
-        <div class="card__subtitle">
-          <span>số 18 Lũy Bán Bích, Phường Tân Thới Hòa, Quận Tân Phú, TP.HCM</span>
+        <h3 class="fw-bold mb-3" style="margin-left: 160px">
+          Giới thiệu về công ty
+        </h3>
+        <div class="card__subtitle" style="margin-left: 160px">
+          <span>{{
+            companyInfo && companyInfo.businessIntroduction
+              ? companyInfo.businessIntroduction
+              : 'Không có dữ liệu.'
+          }}</span>
         </div>
       </CContainer>
       <!-- End company info -->
 
       <!-- Start company contact info -->
       <CContainer xxl class="company__contact-info">
-        <h3 class="fw-bold mb-3">Liên hệ</h3>
-        <div class="card__subtitle">
-          <span class="text-black-50 me-1"
-            ><el-icon :size="18"><Location /></el-icon>Địa chỉ:</span
-          >
-          <span>số 18 Lũy Bán Bích, Phường Tân Thới Hòa, Quận Tân Phú, TP.HCM</span>
+        <h3 class="fw-bold mb-3" style="margin-left: 160px">Liên hệ</h3>
+        <div class="card__subtitle d-flex" style="margin-left: 160px">
+          <el-icon :size="18" class="text-info"><Location /></el-icon>
+          <span class="text-black-50 me-1">Địa chỉ:</span>
+          <span>{{
+            companyInfo && companyInfo.companyAddress
+              ? companyInfo.companyAddress
+              : 'Số 18 Lũy Bán Bích, Phường Tân Thới Hòa, Quận Tân Phú, TP.HCM'
+          }}</span>
         </div>
-        <div class="card__subtitle">
-          <span class="text-black-50 me-1"
-            ><el-icon :size="18"><Avatar /></el-icon>Quy mô:</span
+        <div class="card__subtitle d-flex">
+          <el-icon :size="18"><Avatar /></el-icon>
+          <span class="text-black-50 me-1">Quy mô:</span>
+          <span
+            >{{
+              companyInfo && companyInfo.employeeNumber
+                ? companyInfo.employeeNumber
+                : '200 Người'
+            }}
+            người</span
           >
-          <span>200 Người</span>
         </div>
-        <div class="card__subtitle">
-          <span class="text-black-50 me-1"
-            ><el-icon :size="18"><Briefcase /></el-icon>Lĩnh vực:</span
-          >
-          <span>IT Phần mềm</span>
+        <div class="card__subtitle d-flex">
+          <el-icon :size="18" class="text-warning"><Briefcase /></el-icon>
+          <span class="text-black-50 me-1">Lĩnh vực:</span>
+          <span>{{
+            companyInfo && companyInfo.fieldOfActivity
+              ? companyInfo.fieldOfActivity
+              : 'IT Phần mềm'
+          }}</span>
         </div>
       </CContainer>
       <!-- End company contact info -->
-      <CContainer xl class="mt-3 mb-4" style="margin-left: 160px;">
-        <div class="d-flex align-items-center mt-4 mb-4" @click="backToPrev">
+      <CContainer xxl class="mt-3 mb-4">
+        <div
+          class="d-flex align-items-center mt-4 mb-4"
+          style="margin-left: 160px"
+          @click="backToPrev"
+        >
           <el-link :underline="false"
             ><el-icon class="mt-1"><Back /></el-icon
             ><span>Quay lại</span></el-link
@@ -194,7 +295,6 @@ const backToPrev = () => {
       font-weight: 700;
     }
     .card__subtitle {
-      // font-size: 16px;
       font-weight: 600;
     }
   }
@@ -204,7 +304,7 @@ const backToPrev = () => {
 
   .infinite-list-wrapper {
     overflow: auto;
-    height: 470px;
+    max-height: 470px;
     margin: 20px 160px 0;
     padding: 0px 0px 5px 0px;
     border-top: 1px solid #bebebe;
@@ -249,10 +349,10 @@ const backToPrev = () => {
     }
   }
   .company__contact-info {
-    margin-left: 160px;
     .card__subtitle {
       font-weight: 600;
       margin-bottom: 10px;
+      margin-left: 160px;
     }
   }
 }
