@@ -31,6 +31,7 @@ const submitForm = async (formEl) => {
       const data = {
         id: userProfile.value.id,
         email: userProfile.value.email,
+        username: userProfile.value.username,
         password: userProfile.value.password,
         listRole: null,
         type: 'EMPLOYER',
@@ -72,15 +73,15 @@ const getUserInfo = async () => {
     formData.value = {
       type: 'EMPLOYER',
       userInfoRequest: {
-        address: userProfile.value.userInfoDTO.address,
-        avatar: null,
-        companyId: null,
-        dateOfBirth: userProfile.value.userInfoDTO.dateOfBirth,
-        fullName: userProfile.value.userInfoDTO.fullName,
-        gender: userProfile.value.userInfoDTO.gender,
-        marriageStatus: userProfile.value.userInfoDTO.marriageStatus,
-        phoneNumber: userProfile.value.userInfoDTO.phoneNumber,
-        town: userProfile.value.userInfoDTO.town,
+        address: userProfile.value.userInfoDTO.address ? userProfile.value.userInfoDTO.address : '',
+        avatar: userProfile.value.userInfoDTO.avatar ? userProfile.value.userInfoDTO.avatar : '',
+        companyId: userProfile.value.userInfoDTO.companyId ? userProfile.value.userInfoDTO.companyId : '',
+        dateOfBirth: userProfile.value.userInfoDTO.dateOfBirth ? userProfile.value.userInfoDTO.dateOfBirth : '',
+        fullName: userProfile.value.userInfoDTO.fullName ? userProfile.value.userInfoDTO.fullName : '',
+        gender: userProfile.value.userInfoDTO.gender ? userProfile.value.userInfoDTO.gender : '',
+        marriageStatus: userProfile.value.userInfoDTO.marriageStatus ? userProfile.value.userInfoDTO.marriageStatus : '',
+        phoneNumber: userProfile.value.userInfoDTO.phoneNumber ? userProfile.value.userInfoDTO.phoneNumber : '',
+        town: userProfile.value.userInfoDTO.town ? userProfile.value.userInfoDTO.town : '',
       },
       // companyRequest: userProfile.value.companyDTO,
       companyRequest: { ...userProfile.value.companyDTO },
@@ -111,6 +112,13 @@ const handleExceed = (files, uploadFiles) => {
 const beforeRemove = (uploadFile, uploadFiles) => {
   return ElMessageBox.confirm(
     `Bạn có chắc chắn muốn bỏ hồ sơ đính kèm ${uploadFile.name} ?`,
+    {
+      // if you want to disable its autofocus
+      // autofocus: false,
+      confirmButtonText: 'Đồng ý',
+      cancelButtonText: 'Hủy',
+      type: 'warning',
+    },
   ).then(
     () => true,
     () => false,

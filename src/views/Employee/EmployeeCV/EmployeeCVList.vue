@@ -102,11 +102,18 @@ const handleExceed = (files, uploadFiles) => {
 }
 
 const beforeRemove = (uploadFile, uploadFiles) => {
-  return ElMessageBox.confirm(
-    `Bạn có chắc chắn muốn bỏ hồ sơ đính kèm ${uploadFile.name} ?`
+  ElMessageBox.confirm(
+    `Bạn có chắc chắn muốn bỏ hồ sơ đính kèm ${uploadFile.name} ?`,
+    {
+      // if you want to disable its autofocus
+      // autofocus: false,
+      confirmButtonText: 'Đồng ý',
+      cancelButtonText: 'Hủy',
+      type: 'warning',
+    },
   ).then(
     () => true,
-    () => false
+    () => false,
   )
 }
 
