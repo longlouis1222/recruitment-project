@@ -30,5 +30,8 @@ export default {
   },
   getView(id) {
     return Api().get(`recruitments/get-view?id=${id}`)
-  }
+  },
+  removeProfile(id) {
+    return Api().get(`recruitments/remove-profile?profileId=${id}`)
+  },
 }

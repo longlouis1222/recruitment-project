@@ -5,7 +5,7 @@ import DataService from '@/service/DataService'
 import UserProfileApi from '@/moduleApi/modules/UserProfileApi'
 import RecruitmentApi from '@/moduleApi/modules/RecruitmentApi'
 
-import { ElNotification } from 'element-plus'
+import { ElNotification, ElMessageBox } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
@@ -14,6 +14,7 @@ import xlsx from 'xlsx/dist/xlsx.full.min'
 
 import modelData from './CandidateProfileModel'
 
+const router = useRouter()
 const mainJobList = DataService.mainJobList
 const experienceList = DataService.experienceList
 const workPlaceList = DataService.workPlaceList
@@ -133,8 +134,8 @@ const fn_tableSortChange = (column, tableSort) => {
 
 const getRecruitmentSavedList = async () => {
   const res = await RecruitmentApi.getRecruitmentSavedList()
-  if (res.status == 200) {
-    tableRules.data = changeData(res.data.data)
+  if (res.status == 200 && res.data.data) {
+    tableRules.data = await changeData(res.data.data)
   }
 }
 
@@ -148,6 +149,52 @@ const changeData = (data) => {
       : ''
   })
   return data
+}
+
+const handleAction = (type, rowData) => {
+  if (type === 'view') {
+    viewCandidateProfile(rowData)
+  } else if(type === 'delete') {
+    deleteRecruitment(rowData)
+  }
+}
+
+const viewCandidateProfile = async (rowData) => {
+  // const res = await RecruitmentApi.getView(rowData.id)
+  if (res.status === 200) {
+    // Go to detail
+    router.push({
+      name: 'Chi tiết hồ sơ ứng viên',
+      params: { id: rowData.id }
+    })
+  }
+}
+
+const deleteRecruitment = async (rowData) => {
+  ElMessageBox.confirm(
+    'Bạn có chắc muốn xóa hồ sơ này ?',
+    'Cảnh báo',
+    {
+      // if you want to disable its autofocus
+      // autofocus: false,
+      confirmButtonText: 'Đồng ý',
+      cancelButtonText: 'Hủy',
+      type: 'warning',
+    },
+  )
+    .then(async () => {
+      const res = await RecruitmentApi.removeProfile(rowData.id)
+      if (res.status === 200) {
+        ElNotification({
+          title: 'Success',
+          message: 'Xóa thành công.',
+          type: 'success',
+          duration: 3000,
+        })
+        getRecruitmentSavedList()
+      }
+    })
+    .catch(() => {})
 }
 
 onMounted(() => {
@@ -333,13 +380,13 @@ onMounted(() => {
           fixed="right"
           align="center"
           label="Thao tác"
-          width="180"
+          width="120"
         >
           <template #default="scope">
             <div class="">
               <el-button
                 size="small"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleAction('view', scope.row)"
                 ><CIcon icon="cilFindInPage"
               /></el-button>
               <!-- <el-button
@@ -353,7 +400,7 @@ onMounted(() => {
                 size="small"
                 type="danger"
                 plain
-                @click="deletePost(scope.row)"
+                @click="handleAction('delete', scope.row)"
                 ><CIcon icon="cilTrash"
               /></el-button>
             </div>

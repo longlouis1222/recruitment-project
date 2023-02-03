@@ -96,6 +96,10 @@ const fn_tableSortChange = (column, tableSort) => {
   // getService();
 }
 
+const backToPrev = () => {
+  router.go(-1)
+}
+
 const getRecruitmentList = async () => {
   let dataFilter = {
     limit: tableRules.limit,
@@ -150,6 +154,10 @@ const viewCandidateProfile = async (rowData) => {
   const res = await RecruitmentApi.getView(rowData.id)
   if (res.status === 200) {
     // Go to detail
+    router.push({
+      name: 'Chi tiết hồ sơ ứng viên',
+      params: { id: rowData.id }
+    })
   }
 }
 
@@ -419,7 +427,7 @@ onMounted(() => {
                 size="small"
                 type="warning"
                 plain
-                @click="handleAction(save, scope.row)"
+                @click="handleAction('save', scope.row)"
                 ><CIcon icon="cilStar"
               /></el-button>
             </div>

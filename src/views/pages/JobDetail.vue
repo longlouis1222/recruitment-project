@@ -26,6 +26,7 @@ const getPostById = async () => {
   const res = await PostApi.findById(route.params.id)
   if (res.status === 200) {
     postInfo.value = res.data.data
+    console.log('postInfo.value:>', postInfo.value)
   }
 }
 
@@ -58,13 +59,13 @@ onMounted(() => {
               <div>
                 <h5 class="ms-3">
                   {{
-                    postInfo && postInfo.companyDTO && companyDTO.name
-                      ? companyDTO.name
+                    postInfo && postInfo.companyDTO && postInfo.companyDTO.name
+                      ? postInfo.companyDTO.name
                       : 'Công ty Cổ Phần Phần mềm LL'
                   }}
                 </h5>
                 <p class="text-black-50 ms-3 mb-0">
-                  {{ postInfo ? postInfo.numberOfRecruits : '12 người' }}
+                  {{ postInfo ? postInfo.numberOfRecruits + ' người': '12 người' }}
                 </p>
               </div>
             </div>
@@ -90,7 +91,7 @@ onMounted(() => {
               >Hạn nộp hồ sơ:
               {{
                 postInfo && postInfo.jobApplicationDeadline
-                  ? postInfo.jobApplicationDeadline
+                  ? MethodService.formatDate(postInfo.jobApplicationDeadline, 'date')
                   : '12/02/2023'
               }}</span
             >
@@ -197,7 +198,7 @@ onMounted(() => {
                 <p class="text-black-50">Số lượng tuyển:</p>
               </b-col>
               <b-col md="7">
-                <p>{{ postInfo ? postInfo.numberOfRecruits : '12 người' }}</p>
+                <p>{{ postInfo ? postInfo.numberOfRecruits + ' người' : '12 người' }}</p>
               </b-col>
             </b-row>
 
@@ -209,7 +210,7 @@ onMounted(() => {
                 <p>
                   {{
                     postInfo && postInfo.jobApplicationDeadline
-                      ? postInfo.jobApplicationDeadline
+                      ? MethodService.formatDate(postInfo.jobApplicationDeadline, 'date')
                       : '12/02/2023'
                   }}
                 </p>
@@ -348,8 +349,8 @@ onMounted(() => {
       <el-card class="box-card">
         <h3 class="mb-3">
           {{
-            postInfo && postInfo.companyDTO && companyDTO.name
-              ? companyDTO.name
+            postInfo && postInfo.companyDTO && postInfo.companyDTO.name
+              ? postInfo.companyDTO.name
               : 'Công ty Cổ Phần Phần mềm LL'
           }}
         </h3>
@@ -357,19 +358,19 @@ onMounted(() => {
           <p class="text-black-50 me-1">Địa chỉ:</p>
           <p>
             {{
-              postInfo && postInfo.companyDTO && companyDTO.companyAddress
-                ? companyDTO.companyAddress
+              postInfo && postInfo.companyDTO &&postInfo. companyDTO.companyAddress
+                ? postInfo.companyDTO.companyAddress
                 : 'Số 86 Mễ Trì Hạ, Nam Từ Liêm, Hà Nội'
             }}
           </p>
         </div>
         <div class="d-flex align-items-center">
           <p class="text-black-50 me-1">Số lượng tuyển:</p>
-          <p>{{ postInfo ? postInfo.numberOfRecruits : '12 người' }}</p>
+          <p>{{ postInfo ? postInfo.numberOfRecruits + ' người' : '12 người' }}</p>
         </div>
         <div class="d-flex align-items-center">
           <p class="text-black-50 me-1">Người liên hệ:</p>
-          <p>Mr Long</p>
+          <p>{{ postInfo && postInfo.companyDTO && postInfo.companyDTO.userInfoDTO && postInfo.companyDTO.userInfoDTO.fullName ? postInfo.companyDTO.userInfoDTO.fullName : 'Mr Long'}}</p>
         </div>
       </el-card>
     </CContainer>

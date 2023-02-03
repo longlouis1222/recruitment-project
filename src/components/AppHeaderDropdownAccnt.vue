@@ -1,7 +1,7 @@
 <template>
   <!-- <CDropdown variant="nav-item"> -->
   <CDropdown>
-    <CDropdownToggle placement="bottom-end" class="py-0" :caret="false">
+    <CDropdownToggle placement="bottom-end" class="py-0 border-0" :caret="false">
       <CAvatar :src="avatar" size="md" />
     </CDropdownToggle>
     <CDropdownMenu class="pt-0">

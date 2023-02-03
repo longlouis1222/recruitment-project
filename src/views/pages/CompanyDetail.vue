@@ -120,8 +120,8 @@ onMounted(async () => {
               <div class="d-flex align-items-center">
                 <el-icon class="text-info"><PhoneFilled /></el-icon
                 ><span class="card__subtitle">{{
-                  companyInfo && companyInfo.phonenumber
-                    ? companyInfo.phonenumber
+                  companyInfo && companyInfo.companyPhoneNumber
+                    ? companyInfo.companyPhoneNumber
                     : '0926676969'
                 }}</span>
               </div>
@@ -203,7 +203,7 @@ onMounted(async () => {
       <!-- End Job hiring jobs -->
 
       <!-- Start company info -->
-      <CContainer xxl class="company__contact-info">
+      <CContainer xxl class="company__contact-info mb-4">
         <h3 class="fw-bold mb-3" style="margin-left: 160px">
           Giới thiệu về công ty
         </h3>
@@ -235,10 +235,10 @@ onMounted(async () => {
           <span
             >{{
               companyInfo && companyInfo.employeeNumber
-                ? companyInfo.employeeNumber
+                ? companyInfo.employeeNumber + ' người'
                 : '200 Người'
             }}
-            người</span
+            </span
           >
         </div>
         <div class="card__subtitle d-flex">

@@ -95,6 +95,12 @@ export default [
         component: () =>
           import('@/views/Employer/CandidateProfile/CandidateProfileList.vue'),
       },
+      {
+        path: '/employeer/curriculum-vitae/curriculum-vitae-detail/:id',
+        name: 'Chi tiết hồ sơ ứng viên',
+        component: () =>
+          import( '@/views/Employee/CurriculumVitae/CurriculumVitaeDetail.vue'),
+      },
 
       // EMPLOYEE
 
