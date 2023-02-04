@@ -132,40 +132,54 @@ const handleAction = (action, id, fromList) => {
   if (action === 'save') {
     saveToCareList(id)
     if (fromList === 'outstandingPostList') {
-      const post = outstandingPostList.value.find(o => o.id === id)
+      const post = outstandingPostList.value.find((o) => o.id === id)
       if (post) post.userCurrentSaved = true
     } else if (fromList === 'newestPostList') {
-      const post = newestPostList.value.find(o => o.id === id)
+      const post = newestPostList.value.find((o) => o.id === id)
       if (post) post.userCurrentSaved = true
     }
   } else if (action === 'unSave') {
     unSaveFromCareList(id)
     if (fromList === 'outstandingPostList') {
-      const post = outstandingPostList.value.find(o => o.id === id)
+      const post = outstandingPostList.value.find((o) => o.id === id)
       if (post) post.userCurrentSaved = false
     } else if (fromList === 'newestPostList') {
-      const post = newestPostList.value.find(o => o.id === id)
+      const post = newestPostList.value.find((o) => o.id === id)
       if (post) post.userCurrentSaved = false
     }
   }
 }
 
 const saveToCareList = async (id) => {
-  const res = await PostApi.saveToCare(id)
-  if (res.status === 200) {
+  try {
+    const res = await PostApi.saveToCare(id)
+    if (res.status === 200) {
+      ElMessage({
+        type: 'success',
+        message: `Lưu tin tuyển dụng thành công.`,
+      })
+    }
+  } catch (error) {
     ElMessage({
-      type: 'success',
-      message: `Lưu tin tuyển dụng thành công.`,
+      message: 'Lưu tin tuyển dụng thất bại.',
+      type: 'error',
     })
   }
 }
 
 const unSaveFromCareList = async (id) => {
-  const res = await PostApi.removeSavePost(id)
-  if (res.status === 200) {
+  try {
+    const res = await PostApi.removeSavePost(id)
+    if (res.status === 200) {
+      ElMessage({
+        type: 'success',
+        message: `Bỏ lưu tin tuyển dụng thành công.`,
+      })
+    }
+  } catch (error) {
     ElMessage({
-      type: 'success',
-      message: `Bỏ lưu tin tuyển dụng thành công.`,
+      message: 'Bỏ lưu tin tuyển dụng thất bại.',
+      type: 'error',
     })
   }
 }
@@ -366,7 +380,7 @@ onMounted(() => {
                     handleAction(
                       `${post.userCurrentSaved ? 'unSave' : 'save'}`,
                       post.id,
-                      'outstandingPostList'
+                      'outstandingPostList',
                     )
                   "
                 />
@@ -716,7 +730,7 @@ onMounted(() => {
                         handleAction(
                           `${post.userCurrentSaved ? 'unSave' : 'save'}`,
                           post.id,
-                          'newestPostList'
+                          'newestPostList',
                         )
                       "
                     />

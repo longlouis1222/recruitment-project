@@ -91,9 +91,15 @@ export default [
       },
       {
         path: '/employer/candidate-profile/candidate-profile-list',
-        name: 'Hồ sơ đã lưu',
+        name: 'Hồ sơ ứng viên đã lưu',
         component: () =>
           import('@/views/Employer/CandidateProfile/CandidateProfileList.vue'),
+      },
+      {
+        path: '/employer/candidate-applied-profile/candidate-applied-profile-list',
+        name: 'Hồ sơ ứng viên ứng tuyển',
+        component: () =>
+          import('@/views/Employer/CandidateAppliedProfile/CandidateAppliedProfileList.vue'),
       },
       {
         path: '/employeer/curriculum-vitae/curriculum-vitae-detail/:id',
@@ -127,6 +133,12 @@ export default [
         name: 'Việc làm quan tâm',
         component: () =>
           import('@/views/Employee/EmployeePost/EmployeeSavedPostList.vue'),
+      },
+      {
+        path: '/employee/applied-jobs/applied-jobs-list',
+        name: 'Việc làm đã ứng tuyển',
+        component: () =>
+          import('@/views/Employee/EmployeeAppliedJobs/EmployeeAppliedJobsList.vue'),
       },
       {
         path: '/theme',

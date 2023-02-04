@@ -1,10 +1,12 @@
 <script setup>
 import MethodService from '@/service/MethodService'
-import { ElNotification, ElMessageBox } from 'element-plus'
+
+import IndustryApi from '@/moduleApi/modules/IndustryApi'
+
+import { ElNotification, ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { FormInstance } from 'element-plus'
-import IndustryApi from '@/moduleApi/modules/IndustryApi'
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
 
 import modelData from './IndustryModel'
 
@@ -12,14 +14,16 @@ const router = useRouter()
 
 const ruleFormRef = ref(FormInstance)
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
-const formData = reactive(MethodService.copyObject(modelData.dataForm))
-const formValid = reactive(MethodService.copyObject(modelData.validForm))
-const formSearchData = reactive(
-  MethodService.copyObject(tableRules.dataSearch.value),
-)
-const formSearchValid = reactive(
-  MethodService.copyObject(tableRules.dataSearch.valid),
-)
+const formData = reactive({
+  value: MethodService.copyObject(modelData.dataForm),
+})
+const validForm = modelData.validForm
+const formSearchData = reactive({
+  value: MethodService.copyObject(tableRules.dataSearch.value),
+})
+const formSearchValid = reactive({
+  value: MethodService.copyObject(tableRules.dataSearch.valid),
+})
 
 const dialogIndustry = ref(false)
 const viewMode = ref('create')
@@ -40,17 +44,27 @@ const submitForm = async (formEl) => {
         if (viewMode.value === 'create') {
           const industryApiRes = await IndustryApi.create(formData)
           if (industryApiRes.status === 200) {
-            console.log('create', industryApiRes)
+            ElNotification({
+              title: 'Success',
+              message: 'Thêm mới thành công.',
+              type: 'success',
+              duration: 3000,
+            })
           }
         } else if (viewMode.value === 'update') {
-          console.log('Update data', formData)
-          const industryApiRes = await IndustryApi.update(formData)
+          const industryApiRes = await IndustryApi.update(formData.value)
           if (industryApiRes.status === 200) {
-            console.log('Update', industryApiRes)
-            dialogIndustry.value = false
+            ElNotification({
+              title: 'Success',
+              message: 'Cập nhật thành công.',
+              type: 'success',
+              duration: 3000,
+            })
           }
         }
+        dialogIndustry.value = false
         viewMode.value = 'create'
+        await resetForm()
         await getIndustryList()
       } catch (error) {
         console.log(error)
@@ -66,10 +80,9 @@ const submitFormSearch = async (formEl) => {
   await formEl.validate(async (valid, fields) => {
     if (valid) {
       try {
-        tableRules.filters = formSearchData
-        console.log('tableRules.filters', tableRules.filters)
-        tableRules.skip = 0;
-        tableRules.page = 1;
+        tableRules.filters = formSearchData.value
+        tableRules.skip = 0
+        tableRules.page = 1
         getIndustryList()
       } catch (error) {
         console.log(error)
@@ -78,6 +91,11 @@ const submitFormSearch = async (formEl) => {
       console.log('error submit!', fields)
     }
   })
+}
+
+const resetForm = (formEl) => {
+  if (!formEl) return
+  formEl.resetFields()
 }
 
 const getIndustryList = async () => {
@@ -103,48 +121,51 @@ const getIndustryList = async () => {
   }
 }
 
-const updateIndustry = (rowData) => {
-  viewMode.value = 'update'
-  console.log(rowData)
-  dialogIndustry.value = true
-  formData.id = rowData.id
-  formData.code = rowData.code
-  formData.name = rowData.name
+const handleAction = async (action, rowData) => {
+  viewMode.value = action
+  if (action === 'update') {
+    await getIndustryById(rowData)
+    dialogIndustry.value = true
+  } else if (action === 'delete') {
+    deleteIndustry(rowData)
+  }
 }
 
 const getIndustryById = async (rowData) => {
-  console.log('rowData', rowData)
-
-  const industryApiRes = await IndustryApi.findById(rowData.id)
-  if (industryApiRes.status === 200) {
-    console.log('getIndustryById', industryApiRes)
+  try {
+    const industryApiRes = await IndustryApi.findById(rowData.id)
+    if (industryApiRes.status === 200) {
+      formData.value = { ...industryApiRes.data.data }
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Có lỗi khi tải dữ liệu.',
+      type: 'error',
+    })
   }
 }
 
 const deleteIndustry = async (rowData) => {
-  console.log(rowData)
-  ElMessageBox.alert('Bạn có chắc muốn xóa bản ghi này ?', 'Cảnh báo', {
+  ElMessageBox.confirm('Bạn có chắc muốn xóa ngành nghề này ?', 'Cảnh báo', {
     // if you want to disable its autofocus
     // autofocus: false,
     confirmButtonText: 'Đồng ý',
-    callback: async () => {
+    cancelButtonText: 'Hủy',
+    type: 'warning',
+  })
+    .then(async () => {
       const industryApiRes = await IndustryApi.delete(rowData.id)
       if (industryApiRes.status === 200) {
         await getIndustryList()
-        console.log(industryApiRes)
+        ElNotification({
+          title: 'Success',
+          message: 'Xóa thành công.',
+          type: 'success',
+          duration: 3000,
+        })
       }
-
-      ElMessage({
-        type: 'success',
-        message: `Xóa thành công`,
-      })
-    },
-  })
-  // const industryApiRes = await IndustryApi.delete(rowData.id);
-  // if (industryApiRes.status === 200) {
-  //   await getIndustryList()
-  //   console.log(industryApiRes)
-  // }
+    })
+    .catch(() => {})
 }
 
 const fn_tableSizeChange = (limit) => {
@@ -163,17 +184,10 @@ const fn_tableNextClick = () => {
 const fn_tableChangeOffset = (page) => {
   tableRules.page = page
   tableRules.skip = (tableRules.page - 1) * tableRules.limit
-  getIndustryList();
-}
-const fn_tableSortChange = (column, tableSort) => {
-  tableSort = tableRules
-  MethodService.tableSortChange(column, tableSort)
-  // getService();
+  getIndustryList()
 }
 
 onMounted(async () => {
-  // tableRules.total = tableData.length
-  // console.log('tableRules.showFormSearch', tableRules.showFormSearch)
   await getIndustryList()
 })
 </script>
@@ -186,17 +200,11 @@ onMounted(async () => {
           <div class="d-flex justify-content-between">
             <h4>Danh sách ngành nghề</h4>
             <div>
-              <el-button
-                type="primary"
-                @click="toggleSearchBox"
-              >
+              <el-button type="primary" @click="toggleSearchBox">
                 <el-icon class="me-2"><Search /></el-icon>
                 Ẩn/hiện tìm kiếm
               </el-button>
-              <el-button
-                type="primary"
-                @click="openDialogAddIndustry"
-              >
+              <el-button type="primary" @click="openDialogAddIndustry">
                 <!-- <el-icon class="me-2"><Search /></el-icon> -->
                 Thêm mới
               </el-button>
@@ -257,8 +265,8 @@ onMounted(async () => {
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="code" label="Mã ngành nghề" min-width="150" />
-        <el-table-column prop="name" label="Tên ngành nghề"  min-width="250" />
+        <el-table-column prop="code" label="Mã ngành nghề" min-width="150" align="center" />
+        <el-table-column prop="name" label="Tên ngành nghề" min-width="250" />
         <el-table-column
           fixed="right"
           align="center"
@@ -271,14 +279,14 @@ onMounted(async () => {
                 size="small"
                 type="primary"
                 plain
-                @click="updateIndustry(scope.row)"
+                @click="handleAction('update', scope.row)"
                 ><CIcon icon="cilPencil"
               /></el-button>
               <el-button
                 size="small"
                 type="danger"
                 plain
-                @click="deleteIndustry(scope.row)"
+                @click="handleAction('delete', scope.row)"
                 ><CIcon icon="cilTrash"
               /></el-button>
             </div>
@@ -308,11 +316,12 @@ onMounted(async () => {
       title="Thêm mới ngành nghề"
       :close-on-click-modal="false"
       :close-on-press-escape="true"
+      @close="resetForm(ruleFormRef)"
     >
       <el-form
         ref="ruleFormRef"
-        :model="formData"
-        :rules="formValid"
+        :model="formData.value"
+        :rules="validForm"
         label-width="140px"
         label-position="top"
         class="demo-ruleForm"
@@ -321,12 +330,12 @@ onMounted(async () => {
         <b-row>
           <b-col md="6">
             <el-form-item label="Mã ngành nghề" prop="code">
-              <el-input v-model="formData.code" autocomplete="off" />
+              <el-input v-model="formData.value.code" autocomplete="off" />
             </el-form-item>
           </b-col>
           <b-col md="6">
             <el-form-item label="Tên ngành nghề" prop="name">
-              <el-input v-model="formData.name" autocomplete="off" />
+              <el-input v-model="formData.value.name" autocomplete="off" />
             </el-form-item>
           </b-col>
         </b-row>

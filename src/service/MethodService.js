@@ -736,7 +736,6 @@ MethodService.filterTable = function (jsonFilter) {
     let filters = "";
     $.each(dataSearch, (key, value) => {
       if (value) {
-        console.log('dataSearch.operator', dataSearch.operator)
         if (dataSearch.operator) {
           if (dataSearch.operator[key]) {
             let operator = dataSearch.operator[key];

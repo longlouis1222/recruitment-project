@@ -187,7 +187,7 @@ const handleAction = (type, rowData) => {
   if (type === 'view') {
     viewCandidateProfile(rowData)
   } else if (type === 'delete') {
-    deleteRecruitment(rowData)
+    deletePost(rowData)
   }
 }
 
@@ -202,7 +202,7 @@ const viewCandidateProfile = async (rowData) => {
   }
 }
 
-const deleteRecruitment = async (rowData) => {
+const deletePost = async (rowData) => {
   ElMessageBox.confirm('Bạn có chắc muốn xóa tin tuyển dụng này ?', 'Cảnh báo', {
     // if you want to disable its autofocus
     // autofocus: false,

@@ -12,11 +12,12 @@ import { FormInstance } from 'element-plus'
 
 import xlsx from 'xlsx/dist/xlsx.full.min'
 
-import modelData from './CandidateProfileModel'
+import modelData from './CandidateAppliedProfileModel'
 
-const moduleName = 'Hồ sơ ứng viên đã lưu'
+const moduleName = 'Hồ sơ ứng viên ứng tuyển'
 
 const router = useRouter()
+
 const mainJobList = DataService.mainJobList
 const experienceList = DataService.experienceList
 const workPlaceList = DataService.workPlaceList
@@ -95,7 +96,7 @@ const submitFormSearch = async (formEl) => {
         tableRules.filters = formSearchData.value
         tableRules.skip = 0
         tableRules.page = 1
-        await getRecruitmentSavedList()
+        await getAppliesCVList()
       } catch (error) {
         console.log(error)
       }
@@ -126,7 +127,7 @@ const fn_tableNextClick = () => {
 const fn_tableChangeOffset = (page) => {
   tableRules.page = page
   tableRules.offset = (tableRules.page - 1) * tableRules.limit
-  getRecruitmentSavedList()
+  getAppliesCVList()
 }
 const fn_tableSortChange = (column, tableSort) => {
   tableSort = tableRules
@@ -134,7 +135,7 @@ const fn_tableSortChange = (column, tableSort) => {
   // getService();
 }
 
-const getRecruitmentSavedList = async () => {
+const getAppliesCVList = async () => {
   let dataFilter = {
     limit: tableRules.limit,
     skip: tableRules.skip,
@@ -148,7 +149,7 @@ const getRecruitmentSavedList = async () => {
     },
   })
   const filter = MethodService.filterTable(JSON.stringify(dataFilter))
-  const res = await RecruitmentApi.getRecruitmentSavedList(filter)
+  const res = await UserApi.getAppliedCVEmloyeeList(filter)
   if (res.status == 200 && res.data && res.data.data && res.data.data.data) {
     tableRules.data = await changeData(res.data.data.data)
     tableRules.total = res.data.data.totalElements
@@ -207,14 +208,14 @@ const deleteRecruitment = async (rowData) => {
           type: 'success',
           duration: 3000,
         })
-        getRecruitmentSavedList()
+        getAppliesCVList()
       }
     })
     .catch(() => {})
 }
 
 onMounted(() => {
-  getRecruitmentSavedList()
+  getAppliesCVList()
 })
 </script>
 
@@ -224,7 +225,7 @@ onMounted(() => {
       <template #header>
         <div class="card-header">
           <div class="d-flex justify-content-between">
-            <h4>Hồ sơ ứng viên đã lưu</h4>
+            <h4>Hồ sơ ứng viên ứng tuyển</h4>
             <div class="d-flex">
               <el-button type="primary" @click="toggleSearchBox">
                 <el-icon class="me-2"><Search /></el-icon>

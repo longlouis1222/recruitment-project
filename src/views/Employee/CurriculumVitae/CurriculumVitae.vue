@@ -1,7 +1,7 @@
 <script setup>
 import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
-import UserProfileApi from '@/moduleApi/modules/UserProfileApi'
+import UserApi from '@/moduleApi/modules/UserApi'
 import RecruitmentApi from '@/moduleApi/modules/RecruitmentApi'
 
 import { ElNotification } from 'element-plus'
@@ -84,7 +84,7 @@ const getCVInfo = async () => {
 }
 
 const getUserInfo = async () => {
-  const userProfileApiRes = await UserProfileApi.findById(
+  const userProfileApiRes = await UserApi.findById(
     localStorage.getItem('uid'),
   )
   if (userProfileApiRes.status == 200) {

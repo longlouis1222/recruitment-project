@@ -2,7 +2,7 @@
 import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
 
-import UserProfileApi from '@/moduleApi/modules/UserProfileApi'
+import UserApi from '@/moduleApi/modules/UserApi'
 import FileApi from '@/moduleApi/modules/FileApi'
 
 import axios from 'axios'
@@ -39,7 +39,7 @@ const submitForm = async (formEl) => {
         userInfoRequest: userProfile.value.userInfoDTO,
         companyRequest: formData.value.companyRequest,
       }
-      const userProfileApiRes = await UserProfileApi.update(data)
+      const userProfileApiRes = await UserApi.update(data)
       if (userProfileApiRes.status == 200) {
         ElNotification({
           title: 'Success',
@@ -61,7 +61,7 @@ const resetForm = (formEl) => {
 }
 
 const getUserInfo = async () => {
-  const userProfileApiRes = await UserProfileApi.findById(
+  const userProfileApiRes = await UserApi.findById(
     localStorage.getItem('uid'),
   )
   if (userProfileApiRes.status == 200) {

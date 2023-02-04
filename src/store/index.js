@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 import AuthService from '../moduleApi/modules/auth'
 import VueJwtDecode from 'vue-jwt-decode'
 import router from '../router/index'
+import { ElMessage } from 'element-plus'
 
 export default createStore({
   state: {
@@ -39,7 +40,7 @@ export default createStore({
           credentials.password,
         )
         const res = await AuthService.login(credentials)
-        if (res.status == 200) {
+        if (res.status == 200 && res.data) {
           console.log(
             'this.$jwtDec("<your jwt>")',
             VueJwtDecode.decode(res.data.token),
@@ -55,6 +56,12 @@ export default createStore({
         }
       } catch (error) {
         console.log(error)
+        if (error) {
+          ElMessage({
+            message: 'Tài khoản đăng nhập không hợp lệ.',
+            type: 'error',
+          })
+        }
       }
     },
 

@@ -1,7 +1,7 @@
 <script setup>
 import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
-import UserProfileApi from '@/moduleApi/modules/UserProfileApi'
+import UserApi from '@/moduleApi/modules/UserApi'
 
 import { ElNotification } from 'element-plus'
 import { ref, reactive, onMounted, computed } from 'vue'
@@ -57,7 +57,7 @@ const submitForm = async (formEl) => {
         },
         username: userProfile.value.username ? userProfile.value.username : ''
       }
-      const userProfileApiRes = await UserProfileApi.update(data)
+      const userProfileApiRes = await UserApi.update(data)
       if (userProfileApiRes.status == 200) {
         ElNotification({
           title: 'Success',
@@ -79,7 +79,7 @@ const resetForm = (formEl) => {
 }
 
 const getUserInfo = async () => {
-  const userProfileApiRes = await UserProfileApi.findById(localStorage.getItem('uid'))
+  const userProfileApiRes = await UserApi.findById(localStorage.getItem('uid'))
   if (userProfileApiRes.status == 200) {
     userProfile.value = userProfileApiRes.data.data
     formData.value = {

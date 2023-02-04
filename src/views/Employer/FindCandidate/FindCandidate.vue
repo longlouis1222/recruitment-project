@@ -3,7 +3,7 @@ import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
 
 import RecruitmentApi from '@/moduleApi/modules/RecruitmentApi'
-import UserProfileApi from '@/moduleApi/modules/UserProfileApi'
+import UserApi from '@/moduleApi/modules/UserApi'
 
 import { ElNotification } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
@@ -135,7 +135,7 @@ const changeData = (data) => {
 
 const getUserInfo = async () => {
   if (!localStorage.getItem('uid')) return
-  const userProfileApiRes = await UserProfileApi.findById(
+  const userProfileApiRes = await UserApi.findById(
     localStorage.getItem('uid'),
   )
   if (userProfileApiRes.status == 200) {

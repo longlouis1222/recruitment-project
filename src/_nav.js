@@ -53,8 +53,14 @@ export default [
   },
   {
     component: 'CNavItem',
-    name: 'Hồ sơ đã lưu',
+    name: 'Hồ sơ ứng viên đã lưu',
     to: '/employer/candidate-profile/candidate-profile-list',
+    icon: 'cilLibraryAdd',
+  },
+  {
+    component: 'CNavItem',
+    name: 'Hồ sơ ứng viên ứng tuyển',
+    to: '/employer/candidate-applied-profile/candidate-applied-profile-list',
     icon: 'cilStorage',
   },
 
@@ -83,6 +89,12 @@ export default [
     name: 'Việc làm quan tâm',
     to: '/employee/saved-post/saved-post-list',
     icon: 'cilPin',
+  },
+  {
+    component: 'CNavItem',
+    name: 'Việc làm đã ứng tuyển',
+    to: '/employee/applied-jobs/applied-jobs-list',
+    icon: 'cilBraille',
   },
 
   // {

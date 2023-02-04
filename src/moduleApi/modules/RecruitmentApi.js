@@ -26,7 +26,7 @@ export default {
     return Api().post(`recruitments/save-list`, data)
   },
   getRecruitmentSavedList(data) {
-    return Api().get(`recruitments/get-list-id`)
+    return Api().get(!data ? 'recruitments/get-list-id' : `recruitments/get-list-id?${data}`)
   },
   increaseViewRecruitment(id) {
     return Api().get(`recruitments/get-view?id=${id}`)

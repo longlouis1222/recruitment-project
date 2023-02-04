@@ -1,6 +1,6 @@
 <script setup>
 import MethodService from '@/service/MethodService'
-import UserProfileApi from '@/moduleApi/modules/UserProfileApi'
+import UserApi from '@/moduleApi/modules/UserApi'
 
 import { useRouter } from 'vue-router'
 import { ElMessageBox, ElNotification } from 'element-plus'
@@ -55,7 +55,7 @@ const changeAccountStatus = async (rowData) => {
       id: rowData.id,
       status: rowData.status == 1 ? true : false,
     }
-    const userApiRes = await UserProfileApi.inactiveAccount(dataUpdate)
+    const userApiRes = await UserApi.inactiveAccount(dataUpdate)
     if (userApiRes.status == 200) {
       ElNotification({
         title: 'Success',
@@ -90,7 +90,7 @@ const getUserList = async () => {
     },
   })
   const filter = MethodService.filterTable(JSON.stringify(dataFilter))
-  const userApiRes = await UserProfileApi.list(filter)
+  const userApiRes = await UserApi.list(filter)
   if (userApiRes.status == 200) {
     tableRules.data = userApiRes.data.data.data
     tableRules.total = userApiRes.data.data.totalElements
@@ -123,7 +123,7 @@ const deleteItem = async (id) => {
     confirmButtonText: 'Đồng ý',
     callback: async () => {
       try {
-        const userApiRes = await UserProfileApi.delete(id)
+        const userApiRes = await UserApi.delete(id)
         if (userApiRes.status === 200) {
           ElNotification({
             title: 'Success',

@@ -2,22 +2,23 @@
 import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
 
+import IndustryApi from '@/moduleApi/modules/IndustryApi'
+import PostApi from '@/moduleApi/modules/PostApi'
 import UserApi from '@/moduleApi/modules/UserApi'
-import RecruitmentApi from '@/moduleApi/modules/RecruitmentApi'
 
-import { ElNotification, ElMessageBox } from 'element-plus'
+import { ElNotification, ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
 
 import xlsx from 'xlsx/dist/xlsx.full.min'
 
-import modelData from './CandidateProfileModel'
+import modelData from './EmployeeAppliedJobsModel'
 
-const moduleName = 'Hồ sơ ứng viên đã lưu'
+const moduleName = 'Việc làm đã ứng tuyển'
 
 const router = useRouter()
-const mainJobList = DataService.mainJobList
+const rankList = DataService.rankList
 const experienceList = DataService.experienceList
 const workPlaceList = DataService.workPlaceList
 const workFormList = DataService.workFormList
@@ -29,6 +30,8 @@ const formSearchData = reactive({
   value: MethodService.copyObject(modelData.dataForm),
 })
 
+const industryList = reactive({ value: [] })
+
 const convertDataExport = (data) => {
   let arr = []
   data.forEach((record) => {
@@ -37,7 +40,9 @@ const convertDataExport = (data) => {
       'Lĩnh vực ứng tuyển': record.career,
       'Vị trí ứng tuyển': record.positionOffer,
       'Thời gian nộp': record.timeSubmitFormat,
-      'Mức lương': record.offerSalary ? MethodService.formatCurrency(record.offerSalary) : 0,
+      'Mức lương': record.offerSalary
+        ? MethodService.formatCurrency(record.offerSalary)
+        : 0,
       'Số năm kinh nghiệm': record.experienceNumber,
       'Địa điểm làm việc': record.workAddress,
       'Hình thức làm việc': record.workForm,
@@ -60,10 +65,16 @@ const exportExcel = () => {
   worksheet['!cols'] = []
   for (const property in dataExport[0]) {
     if (property === 'Địa điểm làm việc' || property === 'Lĩnh vực ứng tuyển') {
-      const max_width = dataExport.reduce((w, r) => Math.max(w, property.length), 10)
+      const max_width = dataExport.reduce(
+        (w, r) => Math.max(w, property.length),
+        10,
+      )
       worksheet['!cols'].push({ wch: max_width })
     } else {
-      const max_width = dataExport.reduce((w, r) => Math.max(w, r[`${property}`].length), 10)
+      const max_width = dataExport.reduce(
+        (w, r) => Math.max(w, r[`${property}`].length),
+        10,
+      )
       worksheet['!cols'].push({ wch: max_width })
     }
   }
@@ -95,7 +106,7 @@ const submitFormSearch = async (formEl) => {
         tableRules.filters = formSearchData.value
         tableRules.skip = 0
         tableRules.page = 1
-        await getRecruitmentSavedList()
+        await getAppliedJobsList()
       } catch (error) {
         console.log(error)
       }
@@ -126,7 +137,7 @@ const fn_tableNextClick = () => {
 const fn_tableChangeOffset = (page) => {
   tableRules.page = page
   tableRules.offset = (tableRules.page - 1) * tableRules.limit
-  getRecruitmentSavedList()
+  getAppliedJobsList()
 }
 const fn_tableSortChange = (column, tableSort) => {
   tableSort = tableRules
@@ -134,7 +145,7 @@ const fn_tableSortChange = (column, tableSort) => {
   // getService();
 }
 
-const getRecruitmentSavedList = async () => {
+const getAppliedJobsList = async () => {
   let dataFilter = {
     limit: tableRules.limit,
     skip: tableRules.skip,
@@ -148,21 +159,27 @@ const getRecruitmentSavedList = async () => {
     },
   })
   const filter = MethodService.filterTable(JSON.stringify(dataFilter))
-  const res = await RecruitmentApi.getRecruitmentSavedList(filter)
-  if (res.status == 200 && res.data && res.data.data && res.data.data.data) {
+  const res = await UserApi.getJobsApplied(filter)
+  if (res.status == 200 && res.data.data) {
     tableRules.data = await changeData(res.data.data.data)
     tableRules.total = res.data.data.totalElements
   }
 }
 
 const changeData = (data) => {
-  data.forEach((item) => {
-    item.offerSalaryFormat = item.offerSalary
-      ? MethodService.formatCurrency(item.offerSalary) + ' VND'
-      : 0
-    item.timeSubmitFormat = item.timeSubmit
-      ? MethodService.formatDate(item.timeSubmit, 'date')
+  data.forEach((post) => {
+    post.created = post.created
+      ? MethodService.formatDate(post.created, 'date')
       : ''
+    post.jobApplicationDeadline = post.jobApplicationDeadline
+      ? MethodService.formatDate(post.jobApplicationDeadline, 'date')
+      : ''
+    post.salaryMinFormat = post.salaryMin
+      ? MethodService.formatCurrency(post.salaryMin) + ' VND'
+      : '---'
+    post.salaryMaxFormat = post.salaryMax
+      ? MethodService.formatCurrency(post.salaryMax) + ' VND'
+      : '---'
   })
   return data
 }
@@ -170,36 +187,39 @@ const changeData = (data) => {
 const handleAction = (type, rowData) => {
   if (type === 'view') {
     viewCandidateProfile(rowData)
-  } else if(type === 'delete') {
-    deleteRecruitment(rowData)
+  } else if (type === 'delete') {
+    deletePost(rowData)
   }
 }
 
 const viewCandidateProfile = async (rowData) => {
-  // const res = await RecruitmentApi.increaseViewRecruitment(rowData.id)
-  if (res.status === 200) {
-    // Go to detail
-    router.push({
-      name: 'Chi tiết hồ sơ ứng viên',
-      params: { id: rowData.id }
+  try {
+    const res = await PostApi.increaseViewPost(rowData.id)
+    if (res.status === 200) {
+      // Go to detail
+      router.push({
+        name: 'Job detail',
+        params: { id: rowData.id },
+      })
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Có lỗi khi điều hướng.',
+      type: 'error',
     })
   }
 }
 
-const deleteRecruitment = async (rowData) => {
-  ElMessageBox.confirm(
-    'Bạn có chắc muốn xóa hồ sơ này ?',
-    'Cảnh báo',
-    {
-      // if you want to disable its autofocus
-      // autofocus: false,
-      confirmButtonText: 'Đồng ý',
-      cancelButtonText: 'Hủy',
-      type: 'warning',
-    },
-  )
+const deletePost = async (rowData) => {
+  ElMessageBox.confirm('Bạn có chắc muốn xóa tin tuyển dụng này ?', 'Cảnh báo', {
+    // if you want to disable its autofocus
+    // autofocus: false,
+    confirmButtonText: 'Đồng ý',
+    cancelButtonText: 'Hủy',
+    type: 'warning',
+  })
     .then(async () => {
-      const res = await RecruitmentApi.removeSavedProfile(rowData.id)
+      const res = await UserApi.deleteJobsApplies(rowData.id)
       if (res.status === 200) {
         ElNotification({
           title: 'Success',
@@ -207,14 +227,22 @@ const deleteRecruitment = async (rowData) => {
           type: 'success',
           duration: 3000,
         })
-        getRecruitmentSavedList()
+        getAppliedJobsList()
       }
     })
     .catch(() => {})
 }
 
+const getIndustryList = async () => {
+  const industryApiRes = await IndustryApi.list()
+  if (industryApiRes.status == 200) {
+    industryList.value = industryApiRes.data.data.data
+  }
+}
+
 onMounted(() => {
-  getRecruitmentSavedList()
+  getIndustryList()
+  getAppliedJobsList()
 })
 </script>
 
@@ -224,16 +252,21 @@ onMounted(() => {
       <template #header>
         <div class="card-header">
           <div class="d-flex justify-content-between">
-            <h4>Hồ sơ ứng viên đã lưu</h4>
+            <h4>Việc làm đã ứng tuyển</h4>
             <div class="d-flex">
               <el-button type="primary" @click="toggleSearchBox">
                 <el-icon class="me-2"><Search /></el-icon>
                 Ẩn/hiện tìm kiếm
               </el-button>
-              <el-button type="primary" plain @click="exportExcel" :disabled="tableRules.data.length == 0">
+              <!-- <el-button
+                type="primary"
+                plain
+                @click="exportExcel"
+                :disabled="tableRules.data.length == 0"
+              >
                 <el-icon class="me-2"><Download /></el-icon>
                 Tải danh sách
-              </el-button>
+              </el-button> -->
             </div>
           </div>
         </div>
@@ -256,60 +289,35 @@ onMounted(() => {
               status-icon
             >
               <b-row>
-                <b-col md="4">
+                <b-col md="3">
+                  <el-form-item label="Chức danh" prop="">
+                    <el-input
+                      v-model="formSearchData.value.title"
+                      clearable
+                    ></el-input>
+                  </el-form-item>
+                </b-col>
+                <b-col md="3">
                   <el-form-item label="Lĩnh vực làm việc" prop="">
                     <el-select
-                      v-model="formSearchData.value.career"
+                      v-model="formSearchData.value.industryId"
                       placeholder="Chọn"
                       clearable
                     >
                       <el-option
-                        v-for="item in mainJobList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
+                        v-for="item in industryList.value"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
                       />
                     </el-select>
                   </el-form-item>
                 </b-col>
-                <b-col md="4">
-                  <el-form-item label="Vị trí ứng tuyển" prop="">
-                    <el-input
-                      v-model="formSearchData.value.positionOffer"
-                      clearable
-                    ></el-input>
-                  </el-form-item>
-                </b-col>
-                <b-col md="4">
-                  <el-form-item label="Mức lương" prop="">
-                    <el-input
-                      v-model="formSearchData.value.offerSalary"
-                      clearable
-                    ></el-input>
-                  </el-form-item>
-                </b-col>
-                <b-col md="4">
-                  <el-form-item label="Kinh nghiệm" prop="">
+                <b-col md="3">
+                  <el-form-item label="Khu vực tuyển dụng" prop="">
                     <el-select
-                      v-model="formSearchData.value.experienceNumber"
+                      v-model="formSearchData.value.recruitmentArea"
                       placeholder="Chọn"
-                      clearable
-                    >
-                      <el-option
-                        v-for="item in experienceList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </b-col>
-                <b-col md="4">
-                  <el-form-item label="Địa điểm làm việc" prop="">
-                    <el-select
-                      v-model="formSearchData.value.workAddress"
-                      placeholder="Chọn"
-                      clearable
                     >
                       <el-option
                         v-for="item in workPlaceList"
@@ -320,7 +328,56 @@ onMounted(() => {
                     </el-select>
                   </el-form-item>
                 </b-col>
-                <b-col md="4">
+                <b-col md="3">
+                  <el-form-item
+                    label="Kinh nghiệm"
+                    prop="recruitmentExperience"
+                  >
+                    <el-select
+                      v-model="formSearchData.value.recruitmentExperience"
+                      placeholder="Chọn"
+                    >
+                      <el-option
+                        v-for="item in experienceList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </b-col>
+                <b-col md="3">
+                  <el-form-item label="Mức lương tối thiểu" prop="">
+                    <el-input
+                      v-model="formSearchData.value.salaryMin"
+                      placeholder="Vui lòng nhập"
+                    />
+                  </el-form-item>
+                </b-col>
+                <b-col md="3">
+                  <el-form-item label="Mức lương tối đa" prop="">
+                    <el-input
+                      v-model="formSearchData.value.salaryMax"
+                      placeholder="Vui lòng nhập"
+                    />
+                  </el-form-item>
+                </b-col>
+                <b-col md="3">
+                  <el-form-item label="Cấp bậc" prop="level">
+                    <el-select
+                      v-model="formSearchData.value.level"
+                      placeholder="Chọn"
+                    >
+                      <el-option
+                        v-for="item in rankList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </b-col>
+                <b-col md="3">
                   <el-form-item label="Hình thức làm việc" prop="">
                     <el-select
                       v-model="formSearchData.value.workForm"
@@ -349,49 +406,66 @@ onMounted(() => {
       </div>
 
       <el-table :data="tableRules.data">
+        <el-table-column prop="title" label="Tên tin đăng" min-width="180" />
         <el-table-column
-          prop="userDTO.userInfoDTO.fullName"
-          label="Họ và tên"
-          min-width="150"
+          prop="created"
+          label="Ngày đăng"
+          min-width="100"
+          align="center"
         />
         <el-table-column
-          prop="career"
-          label="Lĩnh vực ứng tuyển"
-          min-width="150"
+          prop="jobApplicationDeadline"
+          label="Thời hạn nộp"
+          min-width="120"
+          align="center"
         />
+        <!-- <el-table-column prop="approve_time" label="Lượt nộp" align="center" />
+        <el-table-column prop="read_time" label="Lượt xem" align="center" /> -->
         <el-table-column
-          prop="positionOffer"
-          label="Vị trí ứng tuyển"
-          min-width="180"
+          prop="numberOfRecruits"
+          label="Số lượng tuyển"
+          align="center"
+          min-width="130"
         />
+        <el-table-column prop="level" label="Cấp bậc" min-width="120" />
         <el-table-column
-          prop="timeSubmitFormat"
-          label="Thời gian nộp"
+          prop="recruitmentArea"
+          label="Khu vực tuyển"
           min-width="120"
           align="center"
         />
         <el-table-column
-          prop="offerSalaryFormat"
-          label="Mức lương"
-          min-width="130"
-          align="right"
-        />
-        <el-table-column
-          prop="experienceNumber"
-          label="Số năm kinh nghiệm"
-          min-width="180"
+          prop="recruitmentAge"
+          label="Độ tuổi"
           align="center"
+          min-width="100px"
         />
         <el-table-column
-          prop="workAddress"
-          label="Địa điểm làm việc"
-          min-width="140"
+          prop="recruitmentGender"
+          label="Giới tính"
+          align="center"
+          min-width="120"
         />
         <el-table-column
-          prop="workForm"
-          label="Hình thức làm việc"
-          min-width="180"
+          prop="salaryMinFormat"
+          label="Thu nhập tối thiểu"
+          align="right"
+          min-width="150"
         />
+        <el-table-column
+          prop="salaryMaxFormat"
+          label="Thu nhập tối đa"
+          align="right"
+          min-width="150"
+        />
+        <!-- <el-table-column
+          prop="post_status"
+          label="Tình trạng tin"
+          min-width="150"
+          show-overflow-tooltip
+          align="center"
+        /> -->
+        <el-table-column prop="necessarySkills" label="Khác" min-width="200" />
         <el-table-column
           fixed="right"
           align="center"
@@ -400,18 +474,9 @@ onMounted(() => {
         >
           <template #default="scope">
             <div class="">
-              <el-button
-                size="small"
-                @click="handleAction('view', scope.row)"
+              <el-button size="small" @click="handleAction('view', scope.row)"
                 ><CIcon icon="cilFindInPage"
               /></el-button>
-              <!-- <el-button
-                size="small"
-                type="warning"
-                plain
-                @click="saveRecruitment(scope.row)"
-                ><CIcon icon="cilStar"
-              /></el-button> -->
               <el-button
                 size="small"
                 type="danger"

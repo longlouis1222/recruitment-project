@@ -6,12 +6,16 @@ import AppHeaderLanding from '@/components/AppHeaderLanding.vue'
 import AppFooterLanding from '@/components/AppFooterLanding.vue'
 
 import PostApi from '@/moduleApi/modules/PostApi'
+import UserApi from '@/moduleApi/modules/UserApi'
+
+import { ElNotification, ElMessage } from 'element-plus'
 
 import { useRoute, useRouter } from 'vue-router'
 import { ref, reactive, onMounted } from 'vue'
 
 const route = useRoute()
 const router = useRouter()
+
 const mainJobList = DataService.mainJobList
 const secondJobList = DataService.secondJobList
 const workPlaceList = DataService.workPlaceList
@@ -23,13 +27,75 @@ const backToPrev = () => {
 }
 
 const getPostById = async () => {
-  const res = await PostApi.findById(route.params.id)
-  if (res.status === 200) {
-    postInfo.value = res.data.data
-    console.log('postInfo.value:>', postInfo.value)
+  try {
+    const res = await PostApi.findById(route.params.id)
+    if (res.status === 200) {
+      postInfo.value = res.data.data
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Có lỗi khi tải dữ liệu.',
+      type: 'error',
+    })
   }
 }
 
+const applyJob = async () => {
+  try {
+    const res = await UserApi.applyJob(route.params.id)
+    if (res.status === 200) {
+      ElNotification({
+        title: 'Success',
+        message: 'Nộp hồ sơ thành công.',
+        type: 'success',
+        duration: 3000,
+      })
+    }
+  } catch (error) {
+    ElNotification({
+      title: 'Error',
+      message: 'Nộp hồ sơ thất bại.',
+      type: 'error',
+      duration: 3000,
+    })
+  }
+}
+
+const saveToCareList = async () => {
+  try {
+    const res = await PostApi.saveToCare(route.params.id)
+    if (res.status === 200) {
+      ElMessage({
+        type: 'success',
+        message: `Lưu tin tuyển dụng thành công.`,
+      })
+      postInfo.value.userCurrentSaved = true
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Lưu tin tuyển dụng thất bại.',
+      type: 'error',
+    })
+  }
+}
+
+const unSaveFromCareList = async () => {
+  try {
+    const res = await PostApi.removeSavePost(route.params.id)
+    if (res.status === 200) {
+      ElMessage({
+        type: 'success',
+        message: `Bỏ lưu tin tuyển dụng thành công.`,
+      })
+      postInfo.value.userCurrentSaved = false
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Bỏ lưu tin tuyển dụng thất bại.',
+      type: 'error',
+    })
+  }
+}
 onMounted(() => {
   getPostById()
 })
@@ -65,7 +131,9 @@ onMounted(() => {
                   }}
                 </h5>
                 <p class="text-black-50 ms-3 mb-0">
-                  {{ postInfo ? postInfo.numberOfRecruits + ' người': '12 người' }}
+                  {{
+                    postInfo ? postInfo.numberOfRecruits + ' người' : '12 người'
+                  }}
                 </p>
               </div>
             </div>
@@ -91,7 +159,10 @@ onMounted(() => {
               >Hạn nộp hồ sơ:
               {{
                 postInfo && postInfo.jobApplicationDeadline
-                  ? MethodService.formatDate(postInfo.jobApplicationDeadline, 'date')
+                  ? MethodService.formatDate(
+                      postInfo.jobApplicationDeadline,
+                      'date',
+                    )
                   : '12/02/2023'
               }}</span
             >
@@ -117,9 +188,26 @@ onMounted(() => {
         </div>
 
         <div>
-          <el-button type="primary" size="large">Nộp hồ sơ</el-button>
-          <el-button type="primary" plain size="large">
+          <el-button type="primary" size="large" @click="applyJob" :disabled="postInfo && postInfo.userCurrentSubmited"
+            >Nộp hồ sơ</el-button
+          >
+          <el-button
+            type="primary"
+            plain
+            size="large"
+            @click="saveToCareList"
+            v-if="postInfo && !postInfo.userCurrentSaved"
+          >
             <el-icon><CirclePlus /></el-icon>Lưu</el-button
+          >
+          <el-button
+            type="danger"
+            plain
+            size="large"
+            @click="unSaveFromCareList"
+            v-else
+          >
+            <el-icon><RemoveFilled /></el-icon>Bỏ lưu</el-button
           >
         </div>
 
@@ -198,7 +286,11 @@ onMounted(() => {
                 <p class="text-black-50">Số lượng tuyển:</p>
               </b-col>
               <b-col md="7">
-                <p>{{ postInfo ? postInfo.numberOfRecruits + ' người' : '12 người' }}</p>
+                <p>
+                  {{
+                    postInfo ? postInfo.numberOfRecruits + ' người' : '12 người'
+                  }}
+                </p>
               </b-col>
             </b-row>
 
@@ -210,7 +302,10 @@ onMounted(() => {
                 <p>
                   {{
                     postInfo && postInfo.jobApplicationDeadline
-                      ? MethodService.formatDate(postInfo.jobApplicationDeadline, 'date')
+                      ? MethodService.formatDate(
+                          postInfo.jobApplicationDeadline,
+                          'date',
+                        )
                       : '12/02/2023'
                   }}
                 </p>
@@ -335,9 +430,26 @@ onMounted(() => {
         </ul>
 
         <div class="mt-4">
-          <el-button type="primary" size="large">Nộp hồ sơ</el-button>
-          <el-button type="primary" plain size="large">
+          <el-button type="primary" size="large" @click="applyJob" :disabled="postInfo && postInfo.userCurrentSubmited"
+            >Nộp hồ sơ</el-button
+          >
+          <el-button
+            type="primary"
+            plain
+            size="large"
+            @click="saveToCareList"
+            v-if="postInfo && !postInfo.userCurrentSaved"
+          >
             <el-icon><CirclePlus /></el-icon>Lưu</el-button
+          >
+          <el-button
+            type="danger"
+            plain
+            size="large"
+            @click="unSaveFromCareList"
+            v-else
+          >
+            <el-icon><RemoveFilled /></el-icon>Bỏ lưu</el-button
           >
         </div>
       </el-card>
@@ -358,7 +470,9 @@ onMounted(() => {
           <p class="text-black-50 me-1">Địa chỉ:</p>
           <p>
             {{
-              postInfo && postInfo.companyDTO &&postInfo. companyDTO.companyAddress
+              postInfo &&
+              postInfo.companyDTO &&
+              postInfo.companyDTO.companyAddress
                 ? postInfo.companyDTO.companyAddress
                 : 'Số 86 Mễ Trì Hạ, Nam Từ Liêm, Hà Nội'
             }}
@@ -366,11 +480,22 @@ onMounted(() => {
         </div>
         <div class="d-flex align-items-center">
           <p class="text-black-50 me-1">Số lượng tuyển:</p>
-          <p>{{ postInfo ? postInfo.numberOfRecruits + ' người' : '12 người' }}</p>
+          <p>
+            {{ postInfo ? postInfo.numberOfRecruits + ' người' : '12 người' }}
+          </p>
         </div>
         <div class="d-flex align-items-center">
           <p class="text-black-50 me-1">Người liên hệ:</p>
-          <p>{{ postInfo && postInfo.companyDTO && postInfo.companyDTO.userInfoDTO && postInfo.companyDTO.userInfoDTO.fullName ? postInfo.companyDTO.userInfoDTO.fullName : 'Mr Long'}}</p>
+          <p>
+            {{
+              postInfo &&
+              postInfo.companyDTO &&
+              postInfo.companyDTO.userInfoDTO &&
+              postInfo.companyDTO.userInfoDTO.fullName
+                ? postInfo.companyDTO.userInfoDTO.fullName
+                : 'Mr Long'
+            }}
+          </p>
         </div>
       </el-card>
     </CContainer>

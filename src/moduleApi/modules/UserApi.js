@@ -19,4 +19,16 @@ export default {
   inactiveAccount(data) {
     return Api().get(`users/inactive?check=${data.status}&userId=${data.id}`)
   },
+  getJobsApplied(data) {
+    return Api().get(!data ? `users/get-list-topic-submit` : `users/get-list-topic-submit?${data}`)
+  },
+  deleteJobsApplies(id) {
+    return Api().get(`users/remove-submit-topic?postId=${id}`)
+  },
+  applyJob(id) {
+    return Api().get(`users/user-submit-topic?postId=${id}`)
+  },
+  getAppliedCVEmloyeeList(data) {
+    return Api().get(!data ? 'users/get-list-topic-employee' : `users/get-list-topic-employee?${data}`)
+  },
 }
