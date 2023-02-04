@@ -131,7 +131,7 @@ onMounted(() => {
         </CNavItem>
       </CHeaderNav>
       <CHeaderNav class="align-items-center">
-        <CNavItem @click="goToCreateCV" style="cursor: pointer" v-if="isEmployer">
+        <CNavItem @click="goToCreateCV" style="cursor: pointer" v-if="!isEmployer">
           <CNavLink
             class="d-flex align-items-center"
           >

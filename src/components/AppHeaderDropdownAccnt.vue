@@ -44,7 +44,7 @@
         <CIcon icon="cil-shield-alt" /> Lock Account
       </CDropdownItem> -->
       <CDropdownItem @click="logout" class="cursor-pointer">
-        <CIcon icon="cil-lock-locked" /> Đăng xuất
+        <CIcon icon="cilAccountLogout" /> Đăng xuất
       </CDropdownItem>
     </CDropdownMenu>
   </CDropdown>
