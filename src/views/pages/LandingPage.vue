@@ -5,10 +5,13 @@ import MethodService from '@/service/MethodService'
 import PostApi from '@/moduleApi/modules/PostApi'
 import CompanyApi from '@/moduleApi/modules/CompanyApi'
 
-import { useRouter } from 'vue-router'
 import AppHeaderLanding from '@/components/AppHeaderLanding.vue'
 import AppFooterLanding from '@/components/AppFooterLanding.vue'
+
+import { ElNotification, ElMessage } from 'element-plus'
+
 import { ref, reactive, onMounted, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 import modelData from './FindJobsModel'
@@ -53,8 +56,8 @@ const backToPrev = () => {
   router.go(-1)
 }
 
-const goToJobDetail = () => {
-  router.push({ name: 'Job detail' })
+const goToJobDetail = (id) => {
+  router.push({ name: 'Job detail', params: { id: id } })
 }
 
 const goToCompanyDetail = (id) => {
@@ -125,8 +128,46 @@ const getCompanyList = async () => {
   }
 }
 
-const saveToCareList = () => {
-  care.value = !care.value
+const handleAction = (action, id, fromList) => {
+  if (action === 'save') {
+    saveToCareList(id)
+    if (fromList === 'outstandingPostList') {
+      const post = outstandingPostList.value.find(o => o.id === id)
+      if (post) post.userCurrentSaved = true
+    } else if (fromList === 'newestPostList') {
+      const post = newestPostList.value.find(o => o.id === id)
+      if (post) post.userCurrentSaved = true
+    }
+  } else if (action === 'unSave') {
+    unSaveFromCareList(id)
+    if (fromList === 'outstandingPostList') {
+      const post = outstandingPostList.value.find(o => o.id === id)
+      if (post) post.userCurrentSaved = false
+    } else if (fromList === 'newestPostList') {
+      const post = newestPostList.value.find(o => o.id === id)
+      if (post) post.userCurrentSaved = false
+    }
+  }
+}
+
+const saveToCareList = async (id) => {
+  const res = await PostApi.saveToCare(id)
+  if (res.status === 200) {
+    ElMessage({
+      type: 'success',
+      message: `Lưu tin tuyển dụng thành công.`,
+    })
+  }
+}
+
+const unSaveFromCareList = async (id) => {
+  const res = await PostApi.removeSavePost(id)
+  if (res.status === 200) {
+    ElMessage({
+      type: 'success',
+      message: `Bỏ lưu tin tuyển dụng thành công.`,
+    })
+  }
 }
 
 onMounted(() => {
@@ -307,16 +348,33 @@ onMounted(() => {
             v-for="post in outstandingPostList.value"
             :key="post.id"
           >
-            <el-card class="box-card" shadow="hover" @click="goToJobDetail">
+            <el-card class="box-card" shadow="hover">
               <div class="d-flex justify-content-between align-items-center">
-                <p class="card__title-position mb-2">{{ post.title }}</p>
+                <p
+                  class="card__title-position mb-2"
+                  @click="goToJobDetail(post.id)"
+                >
+                  {{ post.title }}
+                </p>
                 <CIcon
                   icon="cibMacys"
-                  :class="{ 'mb-2': true, 'c-turquoise': care }"
-                  @click="saveToCareList"
+                  :class="{
+                    'mb-2': true,
+                    'c-turquoise': post.userCurrentSaved,
+                  }"
+                  @click="
+                    handleAction(
+                      `${post.userCurrentSaved ? 'unSave' : 'save'}`,
+                      post.id,
+                      'outstandingPostList'
+                    )
+                  "
                 />
               </div>
-              <div class="d-flex align-items-center">
+              <div
+                class="d-flex align-items-center"
+                @click="goToJobDetail(post.id)"
+              >
                 <img
                   src="../../assets/images/logo-company/vecteezy_triangle_1200707.png"
                   alt="logo-company"
@@ -642,16 +700,31 @@ onMounted(() => {
                   <div
                     class="d-flex justify-content-between align-items-center"
                   >
-                    <p class="card__title-position mb-1 ms-2">
+                    <p
+                      class="card__title-position mb-1 ms-2"
+                      @click="goToJobDetail(post.id)"
+                    >
                       {{ post.title ? post.title : '' }}
                     </p>
                     <CIcon
                       icon="cibMacys"
-                      :class="{ 'mb-1': true, 'c-turquoise': care }"
-                      @click="saveToCareList"
+                      :class="{
+                        'mb-1': true,
+                        'c-turquoise': post.userCurrentSaved,
+                      }"
+                      @click="
+                        handleAction(
+                          `${post.userCurrentSaved ? 'unSave' : 'save'}`,
+                          post.id,
+                          'newestPostList'
+                        )
+                      "
                     />
                   </div>
-                  <div class="d-flex justify-content-between ms-2">
+                  <div
+                    class="d-flex justify-content-between ms-2"
+                    @click="goToJobDetail(post.id)"
+                  >
                     <p class="card__title-company mb-1">
                       {{
                         post.companyDTO && post.companyDTO.name
@@ -663,7 +736,7 @@ onMounted(() => {
                       HOT
                     </el-tag>
                   </div>
-                  <div class="ms-2 mt-2">
+                  <div class="ms-2 mt-2" @click="goToJobDetail(post.id)">
                     <p class="card__subtitle mb-1">
                       <el-icon><LocationInformation /></el-icon
                       >{{ post.workplace }}
@@ -987,7 +1060,7 @@ onMounted(() => {
     <!-- End New recruitment Job -->
 
     <!-- Start Discovery recruitment Job -->
-    <CContainer xl class="mt-4 container-discovery">
+    <CContainer xl class="mt-4 mb-5 container-discovery">
       <div class="d-flex align-items-center mb-4">
         <CIcon class="" icon="cilSearch" size="lg" />
         <h4 class="ms-2 me-4">Khám phá</h4>
@@ -1199,12 +1272,19 @@ onMounted(() => {
   }
 }
 .urgent_recruitment_job,
-.new_recruitment_job,
-.container-discovery {
+.new_recruitment_job {
   .el-card .el-card {
     cursor: pointer;
     &:hover {
       border-color: lightblue;
+    }
+  }
+}
+.container-discovery {
+  .el-card {
+    cursor: pointer;
+    &:hover {
+      background-color: lightskyblue;
     }
   }
 }
