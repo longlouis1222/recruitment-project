@@ -1,5 +1,6 @@
 <script setup>
 import MethodService from '@/service/MethodService'
+import DataService from '@/service/DataService'
 
 import IndustryApi from '@/moduleApi/modules/IndustryApi'
 import PostApi from '@/moduleApi/modules/PostApi'
@@ -11,19 +12,23 @@ import { FormInstance } from 'element-plus'
 
 import modelData from '../EmployerCompany/EmployerCompanyInfoModel'
 
+const moduleName = 'Danh sách bài tuyển dụng'
+
 const router = useRouter()
 
-const moduleName = 'Danh sách bài tuyển dụng'
+const rankList = DataService.rankList
+const experienceList = DataService.experienceList
+const workPlaceList = DataService.workPlaceList
+const workFormList = DataService.workFormList
+
 const ruleFormRef = ref(FormInstance)
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
-const formData = reactive({
-  value: MethodService.copyObject(modelData.dataForm),
-})
-const validForm = modelData.validForm
 const formSearchData = reactive({
   value: MethodService.copyObject(tableRules.dataSearch.value),
 })
 const validFormSearch = tableRules.dataSearch.valid
+
+const industryList = reactive({ value: [] })
 
 const submitForm = async (formEl) => {
   if (!formEl) return
@@ -181,7 +186,15 @@ const fn_tableSortChange = (column, tableSort) => {
   // getService();
 }
 
+const getIndustryList = async () => {
+  const industryApiRes = await IndustryApi.list()
+  if (industryApiRes.status == 200) {
+    industryList.value = industryApiRes.data.data.data
+  }
+}
+
 onMounted(async () => {
+  getIndustryList()
   await getPostList()
 })
 </script>
@@ -213,37 +226,124 @@ onMounted(async () => {
           <el-card>
             <el-form
               ref="ruleFormRef"
-              :model="tableRules.dataSearch.value"
-              :rules="validForm.value"
+              :model="formSearchData.value"
+              :rules="validSearchForm"
+              label-width="140px"
               label-position="top"
-              @submit.prevent
+              class="demo-ruleForm"
+              status-icon
             >
               <b-row>
-                <b-col md="6">
-                  <el-form-item label="Tên tin đăng" prop="name">
+                <b-col md="3">
+                  <el-form-item label="Chức danh" prop="">
                     <el-input
+                      v-model="formSearchData.value.title"
                       clearable
-                      v-model="tableRules.dataSearch.value['name']"
                     ></el-input>
                   </el-form-item>
                 </b-col>
-                <b-col md="6">
-                  <el-form-item label="Ngày đăng" prop="fullname">
-                    <el-input
+                <b-col md="3">
+                  <el-form-item label="Lĩnh vực làm việc" prop="">
+                    <el-select
+                      v-model="formSearchData.value.industryId"
+                      placeholder="Chọn"
                       clearable
-                      v-model="tableRules.dataSearch.value['fullname']"
-                    ></el-input>
+                    >
+                      <el-option
+                        v-for="item in industryList.value"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </b-col>
+                <b-col md="3">
+                  <el-form-item label="Khu vực tuyển dụng" prop="">
+                    <el-select
+                      v-model="formSearchData.value.recruitmentArea"
+                      placeholder="Chọn"
+                    >
+                      <el-option
+                        v-for="item in workPlaceList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </b-col>
+                <b-col md="3">
+                  <el-form-item
+                    label="Kinh nghiệm"
+                    prop="recruitmentExperience"
+                  >
+                    <el-select
+                      v-model="formSearchData.value.recruitmentExperience"
+                      placeholder="Chọn"
+                    >
+                      <el-option
+                        v-for="item in experienceList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </b-col>
+                <b-col md="3">
+                  <el-form-item label="Mức lương tối thiểu" prop="">
+                    <el-input
+                      v-model="formSearchData.value.salaryMin"
+                      placeholder="Vui lòng nhập"
+                    />
+                  </el-form-item>
+                </b-col>
+                <b-col md="3">
+                  <el-form-item label="Mức lương tối đa" prop="">
+                    <el-input
+                      v-model="formSearchData.value.salaryMax"
+                      placeholder="Vui lòng nhập"
+                    />
+                  </el-form-item>
+                </b-col>
+                <b-col md="3">
+                  <el-form-item label="Cấp bậc" prop="level">
+                    <el-select
+                      v-model="formSearchData.value.level"
+                      placeholder="Chọn"
+                    >
+                      <el-option
+                        v-for="item in rankList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </b-col>
+                <b-col md="3">
+                  <el-form-item label="Hình thức làm việc" prop="">
+                    <el-select
+                      v-model="formSearchData.value.workForm"
+                      placeholder="Chọn"
+                      clearable
+                    >
+                      <el-option
+                        v-for="item in workFormList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
                   </el-form-item>
                 </b-col>
               </b-row>
+
               <div class="text-center">
-                <el-button
-                  type="primary"
-                  style="width: 100px"
-                  native-type="submit"
+                <el-button type="primary" @click="submitFormSearch(ruleFormRef)"
+                  >Tìm kiếm</el-button
                 >
-                  Tìm kiếm
-                </el-button>
               </div>
             </el-form>
           </el-card>
@@ -277,11 +377,7 @@ onMounted(async () => {
           prop="recruitmentArea"
           label="Khu vực tuyển"
           min-width="120"
-        />
-        <el-table-column
-          prop="recruitmentArea"
-          label="Khu vực tuyển"
-          min-width="120"
+          align="center"
         />
         <el-table-column
           prop="recruitmentAge"

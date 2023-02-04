@@ -28,10 +28,10 @@ export default {
   getRecruitmentSavedList(data) {
     return Api().get(`recruitments/get-list-id`)
   },
-  getView(id) {
+  increaseViewRecuitment(id) {
     return Api().get(`recruitments/get-view?id=${id}`)
   },
-  removeProfile(id) {
+  removeSavedProfile(id) {
     return Api().get(`recruitments/remove-profile?profileId=${id}`)
   },
 }
