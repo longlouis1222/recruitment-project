@@ -122,7 +122,12 @@ export default [
         component: () =>
           import( '@/views/Employee/EmployeeCV/EmployeeCVList.vue'),
       },
-
+      {
+        path: '/employee/saved-post/saved-post-list',
+        name: 'Việc làm quan tâm',
+        component: () =>
+          import('@/views/Employee/EmployeePost/EmployeeSavedPostList.vue'),
+      },
       {
         path: '/theme',
         name: 'Theme',

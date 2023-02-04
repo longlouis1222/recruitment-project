@@ -78,6 +78,12 @@ export default [
     to: '/employee/employee-cv/employee-cv-info',
     icon: 'cilAddressBook',
   },
+  {
+    component: 'CNavItem',
+    name: 'Việc làm quan tâm',
+    to: '/employee/saved-post/saved-post-list',
+    icon: 'cilPin',
+  },
 
   // {
   //   component: 'CNavTitle',
