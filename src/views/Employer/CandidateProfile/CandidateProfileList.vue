@@ -124,7 +124,7 @@ const fn_tableNextClick = () => {
 const fn_tableChangeOffset = (page) => {
   tableRules.page = page
   tableRules.offset = (tableRules.page - 1) * tableRules.limit
-  // getService();
+  getRecruitmentSavedList()
 }
 const fn_tableSortChange = (column, tableSort) => {
   tableSort = tableRules
@@ -160,7 +160,7 @@ const handleAction = (type, rowData) => {
 }
 
 const viewCandidateProfile = async (rowData) => {
-  // const res = await RecruitmentApi.getView(rowData.id)
+  // const res = await RecruitmentApi.increaseViewRecruitment(rowData.id)
   if (res.status === 200) {
     // Go to detail
     router.push({
@@ -183,7 +183,7 @@ const deleteRecruitment = async (rowData) => {
     },
   )
     .then(async () => {
-      const res = await RecruitmentApi.removeProfile(rowData.id)
+      const res = await RecruitmentApi.removeSavedProfile(rowData.id)
       if (res.status === 200) {
         ElNotification({
           title: 'Success',

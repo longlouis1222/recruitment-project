@@ -127,6 +127,8 @@ const changeData = (data) => {
     item.offerSalaryFormat = item.offerSalary
       ? MethodService.formatCurrency(item.offerSalary) + ' VND'
       : 0
+    const isSavedProfile = (userProfile.value.userInfoDTO.arrProfileIds || []).findIndex(o => o === item.id)
+    item.isSaved = isSavedProfile < 0 ? false : true
   })
   return data
 }
@@ -151,7 +153,7 @@ const handleAction = (action, rowData) => {
 }
 
 const viewCandidateProfile = async (rowData) => {
-  const res = await RecruitmentApi.getView(rowData.id)
+  const res = await RecruitmentApi.increaseViewRecruitment(rowData.id)
   if (res.status === 200) {
     // Go to detail
     router.push({
@@ -219,6 +221,7 @@ const saveRecruitment = async (rowData) => {
       }
     }
     await getUserInfo()
+    await getRecruitmentList()
   } catch (error) {
     console.log(error)
     if (error.error_code === 404) {
@@ -428,6 +431,7 @@ onMounted(() => {
                 type="warning"
                 plain
                 @click="handleAction('save', scope.row)"
+                :disabled="scope.row.isSaved"
                 ><CIcon icon="cilStar"
               /></el-button>
             </div>

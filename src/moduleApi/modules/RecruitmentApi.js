@@ -28,7 +28,7 @@ export default {
   getRecruitmentSavedList(data) {
     return Api().get(`recruitments/get-list-id`)
   },
-  increaseViewRecuitment(id) {
+  increaseViewRecruitment(id) {
     return Api().get(`recruitments/get-view?id=${id}`)
   },
   removeSavedProfile(id) {
