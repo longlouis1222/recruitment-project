@@ -228,7 +228,7 @@ onMounted(() => {
             <p>
               {{
                 postInfo && postInfo.recruitmentExperience
-                  ? postInfo.recruitmentExperience
+                  ? postInfo.recruitmentExperience + ' năm'
                   : '1 năm'
               }}
             </p>
@@ -483,9 +483,10 @@ onMounted(() => {
               : 'Công ty Cổ Phần Phần mềm LL'
           }}
         </h3>
-        <div class="d-flex align-items-center">
-          <p class="text-black-50 me-1">Địa chỉ:</p>
-          <p>
+        <div class="d-flex align-items-center mb-3">
+          <el-icon :size="18" class="text-info"><Location /></el-icon>
+          <span class="text-black-50 me-1">Địa chỉ:</span>
+          <span>
             {{
               postInfo &&
               postInfo.companyDTO &&
@@ -493,17 +494,19 @@ onMounted(() => {
                 ? postInfo.companyDTO.companyAddress
                 : 'Số 86 Mễ Trì Hạ, Nam Từ Liêm, Hà Nội'
             }}
-          </p>
+          </span>
         </div>
-        <div class="d-flex align-items-center">
-          <p class="text-black-50 me-1">Số lượng tuyển:</p>
-          <p>
+        <div class="d-flex align-items-center mb-3">
+          <el-icon :size="18" class="text-success"><UserFilled /></el-icon>
+          <span class="text-black-50 me-1">Số lượng tuyển:</span>
+          <span>
             {{ postInfo ? postInfo.numberOfRecruits + ' người' : '12 người' }}
-          </p>
+          </span>
         </div>
-        <div class="d-flex align-items-center">
-          <p class="text-black-50 me-1">Người liên hệ:</p>
-          <p>
+        <div class="d-flex align-items-center mb-3">
+          <el-icon :size="18"><Avatar /></el-icon>
+          <span class="text-black-50 me-1">Người liên hệ:</span>
+          <span>
             {{
               postInfo &&
               postInfo.companyDTO &&
@@ -512,7 +515,7 @@ onMounted(() => {
                 ? postInfo.companyDTO.userInfoDTO.fullName
                 : 'Mr Long'
             }}
-          </p>
+          </span>
         </div>
       </el-card>
     </CContainer>
