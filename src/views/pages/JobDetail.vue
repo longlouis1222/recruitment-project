@@ -50,6 +50,7 @@ const applyJob = async () => {
         type: 'success',
         duration: 3000,
       })
+      postInfo.value.userCurrentSubmited = true
     }
   } catch (error) {
     ElNotification({
@@ -188,7 +189,15 @@ onMounted(() => {
         </div>
 
         <div>
-          <el-button type="primary" size="large" @click="applyJob" :disabled="postInfo && postInfo.userCurrentSubmited"
+          <el-button
+            type="primary"
+            size="large"
+            @click="applyJob"
+            :disabled="
+              postInfo &&
+              (postInfo.userCurrentSubmited ||
+                new Date(postInfo.userCurrentSubmited).getTime < new Date())
+            "
             >Nộp hồ sơ</el-button
           >
           <el-button
@@ -430,7 +439,15 @@ onMounted(() => {
         </ul>
 
         <div class="mt-4">
-          <el-button type="primary" size="large" @click="applyJob" :disabled="postInfo && postInfo.userCurrentSubmited"
+          <el-button
+            type="primary"
+            size="large"
+            @click="applyJob"
+            :disabled="
+              postInfo &&
+              (postInfo.userCurrentSubmited ||
+                new Date(postInfo.userCurrentSubmited).getTime < new Date())
+            "
             >Nộp hồ sơ</el-button
           >
           <el-button
