@@ -92,7 +92,7 @@ const getUserList = async () => {
   const filter = MethodService.filterTable(JSON.stringify(dataFilter))
   const userApiRes = await UserApi.list(filter)
   if (userApiRes.status == 200) {
-    tableRules.data = userApiRes.data.data.data
+    tableRules.data = userApiRes.data.data.data.filter(account => account.type !== 'ADMIN')
     tableRules.total = userApiRes.data.data.totalElements
   }
 }
