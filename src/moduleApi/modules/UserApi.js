@@ -31,4 +31,7 @@ export default {
   getAppliedCVEmloyeeList(data) {
     return Api().get(!data ? 'users/get-list-topic-employee' : `users/get-list-topic-employee?${data}`)
   },
+  deleteCVFromAppliedCVEmployeeList(id) {
+    return Api().get(`users/remove-profile-by-employee?profileId=${id}`)
+  }
 }

@@ -172,7 +172,7 @@ const handleAction = (type, rowData) => {
   if (type === 'view') {
     viewCandidateProfile(rowData)
   } else if(type === 'delete') {
-    deleteRecruitment(rowData)
+    deleteRecruitmentProfile(rowData)
   }
 }
 
@@ -187,7 +187,7 @@ const viewCandidateProfile = async (rowData) => {
   }
 }
 
-const deleteRecruitment = async (rowData) => {
+const deleteRecruitmentProfile = async (rowData) => {
   ElMessageBox.confirm(
     'Bạn có chắc muốn xóa hồ sơ này ?',
     'Cảnh báo',
@@ -200,7 +200,7 @@ const deleteRecruitment = async (rowData) => {
     },
   )
     .then(async () => {
-      const res = await RecruitmentApi.removeSavedProfile(rowData.id)
+      const res = await UserApi.deleteCVFromAppliedCVEmployeeList(rowData.id)
       if (res.status === 200) {
         ElNotification({
           title: 'Success',
