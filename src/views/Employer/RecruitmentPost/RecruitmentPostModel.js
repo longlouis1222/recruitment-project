@@ -47,14 +47,25 @@ model.dataForm = {
 
 // validation form
 model.validForm = {
-  // tax_code: [ValidService.required],
-  // company_name: [ValidService.required],
-  // personnel_size: [ValidService.required],
-  // location: [ValidService.required],
-  // phone_number: [ValidService.required],
-  // company_address: [ValidService.required],
-  // landline_phone: [ValidService.required],
-  // field_of_activity: [ValidService.requiredChange],
+  title: [ValidService.required],
+  workingForm: [ValidService.requiredChange],
+  recruitmentDegree: [ValidService.requiredChange],
+  recruitmentExperience: [ValidService.requiredChange],
+  level: [ValidService.requiredChange],
+  recruitmentAge: [ValidService.requiredChange],
+  recruitmentGender: [ValidService.requiredChange],
+  numberOfRecruits: [ValidService.required, ValidService.checkNumber, ValidService.checkNumberInteger],
+  probationaryPeriod: [ValidService.requiredChange],
+  jobApplicationDeadline: [ValidService.requiredChange],
+  industryId: [ValidService.requiredChange],
+  recruitmentArea: [ValidService.requiredChange],
+  workplace: [ValidService.requiredChange],
+  salaryMin: [ValidService.required],
+  salaryMax: [ValidService.required],
+  necessarySkills: [ValidService.requiredChange],
+  jobDescription: [ValidService.required],
+  jobRequirements: [ValidService.required],
+  benefits: [ValidService.required],
 }
 
 model.dataFormOther = {}

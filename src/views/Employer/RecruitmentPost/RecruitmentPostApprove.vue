@@ -45,7 +45,7 @@ const submitForm = async (formEl, action) => {
       const dataPush = {
         id: route.params.id,
         status: action,
-        isOutstanding: formData.value.isOutstanding
+        isOutstanding: formData.value.isOutstanding,
       }
       const postApiRes = await PostApi.update(dataPush)
       if (postApiRes.status === 200 && action === 'APPROVED') {
@@ -65,7 +65,7 @@ const submitForm = async (formEl, action) => {
       }
       setTimeout(() => {
         backToPrev()
-      }, 500);
+      }, 500)
     } catch (error) {
       ElNotification({
         title: 'Error',
@@ -97,15 +97,13 @@ const getPostById = async () => {
 }
 
 const getUserInfo = async () => {
-  const userProfileApiRes = await UserApi.findById(
-    localStorage.getItem('uid'),
-  )
-  if (userProfileApiRes.status == 200) {
+  const userProfileApiRes = await UserApi.findById(localStorage.getItem('uid'))
+  if (userProfileApiRes.status === 200) {
     const res = userProfileApiRes.data.data
-    ;(formData.value.fullNameContactor = res.userInfoDTO.fullName),
-      (formData.value.emailContactor = res.email),
-      (formData.value.phoneNumberContactor = res.userInfoDTO.phoneNumber),
-      (formData.value.addressContactor = res.companyDTO.companyAddress)
+    formData.value.fullNameContactor = res.userInfoDTO.fullName
+    formData.value.emailContactor = res.email
+    formData.value.phoneNumberContactor = res.userInfoDTO.phoneNumber
+    formData.value.addressContactor = res.companyDTO.companyAddress
   }
 }
 
@@ -429,7 +427,12 @@ onMounted(async () => {
         <h5>Tin nổi bật</h5>
         <b-col md="12">
           <!-- <el-form-item label="Tin nổi bật" prop=""> -->
-          <el-select v-model="formData.value.isOutstanding" placeholder="Chọn" default-first-option filterable >
+          <el-select
+            v-model="formData.value.isOutstanding"
+            placeholder="Chọn"
+            default-first-option
+            filterable
+          >
             <el-option
               v-for="item in postOutstandingList"
               :key="item.value"

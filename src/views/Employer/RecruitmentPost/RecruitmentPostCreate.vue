@@ -4,8 +4,10 @@ import DataService from '@/service/DataService'
 
 import IndustryApi from '@/moduleApi/modules/IndustryApi'
 import PostApi from '@/moduleApi/modules/PostApi'
+import UserApi from '@/moduleApi/modules/UserApi'
 
-import { ElNotification } from 'element-plus'
+import { ElNotification, ElMessage } from 'element-plus'
+
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
@@ -28,9 +30,12 @@ const workPlaceList = DataService.workPlaceList
 const minSalaryList = DataService.minSalaryList
 const maxSalaryList = DataService.minSalaryList
 
-const formData = reactive({ value: MethodService.copyObject(modelData.dataForm)})
+const formData = reactive({
+  value: MethodService.copyObject(modelData.dataForm),
+})
 const validForm = modelData.validForm
-const industryList = reactive({ value: []})
+const industryList = reactive({ value: [] })
+const userInfo = ref(null)
 
 const submitForm = async (formEl) => {
   if (!formEl) return
@@ -48,7 +53,7 @@ const submitForm = async (formEl) => {
       }
       setTimeout(() => {
         backToPrev()
-      }, 500);
+      }, 500)
     } catch (error) {
       ElNotification({
         title: 'Error',
@@ -65,19 +70,46 @@ const resetForm = (formEl) => {
   formEl.resetFields()
 }
 
-const getIndustryList = async () => {
-  const industryApiRes = await IndustryApi.list()
-  if (industryApiRes.status == 200) {
-    industryList.value = industryApiRes.data.data.data
-  }
-}
-
 const backToPrev = () => {
   router.go(-1)
 }
 
+const getIndustryList = async () => {
+  try {
+    const industryApiRes = await IndustryApi.list()
+    if (industryApiRes.status == 200) {
+      industryList.value = industryApiRes.data.data.data
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Có lỗi khi tải dữ liệu.',
+      type: 'error',
+    })
+  }
+}
+
+const getUserInfo = async () => {
+  try {
+    const userProfileApiRes = await UserApi.findById(localStorage.getItem('uid'))
+    if (userProfileApiRes.status === 200) {
+      const res = userProfileApiRes.data.data
+      userInfo.value = res
+      formData.value.fullNameContactor = res.userInfoDTO.fullName
+      formData.value.emailContactor = res.email
+      formData.value.phoneNumberContactor = res.userInfoDTO.phoneNumber
+      formData.value.addressContactor = res.companyDTO.companyAddress
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Có lỗi khi tải dữ liệu.',
+      type: 'error',
+    })
+  }
+}
+
 onMounted(() => {
   getIndustryList()
+  getUserInfo()
 })
 </script>
 
@@ -158,10 +190,7 @@ onMounted(() => {
         <b-row>
           <b-col md="4">
             <el-form-item label="Cấp bậc" prop="level">
-              <el-select
-                v-model="formData.value.level"
-                placeholder="Chọn"
-              >
+              <el-select v-model="formData.value.level" placeholder="Chọn">
                 <el-option
                   v-for="item in rankList"
                   :key="item.value"
@@ -240,10 +269,7 @@ onMounted(() => {
         <b-row>
           <b-col md="4">
             <el-form-item label="Ngành nghề chính" prop="industryId">
-              <el-select
-                v-model="formData.value.industryId"
-                placeholder="Chọn"
-              >
+              <el-select v-model="formData.value.industryId" placeholder="Chọn">
                 <el-option
                   v-for="item in industryList.value"
                   :key="item.id"
@@ -270,10 +296,7 @@ onMounted(() => {
           </b-col>
           <b-col md="4">
             <el-form-item label="Nơi làm việc" prop="workplace">
-              <el-select
-                v-model="formData.value.workplace"
-                placeholder="Chọn"
-              >
+              <el-select v-model="formData.value.workplace" placeholder="Chọn">
                 <el-option
                   v-for="item in workPlaceList"
                   :key="item.value"
@@ -393,28 +416,32 @@ onMounted(() => {
         <b-row>
           <h5>Thông tin người liên hệ</h5>
           <b-col md="4">
-            <el-form-item label="Họ và tên" prop="company_name">
-              <el-input v-model="formData.value.company_name" />
+            <el-form-item label="Họ và tên" prop="">
+              <el-input v-model="formData.value.fullNameContactor" disabled />
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item label="Email" prop="company_name">
-              <el-input v-model="formData.value.company_name" />
+            <el-form-item label="Email" prop="">
+              <el-input v-model="formData.value.emailContactor" disabled />
             </el-form-item>
           </b-col>
           <b-col md="4">
-            <el-form-item label="Điện thoại" prop="personnel_size">
-              <el-input v-model="formData.value.personnel_size" />
+            <el-form-item label="Điện thoại" prop="">
+              <el-input
+                v-model="formData.value.phoneNumberContactor"
+                disabled
+              />
             </el-form-item>
           </b-col>
         </b-row>
         <b-row>
           <b-col md="12">
-            <el-form-item label="Địa chỉ liên hệ" prop="landline_phone">
+            <el-form-item label="Địa chỉ liên hệ" prop="">
               <el-input
-                v-model="formData.value.landline_phone"
+                v-model="formData.value.addressContactor"
                 type="textarea"
                 :autosize="{ minRows: 2, maxRows: 4 }"
+                disabled
               />
             </el-form-item>
           </b-col>
