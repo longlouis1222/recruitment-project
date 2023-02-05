@@ -9,6 +9,8 @@ import AppHeaderLanding from '@/components/AppHeaderLanding.vue'
 import AppFooterLanding from '@/components/AppFooterLanding.vue'
 import Loading from '@/components/Loading.vue'
 
+import { ElNotification, ElMessage } from 'element-plus'
+
 import { useRouter } from 'vue-router'
 import { computed, ref, reactive, onMounted } from 'vue'
 import { FormInstance } from 'element-plus'
@@ -39,8 +41,6 @@ const loading = ref(false)
 const noMore = computed(() => count.value >= tableRules.total)
 const disabled = computed(() => loading.value || noMore.value)
 
-const care = ref(false)
-
 const toggleSearchBox = () => {
   tableRules.showFormSearch = !tableRules.showFormSearch
 }
@@ -62,8 +62,50 @@ const backToPrev = () => {
   router.go(-1)
 }
 
-const saveToCareList = () => {
-  care.value = !care.value
+const handleAction = (action, id) => {
+  if (action === 'save') {
+    saveToCareList(id)
+    const post = tableRules.data.find((o) => o.id === id)
+    if (post) post.userCurrentSaved = true
+  } else if (action === 'unSave') {
+    unSaveFromCareList(id)
+    const post = tableRules.data.find((o) => o.id === id)
+    if (post) post.userCurrentSaved = false
+  }
+}
+
+const saveToCareList = async (id) => {
+  try {
+    const res = await PostApi.saveToCare(id)
+    if (res.status === 200) {
+      ElMessage({
+        type: 'success',
+        message: `Lưu tin tuyển dụng thành công.`,
+      })
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Lưu tin tuyển dụng thất bại.',
+      type: 'error',
+    })
+  }
+}
+
+const unSaveFromCareList = async (id) => {
+  try {
+    const res = await PostApi.removeSavePost(id)
+    if (res.status === 200) {
+      ElMessage({
+        type: 'success',
+        message: `Bỏ lưu tin tuyển dụng thành công.`,
+      })
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Bỏ lưu tin tuyển dụng thất bại.',
+      type: 'error',
+    })
+  }
 }
 
 const getPostList = async () => {
@@ -87,7 +129,6 @@ const getPostList = async () => {
     tableRules.total = postApiRes.data.data.totalElements
     count.value = postApiRes.data.data.totalElements
     loading.value = false
-    console.log(tableRules.total)
   }
 }
 
@@ -358,26 +399,45 @@ onMounted(async () => {
                       }}
                     </p>
                     <div class="d-flex align-items-center ms-2">
-                      <p class="card__subtitle mb-0">
+                      <div
+                        class="card__subtitle mb-0 d-flex align-items-center"
+                      >
                         <el-icon><LocationInformation /></el-icon
-                        >{{ post.recruitmentArea }}
-                      </p>
-                      <p class="card__subtitle mb-0 mx-5">
+                        ><span>{{ post.recruitmentArea }}</span>
+                      </div>
+                      <div
+                        class="
+                          card__subtitle
+                          mb-0
+                          mx-5
+                          d-flex
+                          align-items-center
+                        "
+                      >
                         <el-icon><Money /></el-icon>
-                        {{
-                          post.salaryMinFormat + ' - ' + post.salaryMaxFormat
-                        }}
-                      </p>
-                      <p class="card__subtitle mb-0">
-                        <el-icon><Timer /></el-icon>
-                        {{ post.jobApplicationDeadlineFormat }}
-                      </p>
+                        <span>
+                          {{
+                            post.salaryMinFormat + ' - ' + post.salaryMaxFormat
+                          }}
+                        </span>
+                      </div>
+                      <div
+                        class="card__subtitle mb-0 d-flex align-items-center"
+                      >
+                        <el-icon><Timer /></el-icon
+                        ><span>{{ post.jobApplicationDeadlineFormat }}</span>
+                      </div>
                     </div>
                   </div>
                   <CIcon
                     icon="cibMacys"
-                    :class="{ 'c-turquoise': care }"
-                    @click="saveToCareList"
+                    :class="{ 'c-turquoise': post.userCurrentSaved }"
+                    @click="
+                      handleAction(
+                        `${post.userCurrentSaved ? 'unSave' : 'save'}`,
+                        post.id,
+                      )
+                    "
                   />
                   <!-- <el-icon :class="{'c-turquoise': care}" @click="saveToCareList"><Star /></el-icon> -->
                 </div>
@@ -405,21 +465,36 @@ onMounted(async () => {
       <b-row>
         <b-col md="4">
           <ul class="ps-2">
-            <li class="pb-1" v-for="(job, i) in mainJobList" :key="job.value" :style="i>6 ? 'display: none;' : ''">
+            <li
+              class="pb-1"
+              v-for="(job, i) in mainJobList"
+              :key="job.value"
+              :style="i > 6 ? 'display: none;' : ''"
+            >
               <el-link>Việc làm {{ job.label }}</el-link>
             </li>
           </ul>
         </b-col>
         <b-col md="4">
           <ul class="ps-2">
-            <li class="pb-1" v-for="(job, i) in mainJobList" :key="job.value" :style="i<=6 || i>13 ? 'display: none;' : ''">
+            <li
+              class="pb-1"
+              v-for="(job, i) in mainJobList"
+              :key="job.value"
+              :style="i <= 6 || i > 13 ? 'display: none;' : ''"
+            >
               <el-link>Việc làm {{ job.label }}</el-link>
             </li>
           </ul>
         </b-col>
         <b-col md="4">
           <ul class="ps-2">
-            <li class="pb-1" v-for="(job, i) in mainJobList" :key="job.value" :style="i<13 ? 'display: none;' : ''">
+            <li
+              class="pb-1"
+              v-for="(job, i) in mainJobList"
+              :key="job.value"
+              :style="i < 13 ? 'display: none;' : ''"
+            >
               <el-link>Việc làm {{ job.label }}</el-link>
             </li>
           </ul>
