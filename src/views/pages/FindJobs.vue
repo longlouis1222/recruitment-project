@@ -141,10 +141,10 @@ const changeData = (data) => {
       ? MethodService.formatDate(post.jobApplicationDeadline, 'date')
       : ''
     post.salaryMinFormat = post.salaryMin
-      ? MethodService.formatCurrency(post.salaryMin)
+      ? MethodService.formatCurrencyShort(post.salaryMin)
       : '---'
     post.salaryMaxFormat = post.salaryMax
-      ? MethodService.formatCurrency(post.salaryMax)
+      ? MethodService.formatCurrencyShort(post.salaryMax)
       : '---'
   })
   return data

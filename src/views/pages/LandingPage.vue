@@ -418,9 +418,9 @@ onMounted(() => {
                   <span class="card__subtitle me-3">
                     <el-icon><Money /></el-icon
                     >{{
-                      MethodService.formatCurrency(post.salaryMin) +
+                      MethodService.formatCurrencyShort(post.salaryMin) +
                       ' - ' +
-                      MethodService.formatCurrency(post.salaryMax)
+                      MethodService.formatCurrencyShort(post.salaryMax)
                     }}
                   </span>
                   <span class="card__subtitle"
@@ -766,9 +766,9 @@ onMounted(() => {
                     <p class="card__subtitle mb-1">
                       <el-icon><Money /></el-icon>
                       {{
-                        MethodService.formatCurrency(post.salaryMin) +
+                        MethodService.formatCurrencyShort(post.salaryMin) +
                         ' - ' +
-                        MethodService.formatCurrency(post.salaryMax)
+                        MethodService.formatCurrencyShort(post.salaryMax)
                       }}
                     </p>
                     <p class="card__subtitle mb-0">

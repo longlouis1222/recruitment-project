@@ -239,9 +239,9 @@ onMounted(() => {
             <p>
               {{
                 postInfo && postInfo.salaryMin && postInfo.salaryMax
-                  ? MethodService.formatCurrency(postInfo.salaryMin) +
+                  ? MethodService.formatCurrencyShort(postInfo.salaryMin) +
                     ' - ' +
-                    MethodService.formatCurrency(postInfo.salaryMax)
+                    MethodService.formatCurrencyShort(postInfo.salaryMax)
                   : '20 - 30 triệu'
               }}
             </p>

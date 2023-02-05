@@ -158,7 +158,7 @@ const getRecruitmentSavedList = async () => {
 const changeData = (data) => {
   data.forEach((item) => {
     item.offerSalaryFormat = item.offerSalary
-      ? MethodService.formatCurrency(item.offerSalary) + ' VND'
+      ? MethodService.formatCurrencyShort(item.offerSalary)
       : 0
     item.timeSubmitFormat = item.timeSubmit
       ? MethodService.formatDate(item.timeSubmit, 'date')

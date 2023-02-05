@@ -69,10 +69,62 @@ const getRecuitmentPostByCompany = async () => {
 }
 
 const getCompanyById = async () => {
-  const res = await CompanyApi.findById(route.params.id)
-  if (res.status === 200) {
-    companyInfo.value = res.data.data
-    console.log('companyInfo.value', companyInfo.value)
+  try {
+    const res = await CompanyApi.findById(route.params.id)
+    if (res.status === 200) {
+      companyInfo.value = res.data.data
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Có lỗi khi tải dữ liệu.',
+      type: 'error',
+    })
+  }
+}
+
+const handleAction = (action, id) => {
+  if (action === 'save') {
+    saveToCareList(id)
+    const post = tableRules.data.find((o) => o.id === id)
+    if (post) post.userCurrentSaved = true
+  } else if (action === 'unSave') {
+    unSaveFromCareList(id)
+    const post = tableRules.data.find((o) => o.id === id)
+    if (post) post.userCurrentSaved = false
+  }
+}
+
+const saveToCareList = async (id) => {
+  try {
+    const res = await PostApi.saveToCare(id)
+    if (res.status === 200) {
+      ElMessage({
+        type: 'success',
+        message: `Lưu tin tuyển dụng thành công.`,
+      })
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Lưu tin tuyển dụng thất bại.',
+      type: 'error',
+    })
+  }
+}
+
+const unSaveFromCareList = async (id) => {
+  try {
+    const res = await PostApi.removeSavePost(id)
+    if (res.status === 200) {
+      ElMessage({
+        type: 'success',
+        message: `Bỏ lưu tin tuyển dụng thành công.`,
+      })
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Bỏ lưu tin tuyển dụng thất bại.',
+      type: 'error',
+    })
   }
 }
 
@@ -156,18 +208,30 @@ onMounted(async () => {
                 shadow="hover"
                 @click="goToJobDetail(post.id)"
               >
-                <p class="card__item-content mb-2">
-                  {{ post.title ? post.title : 'Vị trí tuyển dụng' }}
-                </p>
+                <div class="d-flex justify-content-between w-100">
+                  <p class="card__item-content mb-2">
+                    {{ post.title ? post.title : 'Vị trí tuyển dụng' }}
+                  </p>
+                  <CIcon
+                    icon="cibMacys"
+                    :class="{ 'c-turquoise': post.userCurrentSaved }"
+                    @click="
+                      handleAction(
+                        `${post.userCurrentSaved ? 'unSave' : 'save'}`,
+                        post.id,
+                      )
+                    "
+                  />
+                </div>
                 <div class="d-flex align-items-center">
                   <div class="d-flex align-items-center">
                     <div class="card__subtitle me-5 d-flex">
                       <el-icon :size="18"><Money /></el-icon>
                       <span class="text-black-50 me-1">Lương:</span>
                       <span>{{
-                        MethodService.formatCurrency(post.salaryMin) +
+                        MethodService.formatCurrencyShort(post.salaryMin) +
                         ' - ' +
-                        MethodService.formatCurrency(post.salaryMax)
+                        MethodService.formatCurrencyShort(post.salaryMax)
                       }}</span>
                     </div>
                     <div class="card__subtitle mx-5 d-flex">
@@ -238,8 +302,7 @@ onMounted(async () => {
                 ? companyInfo.employeeNumber + ' người'
                 : '200 Người'
             }}
-            </span
-          >
+          </span>
         </div>
         <div class="card__subtitle d-flex">
           <el-icon :size="18" class="text-warning"><Briefcase /></el-icon>

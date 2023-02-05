@@ -125,7 +125,7 @@ const getRecruitmentList = async () => {
 const changeData = (data) => {
   data.forEach((item) => {
     item.offerSalaryFormat = item.offerSalary
-      ? MethodService.formatCurrency(item.offerSalary) + ' VND'
+      ? MethodService.formatCurrencyShort(item.offerSalary)
       : 0
     const isSavedProfile = (userProfile.value.userInfoDTO.arrProfileIds || []).findIndex(o => o === item.id)
     item.isSaved = isSavedProfile < 0 ? false : true

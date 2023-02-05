@@ -41,7 +41,7 @@ const convertDataExport = (data) => {
       'Vị trí ứng tuyển': record.positionOffer,
       'Thời gian nộp': record.timeSubmitFormat,
       'Mức lương': record.offerSalary
-        ? MethodService.formatCurrency(record.offerSalary)
+        ? MethodService.formatCurrencyShort(record.offerSalary)
         : 0,
       'Số năm kinh nghiệm': record.experienceNumber,
       'Địa điểm làm việc': record.workAddress,
@@ -175,10 +175,10 @@ const changeData = (data) => {
       ? MethodService.formatDate(post.jobApplicationDeadline, 'date')
       : ''
     post.salaryMinFormat = post.salaryMin
-      ? MethodService.formatCurrency(post.salaryMin) + ' VND'
+      ? MethodService.formatCurrencyShort(post.salaryMin)
       : '---'
     post.salaryMaxFormat = post.salaryMax
-      ? MethodService.formatCurrency(post.salaryMax) + ' VND'
+      ? MethodService.formatCurrencyShort(post.salaryMax)
       : '---'
   })
   return data

@@ -82,8 +82,8 @@
         <b-col md="3">
           <p>Kết nối với chúng tôi</p>
           <div>
-            <CIcon class="mx-2" icon="cibFacebook" size="lg" />
-            <CIcon class="mx-2" icon="cibYoutube" size="lg" />
+            <CIcon class="mx-2 text-primary" icon="cibFacebook" size="lg" />
+            <CIcon class="mx-2 text-danger" icon="cibYoutube" size="lg" />
           </div>
         </b-col>
       </b-row>

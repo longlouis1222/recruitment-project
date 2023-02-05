@@ -9,6 +9,25 @@ import * as moment from "moment";
 
 let MethodService = {};
 
+MethodService.formatCurrencyShort = (number) => {
+  const SI_SYMBOL = ["", "nghìn", "triệu", "tỷ", "nghìn tỷ", "triệu tỷ", "tỷ tỷ"]
+  // what tier? (determines SI symbol)
+  const tier = Math.log10(Math.abs(number)) / 3 | 0;
+
+  // if zero, we don't need a suffix
+  if(tier == 0) return number;
+
+  // get suffix and determine scale
+  const suffix = SI_SYMBOL[tier];
+  const scale = Math.pow(10, tier * 3);
+
+  // scale the number
+  const scaled = number / scale;
+
+  // format number and add suffix
+  return scaled.toFixed(0) + ' ' + suffix;
+}
+
 MethodService.formatCurrency = (value) => {
   if (MethodService.isNumber(value)) {
     return value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1.')
@@ -812,14 +831,6 @@ MethodService.changeAlias = function (alias) {
   str = str.replace(/ + /g, " ");
   str = str.trim();
   return str;
-};
-
-MethodService.formatCurrency = value => {
-  if (MethodService.isNumber(value)) {
-    return value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-  } else {
-    return value;
-  }
 };
 
 MethodService.styleRowExcel = (worksheet) => {
