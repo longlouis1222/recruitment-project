@@ -242,7 +242,14 @@ onMounted(() => {
                 alt="logo-company"
                 class="card__logo mx-auto"
               />
-              <p class="card__title">22 vị trí đang tuyển</p>
+              <p class="card__title">
+                {{
+                  company.numberPositionSubmit
+                    ? company.numberPositionSubmit
+                    : '22'
+                }}
+                vị trí đang tuyển
+              </p>
             </div>
           </el-card>
         </b-col>
@@ -406,6 +413,7 @@ onMounted(() => {
                     <el-tag type="danger" v-if="post.isOutstanding">
                       HOT
                     </el-tag>
+                    <!-- <img src="../../assets/gifs/hot.gif" /> -->
                   </div>
                   <span class="card__subtitle me-3">
                     <el-icon><Money /></el-icon
