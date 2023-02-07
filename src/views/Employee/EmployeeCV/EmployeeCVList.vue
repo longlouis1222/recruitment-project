@@ -29,7 +29,7 @@ const currentUserId = localStorage.getItem('uid')
 
 const updateOnlineCV = () => {
   router.push({
-    name: 'Hồ sơ ứng viên',
+    name: 'Hồ sơ trưc tuyến',
     // params:
   })
 }

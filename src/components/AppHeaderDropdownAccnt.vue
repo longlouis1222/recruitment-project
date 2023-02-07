@@ -91,6 +91,6 @@ const gotoUserProfile = () => {
   const accType = localStorage.getItem('type')
   if (accType == 'CANDIDATE') {
     router.push({ name: 'Tài khoản ứng viên' })
-  } else router.push({ name: 'Tài khoản nhà tuyển dụng' })
+  } else router.push({ name: 'Thông tin nhà tuyển dụng' })
 }
 </script>

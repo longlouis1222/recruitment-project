@@ -8,60 +8,70 @@ export default [
       color: 'primary',
       // text: 'NEW',
     },
+    role: ['*']
   },
   {
     component: 'CNavItem',
     name: 'Danh sách người dùng',
     to: '/admin/user-management/user-list',
     icon: 'cilPeople',
+    role: ['ADMIN']
   },
   {
     component: 'CNavItem',
     name: 'Danh sách ngành nghề',
     to: '/admin/industry-management/industry-list',
     icon: 'cilLayers',
+    role: ['ADMIN']
   },
   {
     component: 'CNavItem',
-    name: 'Tài khoản nhà tuyển dụng',
+    name: 'Thông tin nhà tuyển dụng',
     to: '/employer/employer-account/employer-account-info',
     icon: 'cilHouse',
+    role: ['EMPLOYER']
   },
   {
     component: 'CNavItem',
     name: 'Công ty',
     to: '/employer/employer-company/employer-company-info',
     icon: 'cilLibraryBuilding',
+    role: ['EMPLOYER']
   },
   {
     component: 'CNavItem',
     name: 'Tạo tin tuyển dụng',
     to: '/employer/recruitment-post/recuitment-post-create',
     icon: 'cil-pencil',
+    role: ['EMPLOYER']
   },
   {
     component: 'CNavItem',
     name: 'Danh sách bài tuyển dụng',
     to: '/employer/recruitment-post/recuitment-post-list',
     icon: 'cil-puzzle',
+    role: ['ADMIN', 'EMPLOYER']
   },
   {
     component: 'CNavItem',
     name: 'Tìm ứng viên',
     to: '/employer/find-candidate/find-candidate-list',
     icon: 'cilSearch',
+    role: ['ADMIN' , 'EMPLOYER']
   },
   {
     component: 'CNavItem',
     name: 'Hồ sơ ứng viên đã lưu',
     to: '/employer/candidate-profile/candidate-profile-list',
     icon: 'cilLibraryAdd',
+    role: ['EMPLOYER']
   },
   {
     component: 'CNavItem',
     name: 'Hồ sơ ứng viên ứng tuyển',
     to: '/employer/candidate-applied-profile/candidate-applied-profile-list',
     icon: 'cilStorage',
+    role: ['EMPLOYER']
   },
 
   // EMPLOYEE
@@ -71,30 +81,35 @@ export default [
     name: 'Tài khoản ứng viên',
     to: '/employee/employee-account/employee-account-info',
     icon: 'cilContact',
+    role: ['CANDIDATE']
   },
   {
     component: 'CNavItem',
     name: 'Hồ sơ ứng viên',
     to: '/employee/curriculum-vitae/curriculum-vitae-info',
     icon: 'cilAddressBook',
+    role: ['CANDIDATE']
   },
   {
     component: 'CNavItem',
     name: 'Hồ sơ của bạn',
     to: '/employee/employee-cv/employee-cv-info',
     icon: 'cilAddressBook',
+    role: ['CANDIDATE']
   },
   {
     component: 'CNavItem',
     name: 'Việc làm quan tâm',
     to: '/employee/saved-post/saved-post-list',
     icon: 'cilPin',
+    role: ['CANDIDATE']
   },
   {
     component: 'CNavItem',
     name: 'Việc làm đã ứng tuyển',
     to: '/employee/applied-jobs/applied-jobs-list',
     icon: 'cilBraille',
+    role: ['CANDIDATE']
   },
 
   // {
@@ -337,39 +352,39 @@ export default [
   //   component: 'CNavTitle',
   //   name: 'Extras',
   // },
-  {
-    component: 'CNavGroup',
-    name: 'Pages',
-    to: '/pages',
-    icon: 'cil-star',
-    items: [
-      {
-        component: 'CNavItem',
-        name: 'Login',
-        to: '/pages/login',
-      },
-      {
-        component: 'CNavItem',
-        name: 'Register',
-        to: '/pages/register',
-      },
-      {
-        component: 'CNavItem',
-        name: 'ForgotPassword',
-        to: '/pages/forgot-password',
-      },
-      {
-        component: 'CNavItem',
-        name: 'Error 404',
-        to: '/pages/404',
-      },
-      {
-        component: 'CNavItem',
-        name: 'Error 500',
-        to: '/pages/500',
-      },
-    ],
-  },
+  // {
+  //   component: 'CNavGroup',
+  //   name: 'Pages',
+  //   to: '/pages',
+  //   icon: 'cil-star',
+  //   items: [
+  //     {
+  //       component: 'CNavItem',
+  //       name: 'Login',
+  //       to: '/pages/login',
+  //     },
+  //     {
+  //       component: 'CNavItem',
+  //       name: 'Register',
+  //       to: '/pages/register',
+  //     },
+  //     {
+  //       component: 'CNavItem',
+  //       name: 'ForgotPassword',
+  //       to: '/pages/forgot-password',
+  //     },
+  //     {
+  //       component: 'CNavItem',
+  //       name: 'Error 404',
+  //       to: '/pages/404',
+  //     },
+  //     {
+  //       component: 'CNavItem',
+  //       name: 'Error 500',
+  //       to: '/pages/500',
+  //     },
+  //   ],
+  // },
 
   // {
   //   component: 'CNavItem',

@@ -41,6 +41,7 @@ const submitForm = async (formEl) => {
   if (!formEl) return
   await formEl.validate(async (valid, fields) => {
     try {
+      if(!valid) return
       formData.value.status = 'WAITING_APPROVE'
       const postApiRes = await PostApi.create(formData.value)
       if (postApiRes.status == 200) {

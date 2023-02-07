@@ -13,6 +13,8 @@ import { FormInstance } from 'element-plus'
 import modelData from './FindCandidateModel'
 
 const moduleName = 'Tìm ứng viên'
+const userRole = localStorage.getItem('type')
+
 const router = useRouter()
 
 const ruleFormRef = ref(FormInstance)
@@ -243,6 +245,7 @@ const saveRecruitment = async (rowData) => {
 }
 
 onMounted(() => {
+  console.log('userRole', userRole)
   getUserInfo()
   getRecruitmentList()
 })
@@ -432,6 +435,7 @@ onMounted(() => {
                 plain
                 @click="handleAction('save', scope.row)"
                 :disabled="scope.row.isSaved"
+                v-if="userRole === 'EMPLOYER'"
                 ><CIcon icon="cilStar"
               /></el-button>
             </div>

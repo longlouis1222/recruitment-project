@@ -31,7 +31,7 @@ export default [
       },
       {
         path: '/employer/employer-account/employer-account-info',
-        name: 'Tài khoản nhà tuyển dụng',
+        name: 'Thông tin nhà tuyển dụng',
         component: () =>
           import( '@/views/Employer/EmployerAccount/EmployerAccountInfo.vue'),
       },
@@ -118,7 +118,7 @@ export default [
       },
       {
         path: '/employee/curriculum-vitae/curriculum-vitae-info',
-        name: 'Hồ sơ ứng viên',
+        name: 'Hồ sơ trưc tuyến',
         component: () =>
           import( '@/views/Employee/CurriculumVitae/CurriculumVitae.vue'),
       },

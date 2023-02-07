@@ -28,7 +28,7 @@ const goToRegister = () => {
 }
 
 const goToCreateCV = () => {
-  router.push({ name: 'Hồ sơ ứng viên' })
+  router.push({ name: 'Hồ sơ trưc tuyến' })
 }
 
 const goToLandingPage = () => {

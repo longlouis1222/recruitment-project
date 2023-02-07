@@ -13,6 +13,7 @@ import { FormInstance } from 'element-plus'
 import modelData from '../EmployerCompany/EmployerCompanyInfoModel'
 
 const moduleName = 'Danh sách bài tuyển dụng'
+const userRole = localStorage.getItem('type')
 
 const router = useRouter()
 
@@ -130,13 +131,19 @@ const updatePost = (rowData) => {
 }
 
 const deletePost = async (rowData) => {
-  ElMessageBox.alert('Bạn có chắc muốn xóa bài viết này ?', 'Cảnh báo', {
-    // if you want to disable its autofocus
-    // autofocus: false,
-    confirmButtonText: 'Đồng ý',
-    callback: async () => {
-      try {
-        const postApiRes = await PostApi.delete(rowData.id)
+  ElMessageBox.confirm(
+    'Bạn có chắc muốn xóa bài viết này ?',
+    'Cảnh báo',
+    {
+      // if you want to disable its autofocus
+      // autofocus: false,
+      confirmButtonText: 'Đồng ý',
+      cancelButtonText: 'Hủy',
+      type: 'warning',
+    },
+  )
+    .then(async () => {
+      const postApiRes = await PostApi.delete(rowData.id)
         if (postApiRes.status === 200) {
           ElNotification({
             title: 'Success',
@@ -146,16 +153,8 @@ const deletePost = async (rowData) => {
           })
           await getPostList()
         }
-      } catch (error) {
-        ElNotification({
-          title: 'Error',
-          message: 'Xóa thất bại.',
-          type: 'error',
-          duration: 3000,
-        })
-      }
-    },
-  })
+    })
+    .catch(() => {})
 }
 
 const toggleSearchBox = () => {
@@ -449,6 +448,7 @@ onMounted(async () => {
                 size="small"
                 @click="handleAction('approve', scope.row)"
                 :disabled="scope.row.status == 'APPROVED' || scope.row.status == 'REJECT'"
+                v-if="userRole === 'ADMIN'"
                 ><CIcon icon="cilBrushAlt"
               /></el-button>
               <el-button

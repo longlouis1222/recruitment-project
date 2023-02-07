@@ -133,7 +133,12 @@ const AppSidebarNav = defineComponent({
         CSidebarNav,
         {},
         {
-          default: () => nav.map((item) => renderItem(item)),
+          default: () => nav.map((item) => {
+            const role = localStorage.getItem('type')
+            if (item.role.includes('*') || item.role.includes(role)) {
+              return renderItem(item)
+            }
+          }),
         },
       )
   },
