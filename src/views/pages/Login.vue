@@ -121,6 +121,7 @@ const goToForgotPassword = () => {
                             v-model="formData.value.username"
                             size="large"
                             placeholder="Tài khoản đăng nhập"
+                            @keyup.enter="login(ruleFormRef)"
                           >
                             <template #prefix>
                               <el-icon class="el-input__icon"
@@ -138,6 +139,7 @@ const goToForgotPassword = () => {
                             size="large"
                             show-password
                             placeholder="Mật khẩu"
+                            @keyup.enter="login(ruleFormRef)"
                           >
                             <template #prefix>
                               <el-icon class="el-input__icon"><Lock /></el-icon>
