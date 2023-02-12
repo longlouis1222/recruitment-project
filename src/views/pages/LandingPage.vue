@@ -4,6 +4,7 @@ import MethodService from '@/service/MethodService'
 
 import PostApi from '@/moduleApi/modules/PostApi'
 import CompanyApi from '@/moduleApi/modules/CompanyApi'
+import IndustryApi from '@/moduleApi/modules/IndustryApi'
 
 import AppHeaderLanding from '@/components/AppHeaderLanding.vue'
 import AppFooterLanding from '@/components/AppFooterLanding.vue'
@@ -27,7 +28,10 @@ const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
 const companyList = reactive({ value: [], total: 0 })
 const outstandingPostList = reactive({ value: [] })
 const newestPostList = reactive({ value: [], total: 0 })
+const industryList = reactive({ value: [] })
+const industryHotList = reactive({ value: [] })
 
+const iconList = ['cilStorage', 'cibSitepoint', 'cilNewspaper', 'cilAvTimer', 'cilMoney', 'cilGraph', 'cilMoodGood', 'cilSearch']
 const bannerList = [
   {
     id: 1,
@@ -51,7 +55,6 @@ const bannerList = [
   },
 ]
 
-const care = ref(false)
 const backToPrev = () => {
   router.go(-1)
 }
@@ -62,6 +65,17 @@ const goToJobDetail = (id) => {
 
 const goToCompanyDetail = (id) => {
   router.push({ name: 'Company detail', params: { id: id ? id : 1 } })
+}
+
+const goToResgister = () => {
+  router.push({ name: 'Register' })
+}
+
+const goToFindJob = (query, workplace) => {
+  if (query) router.push({ name: 'Find jobs', query: { industryId: query } })
+  else if (workplace)
+    router.push({ name: 'Find jobs', query: { recruitmentArea: workplace } })
+  else router.push({ name: 'Find jobs' })
 }
 
 const fn_tableSizeChange = (limit) => {
@@ -184,9 +198,34 @@ const unSaveFromCareList = async (id) => {
   }
 }
 
+const getHotIndustriesList = async () => {
+  try {
+    const res = await IndustryApi.list('size=99999')
+    if (res.status === 200) {
+      industryList.value = sortUpdatedIndustries(res.data.data.data)
+      industryHotList.value = sortHotIndustries(res.data.data.data)
+    }
+  } catch (error) {
+    console.log(error)
+    ElMessage({
+      message: 'Có lỗi khi tải dữ liệu.',
+      type: 'error',
+    })
+  }
+}
+
+const sortHotIndustries = (data) => {
+  return data.sort((a, b) => b.numberSummit - a.numberSummit)
+}
+
+const sortUpdatedIndustries = (data) => {
+  return data.sort(
+    (a, b) => new Date(b.updated).getTime() - new Date(a.updated).getTime(),
+  )
+}
+
 onMounted(() => {
-  const userInfo = computed(() => store.state.user)
-  console.log(userInfo)
+  getHotIndustriesList()
   getCompanyList()
   getOutstandingJob()
   getNewestJob()
@@ -195,7 +234,10 @@ onMounted(() => {
 
 <template>
   <div class="min-vh-100">
-    <AppHeaderLanding />
+    <AppHeaderLanding
+      :industryList="industryList.value"
+      :industryHotList="industryHotList.value"
+    />
     <!-- Start Carousel -->
     <CContainer xxl>
       <div class="block text-center">
@@ -673,7 +715,8 @@ onMounted(() => {
       <img
         src="../../assets/images/banner/banner-home-pc-2.png"
         alt="banner-home-pc-2.png"
-        class="w-100"
+        class="w-100 cursor-pointer"
+        @click="goToResgister"
       />
     </CContainer>
     <!-- Start Banner discovery Job -->
@@ -1089,16 +1132,48 @@ onMounted(() => {
         <!-- <img src="@/assets/images/new-post.png" alt="clock-ringing" style="width: 5%"> -->
       </div>
       <b-row class="mb-3">
-        <b-col md="3">
-          <el-card class="box-card" shadow="hover">
+        <b-col
+          md="3"
+          class="mb-3"
+          v-for="(industry, i) in industryHotList.value &&
+          industryHotList.value.length > 0
+            ? industryHotList.value
+            : mainJobList"
+          :key="
+            industryHotList.value && industryHotList.value.length > 0
+              ? industry.id
+              : industry.value
+          "
+          :style="i > 7 ? 'display: none' : ''"
+        >
+          <el-card
+            class="box-card"
+            shadow="hover"
+            @click="goToFindJob(industry.id)"
+          >
             <div class="icon-block mb-3">
-              <CIcon class="" icon="cilStorage" size="lg" />
+              <!-- <CIcon class="" icon="cilStorage" size="lg" /> -->
+              <CIcon class="" :icon="iconList[i]" size="lg" />
             </div>
-            <h5>Việc làm quản lý</h5>
-            <p>2879 việc làm</p>
+            <h5 class="text-overflow">
+              Việc làm
+              {{
+                industryHotList.value && industryHotList.value.length > 0
+                  ? industry.name
+                  : industry.label
+              }}
+            </h5>
+            <p>
+              {{
+                industryHotList.value && industryHotList.value.length > 0
+                  ? industry.numberSummit
+                  : 0
+              }}
+              việc làm
+            </p>
           </el-card>
         </b-col>
-        <b-col md="3">
+        <!-- <b-col md="3">
           <el-card class="box-card" shadow="hover">
             <div class="icon-block mb-3">
               <CIcon class="" icon="cibSitepoint" size="lg" />
@@ -1124,9 +1199,9 @@ onMounted(() => {
             <h5>Việc làm bán thời gian</h5>
             <p>2879 việc làm</p>
           </el-card>
-        </b-col>
+        </b-col> -->
       </b-row>
-      <b-row class="mb-3">
+      <!-- <b-row class="mb-3">
         <b-col md="3">
           <el-card class="box-card" shadow="hover">
             <div class="icon-block mb-3">
@@ -1163,7 +1238,7 @@ onMounted(() => {
             <p>2879 việc làm</p>
           </el-card>
         </b-col>
-      </b-row>
+      </b-row> -->
     </CContainer>
     <!-- End Discovery recruitment Job -->
 
@@ -1180,8 +1255,24 @@ onMounted(() => {
             <b-row>
               <b-col md="12">
                 <ul class="ps-2">
-                  <li class="pb-1" v-for="job in mainJobList" :key="job.value">
-                    <el-link>Việc làm {{ job.label }}</el-link>
+                  <li
+                    class="pb-1"
+                    @click="goToFindJob(industry.id)"
+                    v-for="industry in industryHotList.value &&
+                    industryHotList.value.length > 0
+                      ? industryHotList.value
+                      : mainJobList"
+                    :key="
+                      industryHotList.value && industryHotList.value.length > 0
+                        ? industry.id
+                        : industry.value
+                    "
+                  >
+                    <el-link>{{
+                      industryHotList.value && industryHotList.value.length > 0
+                        ? industry.name
+                        : industry.label
+                    }}</el-link>
                   </li>
                 </ul>
               </b-col>
@@ -1200,10 +1291,11 @@ onMounted(() => {
                 <ul class="ps-2">
                   <li
                     class="pb-1"
-                    v-for="job in workPlaceList"
-                    :key="job.value"
+                    @click="goToFindJob('', place.value)"
+                    v-for="place in workPlaceList"
+                    :key="place.value"
                   >
-                    <el-link>Việc làm {{ job.label }}</el-link>
+                    <el-link>Việc làm {{ place.label }}</el-link>
                   </li>
                 </ul>
               </b-col>
@@ -1222,10 +1314,25 @@ onMounted(() => {
                 <ul class="ps-2">
                   <li
                     class="pb-1"
-                    v-for="job in secondJobList"
-                    :key="job.value"
+                    @click="goToFindJob(industry.id)"
+                    v-for="industry in industryList.value &&
+                    industryList.value.length > 0
+                      ? industryList.value
+                      : mainJobList"
+                    :key="
+                      industryList.value && industryList.value.length > 0
+                        ? industry.id
+                        : industry.value
+                    "
                   >
-                    <el-link>Việc làm {{ job.label }}</el-link>
+                    <el-link
+                      >Việc làm
+                      {{
+                        industryList.value && industryList.value.length > 0
+                          ? industry.name
+                          : industry.label
+                      }}</el-link
+                    >
                   </li>
                 </ul>
               </b-col>
@@ -1302,11 +1409,14 @@ onMounted(() => {
     }
   }
 }
-.container-discovery {
+:deep .container-discovery {
   .el-card {
     cursor: pointer;
     &:hover {
       background-color: lightskyblue;
+    }
+    .el-card__body {
+      height: 205px;
     }
   }
 }

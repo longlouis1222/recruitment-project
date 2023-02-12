@@ -16,3 +16,14 @@ ul li {
 .cursor-pointer {
   cursor: pointer;
 }
+
+.text-overflow {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 28px;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  word-break: break-word;
+  -webkit-box-orient: vertical;
+}

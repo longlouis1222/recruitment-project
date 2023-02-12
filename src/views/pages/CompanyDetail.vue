@@ -6,9 +6,9 @@ import AppHeaderLanding from '@/components/AppHeaderLanding.vue'
 import AppFooterLanding from '@/components/AppFooterLanding.vue'
 import Loading from '@/components/Loading.vue'
 
-import RecruitmentApi from '@/moduleApi/modules/RecruitmentApi'
 import CompanyApi from '@/moduleApi/modules/CompanyApi'
 import PostApi from '@/moduleApi/modules/PostApi'
+import IndustryApi from '@/moduleApi/modules/IndustryApi'
 
 import { useRoute, useRouter } from 'vue-router'
 import { computed, ref, reactive, onMounted } from 'vue'
@@ -20,6 +20,8 @@ const secondJobList = DataService.secondJobList
 const workPlaceList = DataService.workPlaceList
 
 const companyInfo = ref(null)
+const industryList = reactive({ value: [] })
+const industryHotList = reactive({ value: [] })
 
 const count = ref(10)
 const offset = ref(0)
@@ -128,7 +130,34 @@ const unSaveFromCareList = async (id) => {
   }
 }
 
+const getHotIndustriesList = async () => {
+  try {
+    const res = await IndustryApi.list('size=99999')
+    if (res.status === 200) {
+      industryList.value = sortUpdatedIndustries(res.data.data.data)
+      industryHotList.value = sortHotIndustries(res.data.data.data)
+    }
+  } catch (error) {
+    console.log(error)
+    ElMessage({
+      message: 'Có lỗi khi tải dữ liệu.',
+      type: 'error',
+    })
+  }
+}
+
+const sortHotIndustries = (data) => {
+  return data.sort((a, b) => b.numberSummit - a.numberSummit)
+}
+
+const sortUpdatedIndustries = (data) => {
+  return data.sort(
+    (a, b) => new Date(b.updated).getTime() - new Date(a.updated).getTime(),
+  )
+}
+
 onMounted(async () => {
+  await getHotIndustriesList()
   await getCompanyById()
   await getRecuitmentPostByCompany()
 })
@@ -136,7 +165,10 @@ onMounted(async () => {
 
 <template>
   <div class="min-vh-100">
-    <AppHeaderLanding />
+    <AppHeaderLanding
+      :industryList="industryList.value"
+      :industryHotList="industryHotList.value"
+    />
     <!-- Start Header banner -->
     <div class="header__banner">
       <CContainer xxl class="pb-4">

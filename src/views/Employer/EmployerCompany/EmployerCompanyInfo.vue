@@ -7,6 +7,8 @@ import FileApi from '@/moduleApi/modules/FileApi'
 
 import axios from 'axios'
 
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+
 import { ElNotification, ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
@@ -23,6 +25,29 @@ const validForm = modelData.validForm
 const mainJobList = DataService.mainJobList
 const userProfile = reactive({})
 const fileList = ref([])
+
+const editor = ClassicEditor
+const editorConfig = {
+  width: 100,
+  height: 200,
+  toolbar: {
+    items: [
+      'bold',
+      'italic',
+      '|',
+      'outdent',
+      'indent',
+      '|',
+      'bulletedList',
+      'numberedList',
+      '|',
+      'undo',
+      'redo',
+    ],
+    shouldNotGroupWhenFull: true,
+  },
+}
+const editorDisabled = ref(false)
 
 const submitForm = async (formEl) => {
   if (!formEl) return
@@ -241,10 +266,17 @@ onMounted(() => {
               </el-select>
             </el-form-item>
             <el-form-item label="Giới thiệu công ty" prop="companyRequest.businessIntroduction">
-              <el-input
+              <!-- <el-input
                 type="textarea"
                 v-model="formData.value.companyRequest.businessIntroduction"
-              />
+              /> -->
+              <ckeditor
+                :editor="editor"
+                v-model="formData.value.companyRequest.businessIntroduction"
+                :config="editorConfigJobRequirements"
+                :disabled="editorDisabled"
+                @blur="onEditorBlur(ruleFormRef)"
+              ></ckeditor>
             </el-form-item>
           </b-col>
         </b-row>

@@ -65,10 +65,10 @@
             <el-divider direction="vertical" class="mx-1" /> (0248) 2667 6969
           </p>
           <p class="small fw-lighter">
-            Email hỗ trợ người tìm việc: longnguyenhuy1402@gmail.com
+            Email hỗ trợ <em>người tìm việc</em>: longnguyenhuy1402@gmail.com
           </p>
           <p class="small fw-lighter">
-            Email hỗ trợ nhà tuyển dụng: longnguyenhuy1402@gmail.com
+            Email hỗ trợ <em>nhà tuyển dụng</em>: longnguyenhuy1402@gmail.com
           </p>
         </b-col>
         <b-col md="3">

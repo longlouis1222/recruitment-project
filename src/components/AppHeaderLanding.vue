@@ -1,12 +1,13 @@
 
 <script setup>
+import DataService from '@/service/DataService'
+
 import AppBreadcrumb from './AppBreadcrumb'
 import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt'
 import { logo } from '@/assets/brand/logo'
-import DataService from '@/service/DataService'
 
 import { useRouter } from 'vue-router'
-import { onMounted, ref } from 'vue-demi'
+import { onMounted, ref, defineProps } from 'vue-demi'
 
 const router = useRouter()
 const dialogAllIndustries = ref(false)
@@ -14,6 +15,18 @@ const mainJobList = DataService.mainJobList
 
 const isShowAvatar = ref(false)
 const isEmployer = ref(false)
+const userType = localStorage.getItem('type')
+
+const props = defineProps({
+  industryList: {
+    type: Array,
+    required: true,
+  },
+  industryHotList: {
+    type: Array,
+    required: true,
+  },
+})
 
 const toggleDialogAllIndustries = () => {
   dialogAllIndustries.value = true
@@ -35,15 +48,33 @@ const goToLandingPage = () => {
   router.push({ name: 'Landing page' })
 }
 
+const goToFindCandidate = () => {
+  router.push({ name: 'Tìm ứng viên' })
+}
+
+const goToCompanyProfile = () => {
+  router.push({ name: 'Công ty' })
+}
+
+const goToFindJob = (query) => {
+  if (query) router.push({ name: 'Find jobs', query: { industryId: query } })
+  else router.push({ name: 'Find jobs' })
+}
+
 onMounted(() => {
   localStorage.getItem('Token')
   // console.log(localStorage.getItem('Token'))
   if (localStorage.getItem('Token') && localStorage.getItem('uid')) {
     isShowAvatar.value = true
   }
-  if (localStorage.getItem('Token') && localStorage.getItem('type') === 'EMPLOYER') {
+  if (
+    localStorage.getItem('Token') &&
+    localStorage.getItem('type') === 'EMPLOYER'
+  ) {
     isEmployer.value = true
   }
+  // console.log('props.industryList', props.industryList)
+  // console.log('props.industryHotList', props.industryHotList)
 })
 </script>
 <template>
@@ -52,22 +83,28 @@ onMounted(() => {
       <!-- <CHeaderToggler class="ps-1">
         <CIcon icon="cil-menu" size="lg" />
       </CHeaderToggler> -->
-      <CHeaderBrand style="cursor: pointer" class="p-0" @click="goToLandingPage">
+      <CHeaderBrand
+        style="cursor: pointer"
+        class="p-0"
+        @click="goToLandingPage"
+      >
         <img src="/logo_R.png" alt="" style="width: 45px" />
         Recruitment
       </CHeaderBrand>
       <el-divider direction="vertical" />
       <CHeaderNav class="d-none d-md-flex me-auto">
         <CNavItem>
-          <CNavLink href="#/employee/curriculum-vitae/curriculum-vitae-info"
-            >Cơ hội việc làm</CNavLink
+          <CNavLink @click="goToFindJob">Cơ hội việc làm</CNavLink>
+        </CNavItem>
+        <CNavItem>
+          <CNavLink v-if="userType === 'EMPLOYER'" @click="goToFindCandidate"
+            >Hồ sơ</CNavLink
           >
         </CNavItem>
         <CNavItem>
-          <CNavLink href="#">Hồ sơ</CNavLink>
-        </CNavItem>
-        <CNavItem>
-          <CNavLink href="#">Công ty</CNavLink>
+          <CNavLink v-if="userType === 'EMPLOYER'" @click="goToCompanyProfile"
+            >Công ty</CNavLink
+          >
         </CNavItem>
       </CHeaderNav>
       <CHeaderNav class="align-items-center">
@@ -75,7 +112,7 @@ onMounted(() => {
           <el-popover
             placement="bottom"
             title=""
-            :width="200"
+            :width="160"
             trigger="click"
             content="Bạn không có thông báo mới nào."
           >
@@ -110,14 +147,25 @@ onMounted(() => {
               content="Tất cả các ngành"
               placement="bottom-start"
             >
-              <CIcon style="cursor: pointer" class="mx-2" icon="cil-list" size="lg" />
+              <CIcon
+                style="cursor: pointer"
+                class="mx-2"
+                icon="cil-list"
+                size="lg"
+              />
             </el-tooltip>
           </div>
         </CNavItem>
-        <CNavItem>
-          <CNavLink href="#"> Kinh doanh </CNavLink>
+        <CNavItem
+          @click="goToFindJob(industry.id)"
+          v-for="(industry, i) in props.industryHotList"
+          :key="industry.id"
+        >
+          <CNavLink v-if="i < 4" :style="i > 5 ? 'display: none' : ''">
+            {{ industry.name }}
+          </CNavLink>
         </CNavItem>
-        <CNavItem>
+        <!-- <CNavItem>
           <CNavLink href="#"> Kế toán - Kiểm toán </CNavLink>
         </CNavItem>
         <CNavItem>
@@ -128,13 +176,15 @@ onMounted(() => {
         </CNavItem>
         <CNavItem>
           <CNavLink href="#"> Kỹ thuật </CNavLink>
-        </CNavItem>
+        </CNavItem> -->
       </CHeaderNav>
       <CHeaderNav class="align-items-center">
-        <CNavItem @click="goToCreateCV" style="cursor: pointer" v-if="!isEmployer">
-          <CNavLink
-            class="d-flex align-items-center"
-          >
+        <CNavItem
+          @click="goToCreateCV"
+          style="cursor: pointer"
+          v-if="!isEmployer"
+        >
+          <CNavLink class="d-flex align-items-center">
             Tạo hồ sơ ngay <CIcon class="mx-2" icon="cilArrowRight" size="lg" />
           </CNavLink>
         </CNavItem>
@@ -158,11 +208,25 @@ onMounted(() => {
           <el-link
             class="mb-3"
             :underline="false"
-            v-for="(industry, i) in mainJobList"
-            :key="i"
-            :style="i > 10 ? 'display: none' : ''"
+            @click="goToFindJob(industry.id)"
+            v-for="(industry, i) in props.industryHotList &&
+            props.industryHotList.length > 0
+              ? props.industryHotList
+              : mainJobList"
+            :key="
+              props.industryHotList && props.industryHotList.length > 0
+                ? industry.id
+                : industry.value
+            "
+            :style="i >= 10 ? 'display: none;' : ''"
           >
-            {{ i < 11 ? industry.label : '' }}</el-link
+            {{
+              i < 10 &&
+              props.industryHotList &&
+              props.industryHotList.length > 0
+                ? industry.name
+                : industry.label
+            }}</el-link
           >
         </div>
       </b-col>
@@ -175,11 +239,26 @@ onMounted(() => {
               <el-link
                 class="mb-3"
                 :underline="false"
-                v-for="(industry, i) in mainJobList"
-                :key="i"
-                :style="i > 10 ? 'display: none' : ''"
+                @click="goToFindJob(industry.id)"
+                v-for="(industry, i) in props.industryHotList &&
+                props.industryHotList.length > 0
+                  ? props.industryHotList
+                  : mainJobList"
+                :key="
+                  props.industryHotList && props.industryHotList.length > 0
+                    ? industry.id
+                    : industry.value
+                "
+                :style="i < 10 || i >= 20 ? 'display: none' : ''"
               >
-                {{ i < 11 ? industry.label : '' }}</el-link
+                {{
+                  i >= 10 &&
+                  i < 20 &&
+                  props.industryHotList &&
+                  props.industryHotList.length > 0
+                    ? industry.name
+                    : industry.label
+                }}</el-link
               >
             </div>
           </b-col>
@@ -188,11 +267,26 @@ onMounted(() => {
               <el-link
                 class="mb-3"
                 :underline="false"
-                v-for="(industry, i) in mainJobList"
-                :key="i"
-                :style="i > 10 ? 'display: none' : ''"
+                @click="goToFindJob(industry.id)"
+                v-for="(industry, i) in props.industryHotList &&
+                props.industryHotList.length > 0
+                  ? props.industryHotList
+                  : mainJobList"
+                :key="
+                  props.industryHotList && props.industryHotList.length > 0
+                    ? industry.id
+                    : industry.value
+                "
+                :style="i < 20 || i >= 30 ? 'display: none' : ''"
               >
-                {{ i < 11 ? industry.label : '' }}</el-link
+                {{
+                  i >= 20 &&
+                  i < 30 &&
+                  props.industryHotList &&
+                  props.industryHotList.length > 0
+                    ? industry.name
+                    : industry.label
+                }}</el-link
               >
             </div>
           </b-col>
@@ -201,11 +295,25 @@ onMounted(() => {
               <el-link
                 class="mb-3"
                 :underline="false"
-                v-for="(industry, i) in mainJobList"
-                :key="i"
-                :style="i > 10 ? 'display: none' : ''"
+                @click="goToFindJob(industry.id)"
+                v-for="(industry, i) in props.industryHotList &&
+                props.industryHotList.length > 0
+                  ? props.industryHotList
+                  : mainJobList"
+                :key="
+                  props.industryHotList && props.industryHotList.length > 0
+                    ? industry.id
+                    : industry.value
+                "
+                :style="i < 30 ? 'display: none' : ''"
               >
-                {{ i < 11 ? industry.label : '' }}</el-link
+                {{
+                  i >= 30 &&
+                  props.industryHotList &&
+                  props.industryHotList.length > 0
+                    ? industry.name
+                    : industry.label
+                }}</el-link
               >
             </div>
           </b-col>
@@ -227,6 +335,11 @@ onMounted(() => {
   }
   .right__side {
     padding: 30px;
+  }
+}
+:deep .header-nav {
+  .nav-item {
+    cursor: pointer;
   }
 }
 </style>

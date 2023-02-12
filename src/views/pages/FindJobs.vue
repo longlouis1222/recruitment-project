@@ -11,14 +11,17 @@ import Loading from '@/components/Loading.vue'
 
 import { ElNotification, ElMessage } from 'element-plus'
 
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { computed, ref, reactive, onMounted } from 'vue'
 import { FormInstance } from 'element-plus'
 
 import modelData from '../Employer/RecruitmentPost/RecruitmentPostModel'
 
 const moduleName = 'Find jobs'
+
+const route = useRoute()
 const router = useRouter()
+
 const workFormList = DataService.workFormList
 const mainJobList = DataService.mainJobList
 const secondJobList = DataService.secondJobList
@@ -27,7 +30,9 @@ const experienceList = DataService.experienceList
 const rankList = DataService.rankList
 const certificateList = DataService.certificateList
 const genderRequirementList = DataService.genderRequirementList
+
 const industryList = reactive({ value: [] })
+const industryHotList = reactive({ value: [] })
 
 const ruleFormRef = ref(FormInstance)
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
@@ -54,8 +59,8 @@ const load = () => {
   }, 2000)
 }
 
-const goToJobDetail = () => {
-  router.push({ name: 'Job detail' })
+const goToJobDetail = (id) => {
+  router.push({ name: 'Job detail', params: { id: id } })
 }
 
 const backToPrev = () => {
@@ -150,13 +155,15 @@ const changeData = (data) => {
   return data
 }
 
-const submitFormSearch = async (formEl) => {
+const submitFormSearch = async (formEl, query) => {
   if (!formEl) return
   await formEl.validate(async (valid, fields) => {
     if (valid) {
       try {
-        tableRules.filters = formSearchData.value
-        console.log('tableRules.filters', tableRules.filters)
+        if (query) {
+          formSearchData.value.industryId = query
+          tableRules.filters = formSearchData.value
+        } else tableRules.filters = formSearchData.value
         tableRules.data = []
         tableRules.skip = 0
         tableRules.page = 1
@@ -170,22 +177,56 @@ const submitFormSearch = async (formEl) => {
   })
 }
 
-const getIndustryList = async () => {
-  const industryApiRes = await IndustryApi.list('size=999999')
-  if (industryApiRes.status == 200) {
-    industryList.value = industryApiRes.data.data.data
+const getHotIndustriesList = async () => {
+  try {
+    const res = await IndustryApi.list('size=99999')
+    if (res.status === 200) {
+      industryList.value = sortUpdatedIndustries(res.data.data.data)
+      industryHotList.value = sortHotIndustries(res.data.data.data)
+    }
+  } catch (error) {
+    console.log(error)
+    ElMessage({
+      message: 'Có lỗi khi tải dữ liệu.',
+      type: 'error',
+    })
+  }
+}
+
+const sortHotIndustries = (data) => {
+  return data.sort((a, b) => b.numberSummit - a.numberSummit)
+}
+
+const sortUpdatedIndustries = (data) => {
+  return data.sort(
+    (a, b) => new Date(b.updated).getTime() - new Date(a.updated).getTime(),
+  )
+}
+
+const hashURL = () => {
+  tableRules.filters = route.query
+  formSearchData.value = {
+    ...tableRules.filters,
+    industryId: route.query.industryId ? parseInt(route.query.industryId) : '',
+    recruitmentArea: route.query.recruitmentArea
+      ? route.query.recruitmentArea
+      : '',
   }
 }
 
 onMounted(async () => {
-  await getIndustryList()
+  await getHotIndustriesList()
+  await hashURL()
   await getPostList()
 })
 </script>
 
 <template>
   <div class="min-vh-100">
-    <AppHeaderLanding />
+    <AppHeaderLanding
+      :industryList="industryList.value"
+      :industryHotList="industryHotList.value"
+    />
 
     <!-- Start filter container -->
     <CContainer xxl class="mb-4">
@@ -219,6 +260,7 @@ onMounted(async () => {
                   v-model="formSearchData.value.industryId"
                   placeholder="Tất cả nghề nghiệp"
                   clearable
+                  filterable
                 >
                   <el-option
                     v-for="item in industryList.value"
@@ -235,6 +277,7 @@ onMounted(async () => {
                   v-model="formSearchData.value.recruitmentArea"
                   placeholder="Tỉnh thành"
                   clearable
+                  filterable
                 >
                   <el-option
                     v-for="item in workPlaceList"
@@ -273,6 +316,7 @@ onMounted(async () => {
                     <el-select
                       v-model="formSearchData.value.recruitmentExperience"
                       placeholder="Tất cả kinh nghiệm"
+                      filterable
                       clearable
                     >
                       <el-option
@@ -307,6 +351,7 @@ onMounted(async () => {
                     <el-select
                       v-model="formSearchData.value.level"
                       placeholder="Chọn"
+                      filterable
                       clearable
                     >
                       <el-option
@@ -323,6 +368,7 @@ onMounted(async () => {
                     <el-select
                       v-model="formSearchData.value.workForm"
                       placeholder="Chọn"
+                      filterable
                       clearable
                     >
                       <el-option
@@ -342,6 +388,7 @@ onMounted(async () => {
                     <el-select
                       v-model="formSearchData.value.recruitmentGender"
                       placeholder="Chọn"
+                      filterable
                       clearable
                     >
                       <el-option
@@ -384,10 +431,10 @@ onMounted(async () => {
                   src="../../assets/images/logo-company/icons8-notion-256.png"
                   alt="logo-company"
                   class="card__logo"
-                  @click="goToJobDetail"
+                  @click="goToJobDetail(post.id)"
                 />
                 <div class="d-flex justify-content-between w-100">
-                  <div class="card__title" @click="goToJobDetail">
+                  <div class="card__title" @click="goToJobDetail(post.id)">
                     <p class="card__title-position mb-1 ms-2">
                       {{ post.title ? post.title : '' }}
                     </p>
@@ -463,39 +510,105 @@ onMounted(async () => {
     <CContainer xxl class="company__contact-info">
       <h3 class="fw-bold mb-3">Việc làm theo ngành nghề</h3>
       <b-row>
-        <b-col md="4">
+        <b-col md="3">
           <ul class="ps-2">
             <li
               class="pb-1"
-              v-for="(job, i) in mainJobList"
-              :key="job.value"
-              :style="i > 6 ? 'display: none;' : ''"
+              @click="submitFormSearch(ruleFormRef, industry.id)"
+              v-for="(industry, i) in industryList.value &&
+              industryList.value.length > 0
+                ? industryList.value
+                : mainJobList"
+              :key="
+                industryList.value && industryList.value.length > 0
+                  ? industry.id
+                  : industry.value
+              "
+              :style="i >= 10 ? 'display: none;' : ''"
             >
-              <el-link>Việc làm {{ job.label }}</el-link>
+              <el-link>{{
+                i < 10 && industryList.value && industryList.value.length > 0
+                  ? industry.name
+                  : industry.label
+              }}</el-link>
             </li>
           </ul>
         </b-col>
-        <b-col md="4">
+        <b-col md="3">
           <ul class="ps-2">
             <li
               class="pb-1"
-              v-for="(job, i) in mainJobList"
-              :key="job.value"
-              :style="i <= 6 || i > 13 ? 'display: none;' : ''"
+              @click="submitFormSearch(ruleFormRef, industry.id)"
+              v-for="(industry, i) in industryList.value &&
+              industryList.value.length > 0
+                ? industryList.value
+                : mainJobList"
+              :key="
+                industryList.value && industryList.value.length > 0
+                  ? industry.id
+                  : industry.value
+              "
+              :style="i < 10 || i >= 20 ? 'display: none' : ''"
             >
-              <el-link>Việc làm {{ job.label }}</el-link>
+              <el-link>{{
+                i >= 10 &&
+                i < 20 &&
+                industryList.value &&
+                industryList.value.length > 0
+                  ? industry.name
+                  : industry.label
+              }}</el-link>
             </li>
           </ul>
         </b-col>
-        <b-col md="4">
+        <b-col md="3">
           <ul class="ps-2">
             <li
               class="pb-1"
-              v-for="(job, i) in mainJobList"
-              :key="job.value"
-              :style="i < 13 ? 'display: none;' : ''"
+              @click="submitFormSearch(ruleFormRef, industry.id)"
+              v-for="(industry, i) in industryList.value &&
+              industryList.value.length > 0
+                ? industryList.value
+                : mainJobList"
+              :key="
+                industryList.value && industryList.value.length > 0
+                  ? industry.id
+                  : industry.value
+              "
+              :style="i < 20 || i >= 30 ? 'display: none' : ''"
             >
-              <el-link>Việc làm {{ job.label }}</el-link>
+              <el-link>{{
+                i >= 20 &&
+                i < 30 &&
+                industryList.value &&
+                industryList.value.length > 0
+                  ? industry.name
+                  : industry.label
+              }}</el-link>
+            </li>
+          </ul>
+        </b-col>
+        <b-col md="3">
+          <ul class="ps-2">
+            <li
+              class="pb-1"
+              @click="submitFormSearch(ruleFormRef, industry.id)"
+              v-for="(industry, i) in industryList.value &&
+              industryList.value.length > 0
+                ? industryList.value
+                : mainJobList"
+              :key="
+                industryList.value && industryList.value.length > 0
+                  ? industry.id
+                  : industry.value
+              "
+              :style="i < 30 ? 'display: none' : ''"
+            >
+              <el-link>{{
+                i >= 30 && industryList.value && industryList.value.length > 0
+                  ? industry.name
+                  : industry.label
+              }}</el-link>
             </li>
           </ul>
         </b-col>

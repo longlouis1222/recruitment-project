@@ -69,31 +69,38 @@ DataService.experienceList = [
   },
   {
     label: 'Dưới 1 năm',
-    value: 'Dưới 1 năm'
+    value: 0.5,
+    // value: 'Dưới 1 năm'
   },
   {
     label: '1 năm',
-    value: '1 năm'
+    value: 1,
+    // value: '1 năm'
   },
   {
     label: '2 năm',
-    value: '2 năm'
+    value: 2,
+    // value: '2 năm'
   },
   {
     label: '3 năm',
-    value: '3 năm'
+    value: 3,
+    // value: '3 năm'
   },
   {
     label: '4 năm',
-    value: '4 năm'
+    value: 4,
+    // value: '4 năm'
   },
   {
     label: '5 năm',
-    value: '5 năm'
+    value: 5,
+    // value: '5 năm'
   },
   {
     label: 'Trên 5 năm',
-    value: 'Trên 5 năm'
+    value: 6,
+    // value: 'Trên 5 năm'
   },
 ]
 

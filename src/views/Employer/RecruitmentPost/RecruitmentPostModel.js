@@ -3,7 +3,7 @@ let model = {}
 
 // dữ liệu form
 model.dataForm = {
-  benefits: null,
+  benefits: '',
   companyDTO: {
     companyAddress: null,
     companyPhoneNumber: null,
@@ -22,8 +22,8 @@ model.dataForm = {
   },
   industryId: null,
   jobApplicationDeadline: null,
-  jobDescription: null,
-  jobRequirements: null,
+  jobDescription: '',
+  jobRequirements: '',
   level: null,
   necessarySkills: null,
   numberOfRecruits: null,

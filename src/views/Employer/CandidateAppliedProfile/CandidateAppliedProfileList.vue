@@ -38,7 +38,9 @@ const convertDataExport = (data) => {
       'Lĩnh vực ứng tuyển': record.career,
       'Vị trí ứng tuyển': record.positionOffer,
       'Thời gian nộp': record.timeSubmitFormat,
-      'Mức lương': record.offerSalary ? MethodService.formatCurrency(record.offerSalary) : 0,
+      'Mức lương': record.offerSalary
+        ? MethodService.formatCurrency(record.offerSalary)
+        : 0,
       'Số năm kinh nghiệm': record.experienceNumber,
       'Địa điểm làm việc': record.workAddress,
       'Hình thức làm việc': record.workForm,
@@ -56,20 +58,48 @@ const exportExcel = () => {
   const XLSX = xlsx
   const workbook = XLSX.utils.book_new()
   const worksheet = XLSX.utils.json_to_sheet(dataExport)
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Data')
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Hồ sơ ứng viên ứng tuyển')
   // Set column width
   worksheet['!cols'] = []
   for (const property in dataExport[0]) {
-    if (property === 'Địa điểm làm việc' || property === 'Lĩnh vực ứng tuyển') {
-      const max_width = dataExport.reduce((w, r) => Math.max(w, property.length), 10)
+    if (
+      property === 'Địa điểm làm việc' ||
+      property === 'Lĩnh vực ứng tuyển' ||
+      property === 'Số năm kinh nghiệm' ||
+      property === 'Thời gian nộp'
+    ) {
+      const max_width = dataExport.reduce(
+        (w, r) => Math.max(w, property.length),
+        10,
+      )
       worksheet['!cols'].push({ wch: max_width })
     } else {
-      const max_width = dataExport.reduce((w, r) => Math.max(w, r[`${property}`].length), 10)
+      const max_width = dataExport.reduce(
+        (w, r) => Math.max(w, r[`${property}`].length),
+        10,
+      )
       worksheet['!cols'].push({ wch: max_width })
     }
   }
-
-  XLSX.writeFile(workbook, 'Hồ sơ đã lưu.xlsx', { compression: true })
+  console.log(worksheet);
+  for (var sheet of Object.keys(sheets)) {
+    xlsx.utils.book_append_sheet(
+      worksheet,
+      xlsx.utils.aoa_to_sheet(sheets[sheet]),
+      sheet
+    );
+  }
+  for (let i = 1; i <= worksheet[0].length; i++) {
+    worksheet.Sheets[0]['A' + i].s = {
+      fill: {
+        patternType: 'solid',
+        fgColor: { rgb: '111111' },
+      },
+    }
+  }
+  XLSX.writeFile(workbook, 'Hồ sơ ứng viên ứng tuyển.xlsx', {
+    compression: true,
+  })
 }
 
 const submitForm = async (formEl) => {
@@ -171,7 +201,7 @@ const changeData = (data) => {
 const handleAction = (type, rowData) => {
   if (type === 'view') {
     viewCandidateProfile(rowData)
-  } else if(type === 'delete') {
+  } else if (type === 'delete') {
     deleteRecruitmentProfile(rowData)
   }
 }
@@ -182,23 +212,19 @@ const viewCandidateProfile = async (rowData) => {
     // Go to detail
     router.push({
       name: 'Chi tiết hồ sơ ứng viên',
-      params: { id: rowData.id }
+      params: { id: rowData.id },
     })
   }
 }
 
 const deleteRecruitmentProfile = async (rowData) => {
-  ElMessageBox.confirm(
-    'Bạn có chắc muốn xóa hồ sơ này ?',
-    'Cảnh báo',
-    {
-      // if you want to disable its autofocus
-      // autofocus: false,
-      confirmButtonText: 'Đồng ý',
-      cancelButtonText: 'Hủy',
-      type: 'warning',
-    },
-  )
+  ElMessageBox.confirm('Bạn có chắc muốn xóa hồ sơ này ?', 'Cảnh báo', {
+    // if you want to disable its autofocus
+    // autofocus: false,
+    confirmButtonText: 'Đồng ý',
+    cancelButtonText: 'Hủy',
+    type: 'warning',
+  })
     .then(async () => {
       const res = await UserApi.deleteCVFromAppliedCVEmployeeList(rowData.id)
       if (res.status === 200) {
@@ -231,7 +257,12 @@ onMounted(() => {
                 <el-icon class="me-2"><Search /></el-icon>
                 Ẩn/hiện tìm kiếm
               </el-button>
-              <el-button type="primary" plain @click="exportExcel" :disabled="tableRules.data.length == 0">
+              <el-button
+                type="primary"
+                plain
+                @click="exportExcel"
+                :disabled="tableRules.data.length == 0"
+              >
                 <el-icon class="me-2"><Download /></el-icon>
                 Tải danh sách
               </el-button>
@@ -401,9 +432,7 @@ onMounted(() => {
         >
           <template #default="scope">
             <div class="">
-              <el-button
-                size="small"
-                @click="handleAction('view', scope.row)"
+              <el-button size="small" @click="handleAction('view', scope.row)"
                 ><CIcon icon="cilFindInPage"
               /></el-button>
               <!-- <el-button
