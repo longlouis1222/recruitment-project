@@ -11,6 +11,8 @@ import { ref, reactive, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
 
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+
 import modelData from './RecruitmentPostModel'
 
 const route = useRoute()
@@ -37,6 +39,60 @@ const formData = reactive({
 })
 const validForm = modelData.validForm
 const industryList = reactive({ value: [] })
+
+
+const editor = ClassicEditor
+const editorConfig = {
+  width: 100,
+  height: 200,
+  toolbar: {
+    items: [
+      'bold',
+      'italic',
+      '|',
+      'outdent',
+      'indent',
+      '|',
+      'bulletedList',
+      'numberedList',
+      '|',
+      'undo',
+      'redo',
+    ],
+    shouldNotGroupWhenFull: true,
+  },
+}
+const editorConfigNecessarySkills = {
+  ...editorConfig,
+  placeholder:
+    'Thông tin cho kỹ năng công việc yêu cầu mà ứng viên cần khi làm việc ở công ty.',
+}
+const editorConfigJobDescription = {
+  ...editorConfig,
+  placeholder:
+    'Thông tin cho vị trí công việc yêu cầu, trách nhiệm mà ứng viên có thể đảm nhận khi làm việc ở công ty...',
+}
+const editorConfigJobRequirements = {
+  ...editorConfig,
+  placeholder:
+    'Kỹ năng chuyên môn hoặc kỹ năng mềm cần thiết với công việc mà ứng viên cần quan tâm.',
+}
+const editorConfigBenifits = {
+  ...editorConfig,
+  placeholder:
+    'Những quyền lợi, lợi ích với công việc cho ứng viên với vị trí đăng tuyển.',
+}
+const editorDisabled = ref(true)
+
+const onEditorBlur = (formEl) => {
+  if (!formData.value.jobDescription) {
+    // formEl.validate(async (valid, fields) => {
+    //   if (valid) return
+    //   else console.log('error submit!', fields)
+    // })
+    // formEl.validate('jobDescription')
+  }
+}
 
 const submitForm = async (formEl, action) => {
   if (!formEl) return
@@ -83,27 +139,48 @@ const resetForm = (formEl) => {
 }
 
 const getIndustryList = async () => {
-  const industryApiRes = await IndustryApi.list()
-  if (industryApiRes.status == 200) {
-    industryList.value = industryApiRes.data.data.data
+  try {
+    const industryApiRes = await IndustryApi.list()
+    if (industryApiRes.status == 200) {
+      industryList.value = industryApiRes.data.data.data
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Có lỗi khi tải dữ liệu.',
+      type: 'error',
+    })
   }
 }
 
 const getPostById = async () => {
-  const industryApiRes = await PostApi.findById(route.params.id)
-  if (industryApiRes.status == 200) {
-    formData.value = industryApiRes.data.data
+  try {
+    const industryApiRes = await PostApi.findById(route.params.id)
+    if (industryApiRes.status == 200) {
+      formData.value = industryApiRes.data.data
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Có lỗi khi tải dữ liệu.',
+      type: 'error',
+    })
   }
 }
 
 const getUserInfo = async () => {
-  const userProfileApiRes = await UserApi.findById(localStorage.getItem('uid'))
-  if (userProfileApiRes.status === 200) {
-    const res = userProfileApiRes.data.data
-    formData.value.fullNameContactor = res.userInfoDTO.fullName
-    formData.value.emailContactor = res.email
-    formData.value.phoneNumberContactor = res.userInfoDTO.phoneNumber
-    formData.value.addressContactor = res.companyDTO.companyAddress
+  try {
+    const userProfileApiRes = await UserApi.findById(localStorage.getItem('uid'))
+    if (userProfileApiRes.status === 200) {
+      const res = userProfileApiRes.data.data
+      formData.value.fullNameContactor = res.userInfoDTO.fullName
+      formData.value.emailContactor = res.email
+      formData.value.phoneNumberContactor = res.userInfoDTO.phoneNumber
+      formData.value.addressContactor = res.companyDTO.companyAddress
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Có lỗi khi tải dữ liệu.',
+      type: 'error',
+    })
   }
 }
 
@@ -336,11 +413,18 @@ onMounted(async () => {
           </b-col>
           <b-col md="12">
             <el-form-item label="Kỹ năng cần thiết" prop="necessarySkills">
-              <el-input
+              <!-- <el-input
                 type="textarea"
                 v-model="formData.value.necessarySkills"
                 placeholder="Vui lòng nhập"
-              />
+              /> -->
+              <ckeditor
+                :editor="editor"
+                v-model="formData.value.necessarySkills"
+                :config="editorConfigNecessarySkills"
+                :disabled="editorDisabled"
+                @blur="onEditorBlur(ruleFormRef)"
+              ></ckeditor>
             </el-form-item>
           </b-col>
         </b-row>
@@ -350,36 +434,39 @@ onMounted(async () => {
         <b-row>
           <b-col md="12">
             <el-form-item label="Mô tả công việc" prop="jobDescription">
-              <el-input
+              <ckeditor
+                :editor="editor"
                 v-model="formData.value.jobDescription"
-                type="textarea"
-                :autosize="{ minRows: 4, maxRows: 4 }"
-                placeholder="Thông tin cho vị trí công việc yêu cầu, trách nhiệm mà ứng viên có thể đảm nhận khi làm việc ở công ty"
-              />
+                :config="editorConfigJobDescription"
+                :disabled="editorDisabled"
+                @blur="onEditorBlur(ruleFormRef)"
+              ></ckeditor>
             </el-form-item>
           </b-col>
         </b-row>
         <b-row>
           <b-col md="12">
             <el-form-item label="Yêu cầu công việc" prop="jobRequirements">
-              <el-input
+              <ckeditor
+                :editor="editor"
                 v-model="formData.value.jobRequirements"
-                type="textarea"
-                :autosize="{ minRows: 4, maxRows: 4 }"
-                placeholder="Kỹ năng chuyên môn hoặc kỹ năng mềm cần thiết với công việc mà ứng viên cần quan tâm"
-              />
+                :config="editorConfigJobRequirements"
+                :disabled="editorDisabled"
+                @blur="onEditorBlur(ruleFormRef)"
+              ></ckeditor>
             </el-form-item>
           </b-col>
         </b-row>
         <b-row>
           <b-col md="12">
             <el-form-item label="Quyền lợi" prop="benefits">
-              <el-input
+              <ckeditor
+                :editor="editor"
                 v-model="formData.value.benefits"
-                type="textarea"
-                :autosize="{ minRows: 4, maxRows: 4 }"
-                placeholder="Những quyền lợi, lợi ích với công việc cho ứng viên với vị trí đăng tuyển"
-              />
+                :config="editorConfigBenifits"
+                :disabled="editorDisabled"
+                @blur="onEditorBlur(ruleFormRef)"
+              ></ckeditor>
             </el-form-item>
           </b-col>
         </b-row>
@@ -445,7 +532,7 @@ onMounted(async () => {
       </b-row>
       <el-divider />
 
-      <div class="text-right">
+      <div class="text-center">
         <el-button @click="backToPrev">Quay lại</el-button>
         <el-button type="danger" @click="submitForm(ruleFormRef, 'REJECT')"
           >Từ chối tin</el-button
@@ -459,4 +546,10 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
+:deep .ck.ck-editor {
+  width: 100%;
+  ul li {
+    list-style: initial;
+  }
+}
 </style>

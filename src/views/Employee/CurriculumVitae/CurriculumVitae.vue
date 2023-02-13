@@ -9,6 +9,8 @@ import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
 
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+
 import modelData from './CurriculumVitaeModel'
 
 const workFormList = DataService.workFormList
@@ -34,6 +36,49 @@ const validForm = modelData.validForm
 
 const imageUrl = ref('')
 const userProfile = reactive({ value: [] })
+
+const editor = ClassicEditor
+const editorConfig = {
+  width: 100,
+  height: 200,
+  toolbar: {
+    items: [
+      'bold',
+      'italic',
+      '|',
+      'outdent',
+      'indent',
+      '|',
+      'bulletedList',
+      'numberedList',
+      '|',
+      'undo',
+      'redo',
+    ],
+    shouldNotGroupWhenFull: true,
+  },
+}
+const editorConfigSortSkill = {
+  ...editorConfig,
+  placeholder:
+    'Thông tin cho kỹ năng công việc yêu cầu mà ứng viên cần khi làm việc ở công ty.',
+}
+const editorConfigDescription = {
+  ...editorConfig,
+  placeholder:
+    'Mô tả kỹ năng, công việc mà ứng viên cần khi làm việc ở công ty.',
+}
+
+const editorDisabled = ref(false)
+const onEditorBlur = (formEl) => {
+  if (!formData.value.jobDescription) {
+    // formEl.validate(async (valid, fields) => {
+    //   if (valid) return
+    //   else console.log('error submit!', fields)
+    // })
+    // formEl.validate('jobDescription')
+  }
+}
 
 const handleAvatarSuccess = (response, uploadFile) => {
   imageUrl.value = URL.createObjectURL(uploadFile)
@@ -387,12 +432,19 @@ onMounted(() => {
           <b-row>
             <b-col md="12">
               <el-form-item label="Kỹ năng mềm" prop="sortSkill">
-                <el-input
+                <!-- <el-input
                   v-model="formData.value.sortSkill"
                   type="textarea"
                   :autosize="{ minRows: 2, maxRows: 4 }"
                   placeholder="..."
-                />
+                /> -->
+                <ckeditor
+                  :editor="editor"
+                  v-model="formData.value.sortSkill"
+                  :config="editorConfigSortSkill"
+                  :disabled="editorDisabled"
+                  @blur="onEditorBlur(ruleFormRef)"
+                ></ckeditor>
               </el-form-item>
             </b-col>
           </b-row>
@@ -459,11 +511,18 @@ onMounted(() => {
               label="Mô tả công việc"
               prop="workExperienceDTO.description"
             >
-              <el-input
+              <!-- <el-input
                 v-model="formData.value.workExperienceDTO.description"
                 type="textarea"
                 :autosize="{ minRows: 2, maxRows: 4 }"
-              />
+              /> -->
+              <ckeditor
+                :editor="editor"
+                v-model="formData.value.workExperienceDTO.description"
+                :config="editorConfigDescription"
+                :disabled="editorDisabled"
+                @blur="onEditorBlur(ruleFormRef)"
+              ></ckeditor>
             </el-form-item>
           </b-col>
         </b-row>
@@ -611,7 +670,7 @@ onMounted(() => {
 
         <el-divider />
 
-        <div>
+        <div class="text-center">
           <el-button type="primary" @click="submitForm(ruleFormRef)"
             >Cập nhật</el-button
           >
@@ -635,16 +694,20 @@ onMounted(() => {
   overflow: hidden;
   transition: 0.1s ease;
 }
-
 :deep .avatar-uploader .el-upload:hover {
   border-color: #409eff;
 }
-
 :deep .el-icon.avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
   width: 120px;
   height: 120px;
   text-align: center;
+}
+:deep .ck.ck-editor {
+  width: 100%;
+  ul li {
+    list-style: initial;
+  }
 }
 </style>

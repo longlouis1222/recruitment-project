@@ -618,11 +618,11 @@ DataService.postStatusList = [
 DataService.postOutstandingList = [
   {
     label: 'Không',
-    value: 'false'
+    value: false
   },
   {
     label: 'Có',
-    value: 'true'
+    value: true
   },
 ]
 

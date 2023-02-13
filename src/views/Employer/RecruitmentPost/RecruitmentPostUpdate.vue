@@ -60,6 +60,11 @@ const editorConfig = {
     shouldNotGroupWhenFull: true,
   },
 }
+const editorConfigNecessarySkills = {
+  ...editorConfig,
+  placeholder:
+    'Thông tin cho kỹ năng công việc yêu cầu mà ứng viên cần khi làm việc ở công ty.',
+}
 const editorConfigJobDescription = {
   ...editorConfig,
   placeholder:
@@ -438,24 +443,18 @@ onMounted(async () => {
           </b-col>
           <b-col md="12">
             <el-form-item label="Kỹ năng cần thiết" prop="necessarySkills">
-              <el-input
+              <!-- <el-input
                 type="textarea"
                 v-model="formData.value.necessarySkills"
                 placeholder="Vui lòng nhập"
-              />
-              <!-- <el-select
+              /> -->
+              <ckeditor
+                :editor="editor"
                 v-model="formData.value.necessarySkills"
-                multiple
-                placeholder="Nhập các kỹ năng cần thiết cho vị trí này"
-                filterable
-              >
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select> -->
+                :config="editorConfigNecessarySkills"
+                :disabled="editorDisabled"
+                @blur="onEditorBlur(ruleFormRef)"
+              ></ckeditor>
             </el-form-item>
           </b-col>
         </b-row>
@@ -556,10 +555,10 @@ onMounted(async () => {
           </b-col>
         </b-row>
 
-        <div class="text-right">
+        <div class="text-center">
           <el-button @click="backToPrev">Hủy bỏ</el-button>
           <el-button type="primary" @click="submitForm(ruleFormRef)"
-            >Tiếp tục</el-button
+            >Cập nhật</el-button
           >
         </div>
       </el-form>

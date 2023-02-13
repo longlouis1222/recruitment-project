@@ -207,12 +207,19 @@ const handleAction = (type, rowData) => {
 }
 
 const viewCandidateProfile = async (rowData) => {
-  // const res = await RecruitmentApi.increaseViewRecruitment(rowData.id)
-  if (res.status === 200) {
-    // Go to detail
-    router.push({
-      name: 'Chi tiết hồ sơ ứng viên',
-      params: { id: rowData.id },
+  try {
+    const res = await RecruitmentApi.increaseViewRecruitment(rowData.id)
+    if (res.status === 200) {
+      // Go to detail
+      router.push({
+        name: 'Chi tiết hồ sơ ứng viên',
+        params: { id: rowData.id },
+      })
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Có lỗi xảy ra khi thao tác.',
+      type: 'error',
     })
   }
 }

@@ -156,9 +156,17 @@ const sortUpdatedIndustries = (data) => {
   )
 }
 
+const fillData = () => {
+  const businessIntroduction = document.getElementById('businessIntroduction')
+  if (businessIntroduction) {
+    businessIntroduction.innerHTML = companyInfo.value.businessIntroduction
+  }
+}
+
 onMounted(async () => {
   await getHotIndustriesList()
   await getCompanyById()
+  await fillData()
   await getRecuitmentPostByCompany()
 })
 </script>
@@ -299,12 +307,12 @@ onMounted(async () => {
       <!-- End Job hiring jobs -->
 
       <!-- Start company info -->
-      <CContainer xxl class="company__contact-info mb-4">
+      <CContainer xxl class="company__introduction mb-4">
         <h3 class="fw-bold mb-3" style="margin-left: 160px">
           Giới thiệu về công ty
         </h3>
         <div class="card__subtitle" style="margin-left: 160px">
-          <span>{{
+          <span id="businessIntroduction">{{
             companyInfo && companyInfo.businessIntroduction
               ? companyInfo.businessIntroduction
               : 'Không có dữ liệu.'
@@ -441,6 +449,18 @@ onMounted(async () => {
           }
         }
       }
+    }
+  }
+
+  :deep .company__introduction {
+    .card__subtitle {
+      font-weight: 600;
+      margin-bottom: 10px;
+      margin-left: 160px;
+    }
+    ul li {
+      list-style: initial;
+      margin-bottom: 8px;
     }
   }
   .company__contact-info {

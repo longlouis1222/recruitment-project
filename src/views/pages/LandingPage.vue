@@ -31,7 +31,16 @@ const newestPostList = reactive({ value: [], total: 0 })
 const industryList = reactive({ value: [] })
 const industryHotList = reactive({ value: [] })
 
-const iconList = ['cilStorage', 'cibSitepoint', 'cilNewspaper', 'cilAvTimer', 'cilMoney', 'cilGraph', 'cilMoodGood', 'cilSearch']
+const iconList = [
+  'cilStorage',
+  'cibSitepoint',
+  'cilNewspaper',
+  'cilAvTimer',
+  'cilMoney',
+  'cilGraph',
+  'cilMoodGood',
+  'cilSearch',
+]
 const bannerList = [
   {
     id: 1,
@@ -1155,7 +1164,14 @@ onMounted(() => {
               <!-- <CIcon class="" icon="cilStorage" size="lg" /> -->
               <CIcon class="" :icon="iconList[i]" size="lg" />
             </div>
-            <h5 class="text-overflow">
+            <h5
+              class="text-overflow"
+              :title="
+                industryHotList.value && industryHotList.value.length > 0
+                  ? industry.name
+                  : industry.label
+              "
+            >
               Việc làm
               {{
                 industryHotList.value && industryHotList.value.length > 0

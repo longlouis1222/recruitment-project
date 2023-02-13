@@ -87,7 +87,7 @@ export default [
     component: 'CNavItem',
     name: 'Hồ sơ ứng viên',
     to: '/employee/curriculum-vitae/curriculum-vitae-info',
-    icon: 'cilAddressBook',
+    icon: 'cilDescription',
     role: ['CANDIDATE']
   },
   {

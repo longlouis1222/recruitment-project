@@ -25,7 +25,7 @@ model.dataForm = {
   jobDescription: '',
   jobRequirements: '',
   level: null,
-  necessarySkills: null,
+  necessarySkills: '',
   numberOfRecruits: null,
   probationaryPeriod: null,
   recruitmentArea: null,
