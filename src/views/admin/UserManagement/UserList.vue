@@ -93,7 +93,7 @@ const getUserList = async () => {
   const userApiRes = await UserApi.list(filter)
   if (userApiRes.status == 200) {
     tableRules.data = userApiRes.data.data.data.filter(account => account.type !== 'ADMIN')
-    tableRules.total = userApiRes.data.data.totalElements
+    tableRules.total = userApiRes.data.data.totalElements - 1
   }
 }
 
@@ -300,7 +300,7 @@ onMounted(() => {
               scope.row.type == 'CANDIDATE'
                 ? 'Ứng viên'
                 : scope.row.type == 'EMPLOYER'
-                ? 'Nhà tuyển viên'
+                ? 'Nhà tuyển dụng'
                 : 'Admin'
             }}
           </template>

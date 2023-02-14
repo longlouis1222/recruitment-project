@@ -71,10 +71,13 @@ const handleAvatarSuccess = async (response, uploadFile) => {
   console.log('ZOO', formData.value.avatar[0].raw.url)
 }
 
-const c = async () => {
+const uploadAvatar = async () => {
   console.log('formData.value.avatar', formData.value.avatar[0].raw.name)
   let fd = new FormData()
-  fd.append('filePath', 'https://drive.google.com/drive/folders/1Evc0_Wr5g0ehP9nRPyiSYM_DFXxoHuMm?usp=share_link')
+  fd.append(
+    'filePath',
+    'https://drive.google.com/drive/folders/1Evc0_Wr5g0ehP9nRPyiSYM_DFXxoHuMm?usp=share_link',
+  )
   fd.append(
     'fileUpload',
     formData.value.avatar[0].raw,
@@ -82,13 +85,12 @@ const c = async () => {
   )
   fd.append('shared', true)
 
-  console.log('fd', fd)
   // const fileApiRes = await FileApi.uploadFile(fd)
   // console.log(fileApiRes)
 
   axios({
     method: 'post',
-    url: 'http://localhost:8085/api/v1/users',
+    url: 'http://localhost:8085/api/v1/users/avatar',
     data: fd,
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -157,24 +159,31 @@ const resetForm = (formEl) => {
   formEl.resetFields()
 }
 
-const _arrayBufferToBase64 = ( buffer ) => {
-    var binary = '';
-    var bytes = new Uint8Array( buffer );
-    var len = bytes.byteLength;
-    for (var i = 0; i < len; i++) {
-        binary += String.fromCharCode( bytes[ i ] );
-    }
-    return window.btoa( binary );
+const _arrayBufferToBase64 = (buffer) => {
+  var binary = ''
+  var bytes = new Uint8Array(buffer)
+  var len = bytes.byteLength
+  for (var i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i])
+  }
+  return window.btoa(binary)
 }
 
 const hexToBase64 = (str) => {
-    return window.btoa(String.fromCharCode.apply(null, str.replace(/\r|\n/g, "").replace(/([\da-fA-F]{2}) ?/g, "0x$1 ").replace(/ +$/, "").split(" ")));
+  return window.btoa(
+    String.fromCharCode.apply(
+      null,
+      str
+        .replace(/\r|\n/g, '')
+        .replace(/([\da-fA-F]{2}) ?/g, '0x$1 ')
+        .replace(/ +$/, '')
+        .split(' '),
+    ),
+  )
 }
 
 const getUserInfo = async () => {
-  const userProfileApiRes = await UserApi.findById(
-    localStorage.getItem('uid'),
-  )
+  const userProfileApiRes = await UserApi.findById(localStorage.getItem('uid'))
   if (userProfileApiRes.status == 200) {
     userProfile.value = userProfileApiRes.data.data
     console.log('userProfile', userProfile)
@@ -267,7 +276,7 @@ onMounted(() => {
           <h5 class="mb-4">Thông tin cá nhân</h5>
           <b-col md="6">
             <!-- v-if="!formData.value.avatar || formData.value.avatar.length == 0" -->
-            <img :src="imgSrc" alt="" class="avatar__image me-4">
+            <img :src="imgSrc" alt="" class="avatar__image me-4" />
             <div class="d-flex flex-row align-items-center">
               <el-upload
                 v-model:file-list="formData.value.avatar"
@@ -315,7 +324,13 @@ onMounted(() => {
               </div>
             </div>
 
-            <el-button v-if="formData.value.avatar && formData.value.avatar.length > 0" class="mt-3" type="primary" @click="c()">Cập nhật ảnh đại diện</el-button>
+            <el-button
+              v-if="formData.value.avatar && formData.value.avatar.length > 0"
+              class="mt-3"
+              type="primary"
+              @click="uploadAvatar()"
+              >Cập nhật ảnh đại diện</el-button
+            >
 
             <el-dialog v-model="dialogVisible">
               <img w-full :src="dialogImageUrl" alt="Preview Image" />
