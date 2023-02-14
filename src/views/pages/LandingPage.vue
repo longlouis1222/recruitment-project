@@ -281,11 +281,12 @@ onMounted(() => {
     <CContainer xl class="mt-4 company_recruitment_block">
       <!-- Start Real data -->
       <b-row>
-        <b-col md="2" v-for="company in companyList.value" :key="company.id">
+        <b-col md="2" v-for="(company, i) in companyList.value" :key="company.id">
           <el-card
             class="box-card"
             shadow="hover"
             @click="goToCompanyDetail(company.id)"
+            :style="i > 5 ? 'display: none' : ''"
           >
             <div class="d-flex flex-column justify-content-center text-center">
               <img
@@ -308,7 +309,7 @@ onMounted(() => {
       <!-- End Real data -->
 
       <!-- Start Fake data -->
-      <b-row>
+      <b-row v-if="!companyList.value || companyList.value && companyList.value.length === 0">
         <b-col md="2">
           <el-card class="box-card" shadow="hover" @click="goToCompanyDetail">
             <div class="d-flex flex-column justify-content-center text-center">
@@ -398,17 +399,58 @@ onMounted(() => {
             />
             <h4 class="ms-2 me-4">Việc làm tuyển gấp</h4>
             <el-divider direction="vertical" />
-            <el-link :underline="false" class="m-0 me-4 ms-4">Tất cả</el-link>
-            <el-link :underline="false" class="m-0 me-4"
-              >Việc làm theo chuyên môn</el-link
+            <el-link :underline="false" class="m-0 me-4" @click="goToFindJob">Tất cả</el-link>
+            <el-link
+              @click="goToFindJob(industry.id)"
+              v-for="(industry, i) in industryHotList.value &&
+              industryHotList.value.length > 0
+                ? industryHotList.value
+                : mainJobList"
+              :key="
+                industryHotList.value && industryHotList.value.length > 0
+                  ? industry.id
+                  : industry.value
+              "
+              :underline="false"
+              class="m-0 me-4 ms-4"
+              :style="i > 2 ? 'display: none' : ''"
+              >{{
+                industryHotList.value && industryHotList.value.length > 0
+                  ? industry.name
+                  : industry.label
+              }}</el-link
             >
-            <el-link :underline="false" class="m-0 me-4"
+
+            <el-link
+              @click="goToFindJob"
+              :underline="false"
+              class="m-0 me-4"
+              v-if="
+                !industryHotList.value ||
+                (industryHotList.value && industryHotList.value.length === 0)
+              "
               >Việc làm quản lý</el-link
             >
-            <el-link :underline="false" class="m-0 me-4"
+            <el-link
+            @click="goToFindJob"
+              :underline="false"
+              class="m-0 me-4"
+              v-if="
+                !industryHotList.value ||
+                (industryHotList.value && industryHotList.value.length === 0)
+              "
               >Lao động phổ thông</el-link
             >
-            <el-link :underline="false" class="m-0 me-4">Bán thời gian</el-link>
+            <el-link
+            @click="goToFindJob"
+              :underline="false"
+              class="m-0 me-4"
+              v-if="
+                !industryHotList.value ||
+                (industryHotList.value && industryHotList.value.length === 0)
+              "
+              >Bán thời gian</el-link
+            >
           </div>
         </template>
 
@@ -742,17 +784,58 @@ onMounted(() => {
             />
             <h4 class="ms-2 me-4">Việc làm mới nhất</h4>
             <el-divider direction="vertical" />
-            <el-link :underline="false" class="m-0 me-4 ms-4">Tất cả</el-link>
-            <el-link :underline="false" class="m-0 me-4"
-              >Việc làm theo chuyên môn</el-link
+            <el-link :underline="false" class="m-0 me-4" @click="goToFindJob">Tất cả</el-link>
+            <el-link
+            @click="goToFindJob(industry.id)"
+              v-for="(industry, i) in industryHotList.value &&
+              industryHotList.value.length > 0
+                ? industryHotList.value
+                : mainJobList"
+              :key="
+                industryHotList.value && industryHotList.value.length > 0
+                  ? industry.id
+                  : industry.value
+              "
+              :underline="false"
+              class="m-0 me-4 ms-4"
+              :style="i > 2 ? 'display: none' : ''"
+              >{{
+                industryHotList.value && industryHotList.value.length > 0
+                  ? industry.name
+                  : industry.label
+              }}</el-link
             >
-            <el-link :underline="false" class="m-0 me-4"
+
+            <el-link
+            @click="goToFindJob"
+              :underline="false"
+              class="m-0 me-4"
+              v-if="
+                !industryHotList.value ||
+                (industryHotList.value && industryHotList.value.length === 0)
+              "
               >Việc làm quản lý</el-link
             >
-            <el-link :underline="false" class="m-0 me-4"
+            <el-link
+            @click="goToFindJob"
+              :underline="false"
+              class="m-0 me-4"
+              v-if="
+                !industryHotList.value ||
+                (industryHotList.value && industryHotList.value.length === 0)
+              "
               >Lao động phổ thông</el-link
             >
-            <el-link :underline="false" class="m-0 me-4">Bán thời gian</el-link>
+            <el-link
+            @click="goToFindJob"
+              :underline="false"
+              class="m-0 me-4"
+              v-if="
+                !industryHotList.value ||
+                (industryHotList.value && industryHotList.value.length === 0)
+              "
+              >Bán thời gian</el-link
+            >
           </div>
         </template>
         <!-- Start Fake data -->

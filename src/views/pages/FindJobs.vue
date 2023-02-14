@@ -413,96 +413,124 @@ onMounted(async () => {
     <CContainer xxl class="mb-4">
       <h3 class="fw-bold mb-3">Kết quả tìm kiếm</h3>
 
-      <el-empty
-        v-if="!tableRules.data || tableRules.data.length === 0"
-        description="Hiện không có công việc nào."
-      />
-
-      <div v-else class="infinite-list-wrapper left-side">
-        <ul
-          v-infinite-scroll="load"
-          class="list"
-          :infinite-scroll-disabled="disabled"
-        >
-          <li v-for="post in tableRules.data" :key="post.id" class="list-item">
-            <el-card class="box-card" shadow="hover">
-              <div class="d-flex align-items-start">
-                <img
-                  src="../../assets/images/logo-company/icons8-notion-256.png"
-                  alt="logo-company"
-                  class="card__logo"
-                  @click="goToJobDetail(post.id)"
-                />
-                <div class="d-flex justify-content-between w-100">
-                  <div class="card__title" @click="goToJobDetail(post.id)">
-                    <p class="card__title-position mb-1 ms-2">
-                      {{ post.title ? post.title : '' }}
-                    </p>
-                    <p class="card__title-company mb-1 ms-2">
-                      {{
-                        post.companyDTO && post.companyDTO.name
-                          ? post.companyDTO.name
-                          : 'Công ty Cổ Phần ABC'
-                      }}
-                    </p>
-                    <div class="d-flex align-items-center ms-2">
-                      <div
-                        class="card__subtitle mb-0 d-flex align-items-center"
-                      >
-                        <el-icon><LocationInformation /></el-icon
-                        ><span>{{ post.recruitmentArea }}</span>
-                      </div>
-                      <div
-                        class="
-                          card__subtitle
-                          mb-0
-                          mx-5
-                          d-flex
-                          align-items-center
-                        "
-                      >
-                        <el-icon><Money /></el-icon>
-                        <span>
+      <b-row>
+        <b-col md="8">
+          <el-empty
+            v-if="!tableRules.data || tableRules.data.length === 0"
+            description="Hiện không có công việc nào."
+          />
+          <div v-else class="infinite-list-wrapper left-side">
+            <ul
+              v-infinite-scroll="load"
+              class="list"
+              :infinite-scroll-disabled="disabled"
+            >
+              <li
+                v-for="post in tableRules.data"
+                :key="post.id"
+                class="list-item"
+              >
+                <el-card class="box-card" shadow="hover">
+                  <div class="d-flex align-items-start">
+                    <img
+                      src="../../assets/images/logo-company/icons8-notion-256.png"
+                      alt="logo-company"
+                      class="card__logo"
+                      @click="goToJobDetail(post.id)"
+                    />
+                    <div class="d-flex justify-content-between w-100">
+                      <div class="card__title" @click="goToJobDetail(post.id)">
+                        <p class="card__title-position mb-1 ms-2">
+                          {{ post.title ? post.title : '' }}
+                        </p>
+                        <p class="card__title-company mb-1 ms-2">
                           {{
-                            post.salaryMinFormat + ' - ' + post.salaryMaxFormat
+                            post.companyDTO && post.companyDTO.name
+                              ? post.companyDTO.name
+                              : 'Công ty Cổ Phần ABC'
                           }}
-                        </span>
+                        </p>
+                        <div class="d-flex align-items-center ms-2">
+                          <div
+                            class="
+                              card__subtitle
+                              mb-0
+                              d-flex
+                              align-items-center
+                            "
+                          >
+                            <el-icon><LocationInformation /></el-icon
+                            ><span>{{ post.recruitmentArea }}</span>
+                          </div>
+                          <div
+                            class="
+                              card__subtitle
+                              mb-0
+                              mx-5
+                              d-flex
+                              align-items-center
+                            "
+                          >
+                            <el-icon><Money /></el-icon>
+                            <span>
+                              {{
+                                post.salaryMinFormat +
+                                ' - ' +
+                                post.salaryMaxFormat
+                              }}
+                            </span>
+                          </div>
+                          <div
+                            class="
+                              card__subtitle
+                              mb-0
+                              d-flex
+                              align-items-center
+                            "
+                          >
+                            <el-icon><Timer /></el-icon
+                            ><span>{{
+                              post.jobApplicationDeadlineFormat
+                            }}</span>
+                          </div>
+                        </div>
                       </div>
-                      <div
-                        class="card__subtitle mb-0 d-flex align-items-center"
-                      >
-                        <el-icon><Timer /></el-icon
-                        ><span>{{ post.jobApplicationDeadlineFormat }}</span>
-                      </div>
+                      <CIcon
+                        icon="cibMacys"
+                        :class="{ 'c-turquoise': post.userCurrentSaved }"
+                        @click="
+                          handleAction(
+                            `${post.userCurrentSaved ? 'unSave' : 'save'}`,
+                            post.id,
+                          )
+                        "
+                      />
+                      <!-- <el-icon :class="{'c-turquoise': care}" @click="saveToCareList"><Star /></el-icon> -->
                     </div>
                   </div>
-                  <CIcon
-                    icon="cibMacys"
-                    :class="{ 'c-turquoise': post.userCurrentSaved }"
-                    @click="
-                      handleAction(
-                        `${post.userCurrentSaved ? 'unSave' : 'save'}`,
-                        post.id,
-                      )
-                    "
-                  />
-                  <!-- <el-icon :class="{'c-turquoise': care}" @click="saveToCareList"><Star /></el-icon> -->
-                </div>
-              </div>
-            </el-card>
-          </li>
-        </ul>
+                </el-card>
+              </li>
+            </ul>
 
-        <div
-          v-if="loading"
-          class="d-flex justify-content-center align-items-center mt-2"
-        >
-          <Loading class="me-2" />
-          <p class="c-turquoise mb-0">Đang tải...</p>
-        </div>
-      </div>
-
-      <div class="right-side"></div>
+            <div
+              v-if="loading"
+              class="d-flex justify-content-center align-items-center mt-2"
+            >
+              <Loading class="me-2" />
+              <p class="c-turquoise mb-0">Đang tải...</p>
+            </div>
+          </div>
+        </b-col>
+        <b-col md="4">
+          <div class="right-side">
+            <img
+              src="@/assets/images/Ads/find-job.jpg"
+              alt="find-job-urban-967"
+              class="w-100"
+            />
+          </div>
+        </b-col>
+      </b-row>
     </CContainer>
     <!-- End Job hiring jobs -->
 
@@ -630,7 +658,7 @@ onMounted(async () => {
 :deep .infinite-list-wrapper {
   overflow: auto;
   max-height: 470px;
-  margin: 20px 160px 0;
+  // margin: 20px 160px 0;
   padding: 0px 0px 5px 0px;
   border-top: 1px solid #bebebe;
   border-bottom: 1px solid #bebebe;
