@@ -12,7 +12,7 @@ model.dataForm = {
     location: null,
     name: null,
     taxCode: null,
-    businessIntroduction: null
+    businessIntroduction: ''
   },
 }
 

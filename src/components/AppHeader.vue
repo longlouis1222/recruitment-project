@@ -6,26 +6,28 @@
       </CHeaderToggler>
       <CHeaderBrand class="mx-auto d-lg-none" to="/">
         <!-- <CIcon :icon="logo" height="48" alt="Logo" /> -->
-        <img src="/logo_R.png" alt="" style="width: 60px">
+        <img src="/logo_R.png" alt="" style="width: 60px" />
       </CHeaderBrand>
       <CHeaderNav class="d-none d-md-flex me-auto">
         <CNavItem>
-          <CNavLink href="/"> Dashboard </CNavLink>
-        </CNavItem>
-        <CNavItem>
-          <CNavLink href="#">Users</CNavLink>
-        </CNavItem>
-        <CNavItem>
-          <CNavLink href="#">Settings</CNavLink>
+          <CNavLink href="/">Trang chủ</CNavLink>
         </CNavItem>
       </CHeaderNav>
-      <CHeaderNav>
+      <CHeaderNav class="align-items-center">
         <CNavItem>
-          <CNavLink href="#">
-            <CIcon class="mx-2" icon="cil-bell" size="lg" />
-          </CNavLink>
+          <el-popover
+            placement="bottom"
+            title=""
+            :width="160"
+            trigger="click"
+            content="Bạn không có thông báo mới nào."
+          >
+            <template #reference>
+              <CIcon class="mx-2" icon="cil-bell" size="lg" />
+            </template>
+          </el-popover>
         </CNavItem>
-        <CNavItem>
+        <!-- <CNavItem>
           <CNavLink href="#">
             <CIcon class="mx-2" icon="cil-list" size="lg" />
           </CNavLink>
@@ -34,7 +36,7 @@
           <CNavLink href="#">
             <CIcon class="mx-2" icon="cil-envelope-open" size="lg" />
           </CNavLink>
-        </CNavItem>
+        </CNavItem> -->
         <AppHeaderDropdownAccnt />
       </CHeaderNav>
     </CContainer>

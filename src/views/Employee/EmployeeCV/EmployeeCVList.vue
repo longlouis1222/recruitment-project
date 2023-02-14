@@ -212,7 +212,7 @@ onMounted(async () => {
           <el-divider direction="vertical" />
           <el-button
             type="primary"
-            class="btn btn-soft-secondary btn-border ms-4"
+            class="ms-4"
             @click="updateOnlineCV"
           >
             <CIcon icon="cil-pencil" class="me-2" />

@@ -45,11 +45,11 @@ model.dataForm = {
     officeNames: [],
   },
   positionOffer: null,
-  sortSkill: null,
+  sortSkill: '',
   workAddress: null,
   workExperienceDTO: {
     companyName: null,
-    description: null,
+    description: '',
     fromWorkTime: null,
     regency: null,
     toWorkTime: null,

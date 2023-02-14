@@ -33,5 +33,8 @@ export default {
   },
   deleteCVFromAppliedCVEmployeeList(id) {
     return Api().get(`users/remove-profile-by-employee?profileId=${id}`)
+  },
+  getHotIndustries() {
+    return Api().get(`users/get-industry-hot`);
   }
 }

@@ -93,7 +93,6 @@ const submitFormSearch = async (formEl) => {
     if (valid) {
       try {
         tableRules.filters = formSearchData.value
-        console.log('tableRules.filters', tableRules.filters)
         tableRules.skip = 0
         tableRules.page = 1
         await getPostList()
@@ -186,9 +185,16 @@ const fn_tableSortChange = (column, tableSort) => {
 }
 
 const getIndustryList = async () => {
-  const industryApiRes = await IndustryApi.list()
-  if (industryApiRes.status == 200) {
-    industryList.value = industryApiRes.data.data.data
+  try {
+    const industryApiRes = await IndustryApi.list()
+    if (industryApiRes.status === 200) {
+      industryList.value = industryApiRes.data.data.data
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Có lỗi khi tải dữ liệu.',
+      type: 'error',
+    })
   }
 }
 
@@ -440,7 +446,7 @@ onMounted(async () => {
           fixed="right"
           align="center"
           label="Thao tác"
-          width="170"
+          :width="userRole === 'ADMIN' ? 170 : 120"
         >
           <template #default="scope">
             <div class="">

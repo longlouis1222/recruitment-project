@@ -25,7 +25,7 @@
         <CBadge color="warning" class="ms-auto">{{ itemsCount }}</CBadge>
       </CDropdownItem> -->
       <CDropdownHeader component="h6" class="bg-light fw-semibold py-2">
-        Settings
+
       </CDropdownHeader>
       <CDropdownItem class="cursor-pointer" @click="gotoUserProfile">
         <CIcon icon="cil-user" /> Thông tin cá nhân

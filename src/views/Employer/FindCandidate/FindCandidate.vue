@@ -136,13 +136,20 @@ const changeData = (data) => {
 }
 
 const getUserInfo = async () => {
-  if (!localStorage.getItem('uid')) return
-  const userProfileApiRes = await UserApi.findById(
-    localStorage.getItem('uid'),
-  )
-  if (userProfileApiRes.status == 200) {
-    userProfile.value = userProfileApiRes.data.data
-    console.log(userProfile.value.userInfoDTO)
+  try {
+    if (!localStorage.getItem('uid')) return
+    const userProfileApiRes = await UserApi.findById(
+      localStorage.getItem('uid'),
+    )
+    if (userProfileApiRes.status == 200) {
+      userProfile.value = userProfileApiRes.data.data
+      console.log(userProfile.value.userInfoDTO)
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Có lỗi khi tải dữ liệu.',
+      type: 'error',
+    })
   }
 }
 
@@ -245,7 +252,6 @@ const saveRecruitment = async (rowData) => {
 }
 
 onMounted(() => {
-  console.log('userRole', userRole)
   getUserInfo()
   getRecruitmentList()
 })
@@ -420,7 +426,7 @@ onMounted(() => {
           fixed="right"
           align="center"
           label="Thao tác"
-          width="140"
+          width="120"
         >
           <template #default="scope">
             <div class="">
@@ -434,8 +440,15 @@ onMounted(() => {
                 type="warning"
                 plain
                 @click="handleAction('save', scope.row)"
-                :disabled="scope.row.isSaved"
-                v-if="userRole === 'EMPLOYER'"
+                v-if="userRole === 'EMPLOYER' && !scope.row.isSaved"
+                ><CIcon icon="cilStar"
+              /></el-button>
+              <el-button
+                size="small"
+                type="danger"
+                plain
+                @click="handleAction('save', scope.row)"
+                v-if="userRole === 'EMPLOYER' && scope.row.isSaved"
                 ><CIcon icon="cilStar"
               /></el-button>
             </div>

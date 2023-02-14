@@ -14,7 +14,7 @@ import DocsExample from '@/components/DocsExample'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import BootstrapVue3 from 'bootstrap-vue-3';
-
+import CKEditor from '@ckeditor/ckeditor5-vue';
 // import viLocale from 'element-plus/dist/locale/vi.mjs'
 
 // window.MyConfig.language == 'vi'
@@ -36,6 +36,7 @@ app.use(router)
 app.use(CoreuiVue)
 app.use(BootstrapVue3)
 app.use(ElementPlus, { size: 'default', zIndex: 3000 })
+app.use(CKEditor)
 
 app.provide('icons', icons)
 app.component('CIcon', CIcon)

@@ -13,6 +13,7 @@ import modelData from './IndustryModel'
 const router = useRouter()
 
 const ruleFormRef = ref(FormInstance)
+const ruleFormRefSearch = ref(FormInstance)
 const tableRules = reactive(MethodService.copyObject(modelData.tableRules))
 const formData = reactive({
   value: MethodService.copyObject(modelData.dataForm),
@@ -42,7 +43,7 @@ const submitForm = async (formEl) => {
     if (valid) {
       try {
         if (viewMode.value === 'create') {
-          const industryApiRes = await IndustryApi.create(formData)
+          const industryApiRes = await IndustryApi.create(formData.value)
           if (industryApiRes.status === 200) {
             ElNotification({
               title: 'Success',
@@ -117,7 +118,6 @@ const getIndustryList = async () => {
   if (industryApiRes.status === 200) {
     tableRules.data = industryApiRes.data.data.data
     tableRules.total = industryApiRes.data.data.totalElements
-    console.log('getIndustryList', industryApiRes)
   }
 }
 
@@ -221,20 +221,21 @@ onMounted(async () => {
         >
           <el-card>
             <el-form
-              ref="ruleFormRef"
-              :model="formSearchData"
+              ref="ruleFormRefSearch"
+              :model="formSearchData.value"
               :rules="formSearchValid"
               label-width="140px"
               label-position="top"
               class="demo-ruleForm"
               status-icon
+              @submit.prevent="submitFormSearch(ruleFormRefSearch)"
             >
               <b-row>
                 <b-col md="6">
                   <el-form-item label="Mã ngành nghề" prop="">
                     <el-input
                       clearable
-                      v-model="formSearchData.code"
+                      v-model="formSearchData.value.code"
                     ></el-input>
                   </el-form-item>
                 </b-col>
@@ -242,13 +243,13 @@ onMounted(async () => {
                   <el-form-item label="Tên ngành nghề" prop="">
                     <el-input
                       clearable
-                      v-model="formSearchData.name"
+                      v-model="formSearchData.value.name"
                     ></el-input>
                   </el-form-item>
                 </b-col>
               </b-row>
               <div class="text-center">
-                <el-button type="primary" @click="submitFormSearch(ruleFormRef)"
+                <el-button type="primary" @click="submitFormSearch(ruleFormRefSearch)"
                   >Tìm kiếm</el-button
                 >
               </div>
@@ -326,6 +327,7 @@ onMounted(async () => {
         label-position="top"
         class="demo-ruleForm"
         status-icon
+        @submit.prevent="submitForm(ruleFormRef)"
       >
         <b-row>
           <b-col md="6">

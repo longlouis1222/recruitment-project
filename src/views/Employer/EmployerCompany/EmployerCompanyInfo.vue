@@ -7,6 +7,8 @@ import FileApi from '@/moduleApi/modules/FileApi'
 
 import axios from 'axios'
 
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+
 import { ElNotification, ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
@@ -24,28 +26,58 @@ const mainJobList = DataService.mainJobList
 const userProfile = reactive({})
 const fileList = ref([])
 
+const editor = ClassicEditor
+const editorConfig = {
+  width: 100,
+  height: 200,
+  toolbar: {
+    items: [
+      'bold',
+      'italic',
+      '|',
+      'outdent',
+      'indent',
+      '|',
+      'bulletedList',
+      'numberedList',
+      '|',
+      'undo',
+      'redo',
+    ],
+    shouldNotGroupWhenFull: true,
+  },
+}
+const editorDisabled = ref(false)
+
 const submitForm = async (formEl) => {
   if (!formEl) return
   await formEl.validate(async (valid, fields) => {
     if (valid) {
-      const data = {
-        id: userProfile.value.id,
-        email: userProfile.value.email,
-        username: userProfile.value.username,
-        password: userProfile.value.password,
-        listRole: null,
-        type: 'EMPLOYER',
+      try {
+        const data = {
+          id: userProfile.value.id,
+          email: userProfile.value.email,
+          username: userProfile.value.username,
+          password: userProfile.value.password,
+          listRole: null,
+          type: 'EMPLOYER',
 
-        userInfoRequest: userProfile.value.userInfoDTO,
-        companyRequest: formData.value.companyRequest,
-      }
-      const userProfileApiRes = await UserApi.update(data)
-      if (userProfileApiRes.status == 200) {
-        ElNotification({
-          title: 'Success',
-          message: 'Cập nhật thành công.',
-          type: 'success',
-          duration: 3000,
+          userInfoRequest: userProfile.value.userInfoDTO,
+          companyRequest: formData.value.companyRequest,
+        }
+        const userProfileApiRes = await UserApi.update(data)
+        if (userProfileApiRes.status == 200) {
+          ElNotification({
+            title: 'Success',
+            message: 'Cập nhật thành công.',
+            type: 'success',
+            duration: 3000,
+          })
+        }
+      } catch (error) {
+        ElMessage({
+          message: 'Có lỗi khi thao tác.',
+          type: 'error',
         })
       }
     } else {
@@ -61,34 +93,57 @@ const resetForm = (formEl) => {
 }
 
 const getUserInfo = async () => {
-  const userProfileApiRes = await UserApi.findById(
-    localStorage.getItem('uid'),
-  )
-  if (userProfileApiRes.status == 200) {
-    userProfile.value = userProfileApiRes.data.data
-    formData.value = {
-      type: 'EMPLOYER',
-      userInfoRequest: {
-        address: userProfile.value.userInfoDTO.address ? userProfile.value.userInfoDTO.address : '',
-        avatar: userProfile.value.userInfoDTO.avatar ? userProfile.value.userInfoDTO.avatar : '',
-        companyId: userProfile.value.userInfoDTO.companyId ? userProfile.value.userInfoDTO.companyId : '',
-        dateOfBirth: userProfile.value.userInfoDTO.dateOfBirth ? userProfile.value.userInfoDTO.dateOfBirth : '',
-        fullName: userProfile.value.userInfoDTO.fullName ? userProfile.value.userInfoDTO.fullName : '',
-        gender: userProfile.value.userInfoDTO.gender ? userProfile.value.userInfoDTO.gender : '',
-        marriageStatus: userProfile.value.userInfoDTO.marriageStatus ? userProfile.value.userInfoDTO.marriageStatus : '',
-        phoneNumber: userProfile.value.userInfoDTO.phoneNumber ? userProfile.value.userInfoDTO.phoneNumber : '',
-        town: userProfile.value.userInfoDTO.town ? userProfile.value.userInfoDTO.town : '',
-      },
-      // companyRequest: userProfile.value.companyDTO,
-      companyRequest: { ...userProfile.value.companyDTO },
-    }
-    console.log('userProfile', userProfile)
-    if (
-      !userProfile.value.companyDTO ||
-      (userProfile.value.companyDTO && !userProfile.value.companyDTO.fileId)
+  try {
+    const userProfileApiRes = await UserApi.findById(
+      localStorage.getItem('uid'),
     )
-      return
-    await getFileById(userProfile.value.companyDTO.fileId)
+    if (userProfileApiRes.status == 200) {
+      userProfile.value = userProfileApiRes.data.data
+      formData.value = {
+        type: 'EMPLOYER',
+        userInfoRequest: {
+          address: userProfile.value.userInfoDTO.address
+            ? userProfile.value.userInfoDTO.address
+            : '',
+          avatar: userProfile.value.userInfoDTO.avatar
+            ? userProfile.value.userInfoDTO.avatar
+            : '',
+          companyId: userProfile.value.userInfoDTO.companyId
+            ? userProfile.value.userInfoDTO.companyId
+            : '',
+          dateOfBirth: userProfile.value.userInfoDTO.dateOfBirth
+            ? userProfile.value.userInfoDTO.dateOfBirth
+            : '',
+          fullName: userProfile.value.userInfoDTO.fullName
+            ? userProfile.value.userInfoDTO.fullName
+            : '',
+          gender: userProfile.value.userInfoDTO.gender
+            ? userProfile.value.userInfoDTO.gender
+            : '',
+          marriageStatus: userProfile.value.userInfoDTO.marriageStatus
+            ? userProfile.value.userInfoDTO.marriageStatus
+            : '',
+          phoneNumber: userProfile.value.userInfoDTO.phoneNumber
+            ? userProfile.value.userInfoDTO.phoneNumber
+            : '',
+          town: userProfile.value.userInfoDTO.town
+            ? userProfile.value.userInfoDTO.town
+            : '',
+        },
+        companyRequest: { ...userProfile.value.companyDTO },
+      }
+      if (
+        !userProfile.value.companyDTO ||
+        (userProfile.value.companyDTO && !userProfile.value.companyDTO.fileId)
+      )
+        return
+      await getFileById(userProfile.value.companyDTO.fileId)
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Có lỗi khi tải dữ liệu.',
+      type: 'error',
+    })
   }
 }
 
@@ -150,6 +205,10 @@ const uploadFileToDb = async () => {
     .catch((response) => {
       //handle error
       console.log('error', response)
+      ElMessage({
+        message: 'Có lỗi khi upload file.',
+        type: 'error',
+      })
     })
 }
 
@@ -166,6 +225,10 @@ const getFileById = async (id) => {
     }
   } catch (error) {
     console.log('error:>', error)
+    ElMessage({
+      message: 'Có lỗi khi tải dữ liệu.',
+      type: 'error',
+    })
   }
 }
 
@@ -188,7 +251,7 @@ onMounted(() => {
         :rules="validForm"
         label-width="160px"
         label-position="left"
-        class="demo-ruleForm"
+        class="formCompany"
         status-icon
       >
         <b-row>
@@ -240,11 +303,24 @@ onMounted(() => {
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label="Giới thiệu công ty" prop="companyRequest.businessIntroduction">
-              <el-input
+          </b-col>
+          <b-col md="12">
+            <el-form-item
+              class="businessIntroduction"
+              label="Giới thiệu công ty"
+              prop="companyRequest.businessIntroduction"
+            >
+              <!-- <el-input
                 type="textarea"
                 v-model="formData.value.companyRequest.businessIntroduction"
-              />
+              /> -->
+              <ckeditor
+                :editor="editor"
+                v-model="formData.value.companyRequest.businessIntroduction"
+                :config="editorConfig"
+                :disabled="editorDisabled"
+                @blur="onEditorBlur(ruleFormRef)"
+              ></ckeditor>
             </el-form-item>
           </b-col>
         </b-row>
@@ -307,4 +383,11 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
+:deep .formCompany {
+  .businessIntroduction {
+    ul li {
+      list-style: initial;
+    }
+  }
+}
 </style>

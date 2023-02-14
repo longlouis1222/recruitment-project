@@ -12,6 +12,8 @@ import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
 
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+
 import modelData from './RecruitmentPostModel'
 
 const router = useRouter()
@@ -37,11 +39,64 @@ const validForm = modelData.validForm
 const industryList = reactive({ value: [] })
 const userInfo = ref(null)
 
+const editor = ClassicEditor
+const editorConfig = {
+  width: 100,
+  height: 200,
+  toolbar: {
+    items: [
+      'bold',
+      'italic',
+      '|',
+      'outdent',
+      'indent',
+      '|',
+      'bulletedList',
+      'numberedList',
+      '|',
+      'undo',
+      'redo',
+    ],
+    shouldNotGroupWhenFull: true,
+  },
+}
+const editorConfigNecessarySkills = {
+  ...editorConfig,
+  placeholder:
+    'Thông tin cho kỹ năng công việc yêu cầu mà ứng viên cần khi làm việc ở công ty.',
+}
+const editorConfigJobDescription = {
+  ...editorConfig,
+  placeholder:
+    'Thông tin cho vị trí công việc yêu cầu, trách nhiệm mà ứng viên có thể đảm nhận khi làm việc ở công ty...',
+}
+const editorConfigJobRequirements = {
+  ...editorConfig,
+  placeholder:
+    'Kỹ năng chuyên môn hoặc kỹ năng mềm cần thiết với công việc mà ứng viên cần quan tâm',
+}
+const editorConfigBenifits = {
+  ...editorConfig,
+  placeholder:
+    'Những quyền lợi, lợi ích với công việc cho ứng viên với vị trí đăng tuyển',
+}
+const editorDisabled = ref(false)
+
+const onEditorBlur = (formEl) => {
+  if (!formData.value.jobDescription) {
+    // formEl.validate(async (valid, fields) => {
+    //   if (valid) return
+    //   else console.log('error submit!', fields)
+    // })
+    // formEl.validate('jobDescription')
+  }
+}
+
 const submitForm = async (formEl) => {
   if (!formEl) return
   await formEl.validate(async (valid, fields) => {
     try {
-      if(!valid) return
+      if (!valid) return
       formData.value.status = 'WAITING_APPROVE'
       const postApiRes = await PostApi.create(formData.value)
       if (postApiRes.status == 200) {
@@ -53,7 +108,7 @@ const submitForm = async (formEl) => {
         })
       }
       setTimeout(() => {
-        backToPrev()
+        goToRecruitmentList()
       }, 500)
     } catch (error) {
       ElNotification({
@@ -71,13 +126,17 @@ const resetForm = (formEl) => {
   formEl.resetFields()
 }
 
+const goToRecruitmentList = () => {
+  router.push({ name: 'Danh sách bài tuyển dụng'})
+}
+
 const backToPrev = () => {
   router.go(-1)
 }
 
 const getIndustryList = async () => {
   try {
-    const industryApiRes = await IndustryApi.list()
+    const industryApiRes = await IndustryApi.list('size=99999')
     if (industryApiRes.status == 200) {
       industryList.value = industryApiRes.data.data.data
     }
@@ -91,7 +150,9 @@ const getIndustryList = async () => {
 
 const getUserInfo = async () => {
   try {
-    const userProfileApiRes = await UserApi.findById(localStorage.getItem('uid'))
+    const userProfileApiRes = await UserApi.findById(
+      localStorage.getItem('uid'),
+    )
     if (userProfileApiRes.status === 200) {
       const res = userProfileApiRes.data.data
       userInfo.value = res
@@ -147,6 +208,7 @@ onMounted(() => {
               <el-select
                 v-model="formData.value.workingForm"
                 placeholder="Chọn"
+                filterable
               >
                 <el-option
                   v-for="item in workFormList"
@@ -162,6 +224,7 @@ onMounted(() => {
               <el-select
                 v-model="formData.value.recruitmentDegree"
                 placeholder="Chọn"
+                filterable
               >
                 <el-option
                   v-for="item in certificateList"
@@ -177,6 +240,7 @@ onMounted(() => {
               <el-select
                 v-model="formData.value.recruitmentExperience"
                 placeholder="Chọn"
+                filterable
               >
                 <el-option
                   v-for="item in experienceList"
@@ -191,7 +255,11 @@ onMounted(() => {
         <b-row>
           <b-col md="4">
             <el-form-item label="Cấp bậc" prop="level">
-              <el-select v-model="formData.value.level" placeholder="Chọn">
+              <el-select
+                v-model="formData.value.level"
+                placeholder="Chọn"
+                filterable
+              >
                 <el-option
                   v-for="item in rankList"
                   :key="item.value"
@@ -206,6 +274,7 @@ onMounted(() => {
               <el-select
                 v-model="formData.value.recruitmentAge"
                 placeholder="Chọn"
+                filterable
               >
                 <el-option
                   v-for="item in ageRequirementList"
@@ -221,6 +290,7 @@ onMounted(() => {
               <el-select
                 v-model="formData.value.recruitmentGender"
                 placeholder="Chọn"
+                filterable
               >
                 <el-option
                   v-for="item in genderRequirementList"
@@ -246,6 +316,7 @@ onMounted(() => {
               <el-select
                 v-model="formData.value.probationaryPeriod"
                 placeholder="Chọn"
+                filterable
               >
                 <el-option
                   v-for="item in probationaryPeriodList"
@@ -270,7 +341,11 @@ onMounted(() => {
         <b-row>
           <b-col md="4">
             <el-form-item label="Ngành nghề chính" prop="industryId">
-              <el-select v-model="formData.value.industryId" placeholder="Chọn">
+              <el-select
+                v-model="formData.value.industryId"
+                placeholder="Chọn"
+                filterable
+              >
                 <el-option
                   v-for="item in industryList.value"
                   :key="item.id"
@@ -285,6 +360,7 @@ onMounted(() => {
               <el-select
                 v-model="formData.value.recruitmentArea"
                 placeholder="Chọn"
+                filterable
               >
                 <el-option
                   v-for="item in workPlaceList"
@@ -297,7 +373,11 @@ onMounted(() => {
           </b-col>
           <b-col md="4">
             <el-form-item label="Nơi làm việc" prop="workplace">
-              <el-select v-model="formData.value.workplace" placeholder="Chọn">
+              <el-select
+                v-model="formData.value.workplace"
+                placeholder="Chọn"
+                filterable
+              >
                 <el-option
                   v-for="item in workPlaceList"
                   :key="item.value"
@@ -317,6 +397,7 @@ onMounted(() => {
               <!-- <el-select
                 v-model="formData.value.salaryMin"
                 placeholder="Chọn"
+                filterable
               >
                 <el-option
                   v-for="item in minSalaryList"
@@ -336,6 +417,7 @@ onMounted(() => {
               <!-- <el-select
                 v-model="formData.value.salaryMax"
                 placeholder="Chọn"
+                filterable
               >
                 <el-option
                   v-for="item in maxSalaryList"
@@ -352,23 +434,18 @@ onMounted(() => {
           </b-col>
           <b-col md="12">
             <el-form-item label="Kỹ năng cần thiết" prop="necessarySkills">
-              <el-input
+              <!-- <el-input
                 type="textarea"
                 v-model="formData.value.necessarySkills"
                 placeholder="Vui lòng nhập"
-              />
-              <!-- <el-select
+              /> -->
+              <ckeditor
+                :editor="editor"
                 v-model="formData.value.necessarySkills"
-                multiple
-                placeholder="Nhập các kỹ năng cần thiết cho vị trí này"
-              >
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select> -->
+                :config="editorConfigNecessarySkills"
+                :disabled="editorDisabled"
+                @blur="onEditorBlur(ruleFormRef)"
+              ></ckeditor>
             </el-form-item>
           </b-col>
         </b-row>
@@ -378,36 +455,57 @@ onMounted(() => {
         <b-row>
           <b-col md="12">
             <el-form-item label="Mô tả công việc" prop="jobDescription">
-              <el-input
+              <!-- <el-input
                 v-model="formData.value.jobDescription"
                 type="textarea"
                 :autosize="{ minRows: 4, maxRows: 4 }"
                 placeholder="Thông tin cho vị trí công việc yêu cầu, trách nhiệm mà ứng viên có thể đảm nhận khi làm việc ở công ty"
-              />
+              /> -->
+              <ckeditor
+                :editor="editor"
+                v-model="formData.value.jobDescription"
+                :config="editorConfigJobDescription"
+                :disabled="editorDisabled"
+                @blur="onEditorBlur(ruleFormRef)"
+              ></ckeditor>
             </el-form-item>
           </b-col>
         </b-row>
         <b-row>
           <b-col md="12">
             <el-form-item label="Yêu cầu công việc" prop="jobRequirements">
-              <el-input
+              <!-- <el-input
                 v-model="formData.value.jobRequirements"
                 type="textarea"
                 :autosize="{ minRows: 4, maxRows: 4 }"
                 placeholder="Kỹ năng chuyên môn hoặc kỹ năng mềm cần thiết với công việc mà ứng viên cần quan tâm"
-              />
+              /> -->
+              <ckeditor
+                :editor="editor"
+                v-model="formData.value.jobRequirements"
+                :config="editorConfigJobRequirements"
+                :disabled="editorDisabled"
+                @blur="onEditorBlur(ruleFormRef)"
+              ></ckeditor>
             </el-form-item>
           </b-col>
         </b-row>
         <b-row>
           <b-col md="12">
             <el-form-item label="Quyền lợi" prop="benefits">
-              <el-input
+              <!-- <el-input
                 v-model="formData.value.benefits"
                 type="textarea"
                 :autosize="{ minRows: 4, maxRows: 4 }"
                 placeholder="Những quyền lợi, lợi ích với công việc cho ứng viên với vị trí đăng tuyển"
-              />
+              /> -->
+              <ckeditor
+                :editor="editor"
+                v-model="formData.value.benefits"
+                :config="editorConfigBenifits"
+                :disabled="editorDisabled"
+                @blur="onEditorBlur(ruleFormRef)"
+              ></ckeditor>
             </el-form-item>
           </b-col>
         </b-row>
@@ -448,10 +546,10 @@ onMounted(() => {
           </b-col>
         </b-row>
 
-        <div class="text-right">
+        <div class="text-center">
           <el-button @click="backToPrev">Hủy bỏ</el-button>
           <el-button type="primary" @click="submitForm(ruleFormRef)"
-            >Tiếp tục</el-button
+            >Thêm mới</el-button
           >
         </div>
       </el-form>
@@ -460,4 +558,10 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
+:deep .ck.ck-editor {
+  width: 100%;
+  ul li {
+    list-style: initial;
+  }
+}
 </style>

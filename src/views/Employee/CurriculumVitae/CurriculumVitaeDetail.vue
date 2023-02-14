@@ -4,10 +4,12 @@ import DataService from '@/service/DataService'
 import UserApi from '@/moduleApi/modules/UserApi'
 import RecruitmentApi from '@/moduleApi/modules/RecruitmentApi'
 
-import { ElNotification } from 'element-plus'
+import { ElNotification, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { FormInstance } from 'element-plus'
+
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
 import modelData from './CurriculumVitaeModel'
 
@@ -37,6 +39,50 @@ const validForm = modelData.validForm
 
 const imageUrl = ref('')
 const userProfile = reactive({ value: [] })
+
+const editor = ClassicEditor
+const editorConfig = {
+  width: 100,
+  height: 200,
+  toolbar: {
+    items: [
+      'bold',
+      'italic',
+      '|',
+      'outdent',
+      'indent',
+      '|',
+      'bulletedList',
+      'numberedList',
+      '|',
+      'undo',
+      'redo',
+    ],
+    shouldNotGroupWhenFull: true,
+  },
+}
+const editorConfigSortSkill = {
+  ...editorConfig,
+  placeholder:
+    'Thông tin cho kỹ năng công việc yêu cầu mà ứng viên cần khi làm việc ở công ty.',
+}
+const editorConfigDescription = {
+  ...editorConfig,
+  placeholder:
+    'Mô tả kỹ năng, công việc mà ứng viên cần khi làm việc ở công ty.',
+}
+
+const editorDisabled = ref(true)
+
+const onEditorBlur = (formEl) => {
+  if (!formData.value.jobDescription) {
+    // formEl.validate(async (valid, fields) => {
+    //   if (valid) return
+    //   else console.log('error submit!', fields)
+    // })
+    // formEl.validate('jobDescription')
+  }
+}
 
 const handleAvatarSuccess = (response, uploadFile) => {
   imageUrl.value = URL.createObjectURL(uploadFile)
@@ -87,14 +133,127 @@ const backToPrev = () => {
 }
 
 const getCVById = async () => {
-  const res = await RecruitmentApi.findById(route.params.id)
-  if (res.status == 200) {
-    formData.value = { ...res.data.data }
+  try {
+    const res = await RecruitmentApi.findById(route.params.id)
+    if (res.status == 200) {
+      formData.value = { ...res.data.data }
+      formData.value.isSaved =
+        (userProfile.value.userInfoDTO.arrProfileIds || []).findIndex(
+          (o) => o == route.params.id,
+        ) < 0
+          ? false
+          : true
+    }
+  } catch (error) {
+    console.log(error)
+    ElMessage({
+      message: 'Có lỗi khi tải dữ liệu.',
+      type: 'error',
+    })
   }
 }
 
-onMounted(() => {
-  getCVById()
+const getUserInfo = async () => {
+  try {
+    if (!localStorage.getItem('uid')) return
+    const userProfileApiRes = await UserApi.findById(
+      localStorage.getItem('uid'),
+    )
+    if (userProfileApiRes.status == 200) {
+      userProfile.value = userProfileApiRes.data.data
+    }
+  } catch (error) {
+    console.log(error)
+    ElMessage({
+      message: 'Có lỗi khi tải dữ liệu.',
+      type: 'error',
+    })
+  }
+}
+
+const saveRecruitment = async () => {
+  try {
+    let dataBody = {
+      profileIds: [],
+    }
+    let arrSave = []
+    if (
+      userProfile.value &&
+      userProfile.value.userInfoDTO &&
+      (!userProfile.value.userInfoDTO.arrProfileIds ||
+        userProfile.value.userInfoDTO.arrProfileIds.length === 0)
+    ) {
+      dataBody.profileIds = [parseInt(route.params.id)]
+      const res = await RecruitmentApi.saveList(dataBody)
+      if (res.status === 200) {
+        ElNotification({
+          title: 'Success',
+          message: 'Lưu hồ sơ thành công.',
+          type: 'success',
+          duration: 3000,
+        })
+      }
+    } else if (
+      userProfile.value &&
+      userProfile.value.userInfoDTO &&
+      userProfile.value.userInfoDTO.arrProfileIds &&
+      userProfile.value.userInfoDTO.arrProfileIds.length > 0 &&
+      userProfile.value.userInfoDTO.arrProfileIds.includes(parseInt(route.params.id))
+    ) {
+      arrSave = userProfile.value.userInfoDTO.arrProfileIds.filter(
+        (item) => item != parseInt(route.params.id),
+      )
+      console.log('arrSave:>', arrSave)
+      dataBody.profileIds = arrSave
+      const res = await RecruitmentApi.saveList(dataBody)
+      if (res.status === 200) {
+        ElNotification({
+          title: 'Success',
+          message: 'Bỏ lưu hồ sơ thành công.',
+          type: 'success',
+          duration: 3000,
+        })
+      }
+    } else {
+      arrSave = [
+        ...userProfile.value.userInfoDTO.arrProfileIds,
+        parseInt(route.params.id),
+      ]
+      const res = await RecruitmentApi.saveList(arrSave)
+      if (res.status === 200) {
+        ElNotification({
+          title: 'Success',
+          message: 'Lưu hồ sơ thành công.',
+          type: 'success',
+          duration: 3000,
+        })
+      }
+    }
+    await getUserInfo()
+    await getCVById()
+  } catch (error) {
+    console.log(error)
+    if (error.error_code === 404) {
+      ElNotification({
+        title: 'Error',
+        message: `${error.errorMessage}.`,
+        type: 'error',
+        duration: 3000,
+      })
+      return
+    }
+    ElNotification({
+      title: 'Error',
+      message: 'Lưu hồ sơ thất bại.',
+      type: 'error',
+      duration: 3000,
+    })
+  }
+}
+
+onMounted(async () => {
+  await getUserInfo()
+  await getCVById()
 })
 </script>
 
@@ -157,11 +316,15 @@ onMounted(() => {
 
         <el-divider />
 
-        <b-row v-if="formData.value.userDTO && formData.value.userDTO.userInfoDTO">
+        <b-row
+          v-if="formData.value.userDTO && formData.value.userDTO.userInfoDTO"
+        >
           <b-row>
             <b-col md="6">
               <el-form-item label="Họ và tên" prop="userInfoDTO.fullName">
-                <el-input v-model="formData.value.userDTO.userInfoDTO.fullName" />
+                <el-input
+                  v-model="formData.value.userDTO.userInfoDTO.fullName"
+                />
               </el-form-item>
             </b-col>
             <b-col md="6">
@@ -394,12 +557,19 @@ onMounted(() => {
           <b-row>
             <b-col md="12">
               <el-form-item label="Kỹ năng mềm" prop="sortSkill">
-                <el-input
+                <!-- <el-input
                   v-model="formData.value.sortSkill"
                   type="textarea"
                   :autosize="{ minRows: 2, maxRows: 4 }"
                   placeholder="..."
-                />
+                /> -->
+                <ckeditor
+                  :editor="editor"
+                  v-model="formData.value.sortSkill"
+                  :config="editorConfigSortSkill"
+                  :disabled="editorDisabled"
+                  @blur="onEditorBlur(ruleFormRef)"
+                ></ckeditor>
               </el-form-item>
             </b-col>
           </b-row>
@@ -466,11 +636,18 @@ onMounted(() => {
               label="Mô tả công việc"
               prop="workExperienceDTO.description"
             >
-              <el-input
+              <!-- <el-input
                 v-model="formData.value.workExperienceDTO.description"
                 type="textarea"
                 :autosize="{ minRows: 2, maxRows: 4 }"
-              />
+              /> -->
+              <ckeditor
+                :editor="editor"
+                v-model="formData.value.workExperienceDTO.description"
+                :config="editorConfigDescription"
+                :disabled="editorDisabled"
+                @blur="onEditorBlur(ruleFormRef)"
+              ></ckeditor>
             </el-form-item>
           </b-col>
         </b-row>
@@ -618,8 +795,22 @@ onMounted(() => {
 
         <el-divider />
       </el-form>
-      <div class="d-flex justify-content-end">
+      <div class="text-center">
         <el-button type="primary" plain @click="backToPrev">Quay lại</el-button>
+        <el-button
+          type="danger"
+          plain
+          @click="saveRecruitment"
+          v-if="formData.value.isSaved"
+          >Bỏ lưu</el-button
+        >
+        <el-button
+          type="warning"
+          plain
+          @click="saveRecruitment"
+          v-if="!formData.value.isSaved"
+          >Lưu</el-button
+        >
       </div>
     </el-card>
   </div>
@@ -639,16 +830,20 @@ onMounted(() => {
   overflow: hidden;
   transition: 0.1s ease;
 }
-
 :deep .avatar-uploader .el-upload:hover {
   border-color: #409eff;
 }
-
 :deep .el-icon.avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
   width: 120px;
   height: 120px;
   text-align: center;
+}
+:deep .ck.ck-editor {
+  width: 100%;
+  ul li {
+    list-style: initial;
+  }
 }
 </style>

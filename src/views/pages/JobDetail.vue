@@ -7,6 +7,7 @@ import AppFooterLanding from '@/components/AppFooterLanding.vue'
 
 import PostApi from '@/moduleApi/modules/PostApi'
 import UserApi from '@/moduleApi/modules/UserApi'
+import IndustryApi from '@/moduleApi/modules/IndustryApi'
 
 import { ElNotification, ElMessage } from 'element-plus'
 
@@ -21,6 +22,9 @@ const secondJobList = DataService.secondJobList
 const workPlaceList = DataService.workPlaceList
 
 const postInfo = ref(null)
+
+const industryList = reactive({ value: [] })
+const industryHotList = reactive({ value: [] })
 
 const backToPrev = () => {
   router.go(-1)
@@ -97,14 +101,61 @@ const unSaveFromCareList = async () => {
     })
   }
 }
-onMounted(() => {
-  getPostById()
+
+const fillData = () => {
+  const jobDescription = document.getElementById('jobDescription')
+  if (jobDescription) {
+    jobDescription.innerHTML = postInfo.value.jobDescription
+  }
+  const jobRequirements = document.getElementById('jobRequirements')
+  if (jobRequirements) {
+    jobRequirements.innerHTML = postInfo.value.jobRequirements
+  }
+  const benefits = document.getElementById('benefits')
+  if (benefits) {
+    benefits.innerHTML = postInfo.value.benefits
+  }
+}
+
+const getHotIndustriesList = async () => {
+  try {
+    const res = await IndustryApi.list('size=99999')
+    if (res.status === 200) {
+      industryList.value = sortUpdatedIndustries(res.data.data.data)
+      industryHotList.value = sortHotIndustries(res.data.data.data)
+    }
+  } catch (error) {
+    console.log(error)
+    ElMessage({
+      message: 'Có lỗi khi tải dữ liệu.',
+      type: 'error',
+    })
+  }
+}
+
+const sortHotIndustries = (data) => {
+  return data.sort((a, b) => b.numberSummit - a.numberSummit)
+}
+
+const sortUpdatedIndustries = (data) => {
+  return data.sort(
+    (a, b) => new Date(b.updated).getTime() - new Date(a.updated).getTime(),
+  )
+}
+
+onMounted(async () => {
+  await getHotIndustriesList()
+  await getPostById()
+  await fillData()
 })
 </script>
 
 <template>
   <div class="min-vh-100">
-    <AppHeaderLanding />
+    <AppHeaderLanding
+      :industryList="industryList.value"
+      :industryHotList="industryHotList.value"
+    />
     <!-- Start Job mutual info -->
     <CContainer xxl>
       <el-card class="box-card">
@@ -361,13 +412,11 @@ onMounted(() => {
     <CContainer xxl class="container__job-description mt-3">
       <el-card class="box-card">
         <h4 class="mb-3">Mô tả công việc</h4>
-        <ul>
-          <li>
-            {{
-              postInfo && postInfo.jobDescription ? postInfo.jobDescription : ''
-            }}
-          </li>
-        </ul>
+        <div id="jobDescription" v-if="postInfo">
+          {{
+            postInfo && postInfo.jobDescription ? postInfo.jobDescription : ''
+          }}
+        </div>
         <ul v-if="!postInfo || (postInfo && !postInfo.jobDescription)">
           <li>
             Tìm kiếm dự án để giới thiệu và marketing sản phẩm, xây dựng mối
@@ -384,7 +433,7 @@ onMounted(() => {
           <li>Ký kết đơn hàng, và theo dõi đơn hàng</li>
         </ul>
 
-        <p class="mt-2">Nơi làm việc</p>
+        <h4 class="mt-2">Nơi làm việc</h4>
         <ul>
           <li>
             {{ postInfo && postInfo.workplace ? postInfo.workplace : 'Hà Nội' }}
@@ -392,15 +441,11 @@ onMounted(() => {
         </ul>
 
         <h4 class="mt-4 mb-3">Yêu cầu công việc</h4>
-        <ul>
-          <li>
-            {{
-              postInfo && postInfo.jobRequirements
-                ? postInfo.jobRequirements
-                : ''
-            }}
-          </li>
-        </ul>
+        <div id="jobRequirements" v-if="postInfo">
+          {{
+            postInfo && postInfo.jobRequirements ? postInfo.jobRequirements : ''
+          }}
+        </div>
         <ul v-if="!postInfo || (postInfo && !postInfo.jobRequirements)">
           <li>
             Nam/Nữ tốt nghiệp đại học các chuyên ngành liên quan có quan hệ tốt,
@@ -413,11 +458,9 @@ onMounted(() => {
         </ul>
 
         <h4 class="mt-4 mb-3">Quyền lợi</h4>
-        <ul>
-          <li>
-            {{ postInfo && postInfo.benefits ? postInfo.benefits : '' }}
-          </li>
-        </ul>
+        <div id="benefits" v-if="postInfo">
+          {{ postInfo && postInfo.benefits ? postInfo.benefits : '' }}
+        </div>
         <ul v-if="!postInfo || (postInfo && !postInfo.benefits)">
           <li>
             Thu nhập: Lương cơ bản 18 - 20 triệu + thưởng % doanh số trên từng
@@ -547,6 +590,7 @@ onMounted(() => {
 :deep .container__job-description {
   ul li {
     list-style: disc;
+    margin-bottom: 8px;
   }
 }
 </style>
