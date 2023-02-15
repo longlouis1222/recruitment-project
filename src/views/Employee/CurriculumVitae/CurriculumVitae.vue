@@ -219,6 +219,7 @@ onMounted(() => {
                 <el-select
                   v-model="formData.value.userInfoDTO.town"
                   placeholder="Chọn"
+                  filterable
                 >
                   <el-option
                     v-for="item in workPlaceList"
@@ -285,7 +286,7 @@ onMounted(() => {
             </b-col>
             <b-col md="6">
               <el-form-item label="Nghề nghiệp" prop="career">
-                <el-select v-model="formData.value.career" placeholder="Chọn">
+                <el-select v-model="formData.value.career" placeholder="Chọn" filterable>
                   <el-option
                     v-for="item in mainJobList"
                     :key="item.value"
@@ -303,6 +304,7 @@ onMounted(() => {
                 <el-select
                   v-model="formData.value.currentLevel"
                   placeholder="Chọn"
+                  filterable
                 >
                   <el-option
                     v-for="item in rankList"
@@ -318,6 +320,7 @@ onMounted(() => {
                 <el-select
                   v-model="formData.value.levelDesire"
                   placeholder="Chọn"
+                  filterable
                 >
                   <el-option
                     v-for="item in rankList"
@@ -392,6 +395,7 @@ onMounted(() => {
                 <el-select
                   v-model="formData.value.workAddress"
                   placeholder="Chọn"
+                  filterable
                 >
                   <el-option
                     v-for="item in workPlaceList"
@@ -407,7 +411,7 @@ onMounted(() => {
           <b-row>
             <b-col md="6">
               <el-form-item label="Hình thức làm việc" prop="workForm">
-                <el-select v-model="formData.value.workForm" placeholder="Chọn">
+                <el-select v-model="formData.value.workForm" placeholder="Chọn" filterable>
                   <el-option
                     v-for="item in workFormList"
                     :key="item.value"
@@ -610,6 +614,7 @@ onMounted(() => {
                   "
                   placeholder="Chọn"
                   multiple
+                  filterable
                 >
                   <el-option
                     v-for="item in foreignLanguageList"
@@ -629,6 +634,7 @@ onMounted(() => {
                   v-model="formData.value.foreignLanguageDTO.proficiencies"
                   placeholder="Chọn"
                   multiple
+                  filterable
                 >
                   <el-option
                     v-for="item in proficiencyList"

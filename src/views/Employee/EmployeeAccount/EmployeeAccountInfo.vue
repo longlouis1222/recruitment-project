@@ -243,7 +243,7 @@ onMounted(() => {
         ref="ruleFormRef"
         :model="formData.value"
         :rules="validForm"
-        label-width="150px"
+        label-width="160px"
         label-position="left"
         class="demo-ruleForm"
         status-icon
@@ -368,6 +368,7 @@ onMounted(() => {
                 <el-select
                   v-model="formData.value.userInfoRequest.town"
                   placeholder="Chọn"
+                  filterable
                 >
                   <el-option
                     v-for="item in workPlaceList"
@@ -422,7 +423,7 @@ onMounted(() => {
           </b-row>
         </b-row>
 
-        <div>
+        <div class="text-center">
           <el-button type="primary" @click="submitForm(ruleFormRef)"
             >Cập nhật</el-button
           >

@@ -253,6 +253,7 @@ onMounted(async () => {
                       v-model="formSearchData.value.industryId"
                       placeholder="Chọn"
                       clearable
+                      filterable
                     >
                       <el-option
                         v-for="item in industryList.value"
@@ -268,6 +269,7 @@ onMounted(async () => {
                     <el-select
                       v-model="formSearchData.value.recruitmentArea"
                       placeholder="Chọn"
+                      filterable
                     >
                       <el-option
                         v-for="item in workPlaceList"
@@ -286,6 +288,7 @@ onMounted(async () => {
                     <el-select
                       v-model="formSearchData.value.recruitmentExperience"
                       placeholder="Chọn"
+                      filterable
                     >
                       <el-option
                         v-for="item in experienceList"
@@ -317,6 +320,7 @@ onMounted(async () => {
                     <el-select
                       v-model="formSearchData.value.level"
                       placeholder="Chọn"
+                      filterable
                     >
                       <el-option
                         v-for="item in rankList"
@@ -333,6 +337,7 @@ onMounted(async () => {
                       v-model="formSearchData.value.workForm"
                       placeholder="Chọn"
                       clearable
+                      filterable
                     >
                       <el-option
                         v-for="item in workFormList"

@@ -419,6 +419,222 @@ DataService.workPlaceList = [
     label: 'Cần Thơ',
     value: 'Cần Thơ',
   },
+  {
+    label: 'Cần Thơ',
+    value: 'Cần Thơ',
+  },
+  {
+    label: 'Cao Bằng',
+    value: 'Cao Bằng',
+  },
+  {
+    label: 'Gia Lai',
+    value: 'Gia Lai',
+  },
+  {
+    label: 'Hà Nam',
+    value: 'Hà Nam',
+  },
+  {
+    label: 'Hà Giang',
+    value: 'Hà Giang',
+  },
+  {
+    label: 'Hà Tĩnh',
+    value: 'Hà Tĩnh',
+  },
+  {
+    label: 'Hải Dương',
+    value: 'Hải Dương',
+  },
+  {
+    label: 'Hải Phòng',
+    value: 'Hải Phòng',
+  },
+  {
+    label: 'Hậu Giang',
+    value: 'Hậu Giang',
+  },
+  {
+    label: 'Hòa Bình',
+    value: 'Hòa Bình',
+  },
+  {
+    label: 'Hưng Yên',
+    value: 'Hưng Yên',
+  },
+  {
+    label: 'Khác',
+    value: 'Khác',
+  },
+  {
+    label: 'Khánh Hòa',
+    value: 'Khánh Hòa',
+  },
+  {
+    label: 'Kiên Giang',
+    value: 'Kiên Giang',
+  },
+  {
+    label: 'Kom Tum',
+    value: 'Kom Tum',
+  },
+  {
+    label: 'Lai Châu',
+    value: 'Lai Châu',
+  },
+  {
+    label: 'Lâm Đồng',
+    value: 'Lâm Đồng',
+  },
+  {
+    label: 'Lạng Sơn',
+    value: 'Lạng Sơn',
+  },
+  {
+    label: 'Lào Cai',
+    value: 'Lào Cai',
+  },
+  {
+    label: 'Long An',
+    value: 'Long An',
+  },
+  {
+    label: 'Miền Bắc',
+    value: 'Miền Bắc',
+  },
+  {
+    label: 'Miền Nam',
+    value: 'Miền Nam',
+  },
+  {
+    label: 'Miền Trung',
+    value: 'Miền Trung',
+  },
+  {
+    label: 'Nam Định',
+    value: 'Nam Định',
+  },
+  {
+    label: 'Nghệ An',
+    value: 'Nghệ An',
+  },
+  {
+    label: 'Ninh Bình',
+    value: 'Ninh Bình',
+  },
+  {
+    label: 'Ninh Thuận',
+    value: 'Ninh Thuận',
+  },
+  {
+    label: 'Nước Ngoài',
+    value: 'Nước Ngoài',
+  },
+  {
+    label: 'Phú Thọ',
+    value: 'Phú Thọ',
+  },
+  {
+    label: 'Phú Yên',
+    value: 'Phú Yên',
+  },
+  {
+    label: 'Quản Nam',
+    value: 'Quản Nam',
+  },
+  {
+    label: 'Quảng Ngãi',
+    value: 'Quảng Ngãi',
+  },
+  {
+    label: 'Quảng Ninh',
+    value: 'Quảng Ninh',
+  },
+  {
+    label: 'Quản Trị',
+    value: 'Quản Trị',
+  },
+  {
+    label: 'Sóc Trăng',
+    value: 'Sóc Trăng',
+  },
+  {
+    label: 'Sơn La',
+    value: 'Sơn La',
+  },
+  {
+    label: 'Tây Ninh',
+    value: 'Tây Ninh',
+  },
+  {
+    label: 'Thái Bình',
+    value: 'Thái Bình',
+  },
+  {
+    label: 'Thái Nguyên',
+    value: 'Thái Nguyên',
+  },
+  {
+    label: 'Thanh Hóa',
+    value: 'Thanh Hóa',
+  },
+  {
+    label: 'Thừa Thiên Huế',
+    value: 'Thừa Thiên Huế',
+  },
+  {
+    label: 'Tiền Giang',
+    value: 'Tiền Giang',
+  },
+  {
+    label: 'Toàn Quốc',
+    value: 'Toàn Quốc',
+  },
+  {
+    label: 'Trà Vinh',
+    value: 'Trà Vinh',
+  },
+  {
+    label: 'Tuyên Quang',
+    value: 'Tuyên Quang',
+  },
+  {
+    label: 'Vĩnh Long',
+    value: 'Vĩnh Long',
+  },
+  {
+    label: 'Vĩnh Phúc',
+    value: 'Vĩnh Phúc',
+  },
+  {
+    label: 'Yên Bái',
+    value: 'Yên Bái',
+  },
+  {
+    label: 'Đà Nẵng',
+    value: 'Đà Nẵng',
+  },
+  {
+    label: 'Đắk Lắk',
+    value: 'Đắk Lắk',
+  },
+  {
+    label: 'Đắk Nông',
+    value: 'Đắk Nông',
+  },
+  {
+    label: 'Điện Biên',
+    value: 'Điện Biên',
+  },
+  {
+    label: 'Đồng Nai',
+    value: 'Đồng Nai',
+  },
+  {
+    label: 'Đồng Tháp',
+    value: 'Đồng Tháp',
+  },
 ]
 
 DataService.minSalaryList = [

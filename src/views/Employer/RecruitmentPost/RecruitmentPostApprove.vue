@@ -230,6 +230,7 @@ onMounted(async () => {
               <el-select
                 v-model="formData.value.workingForm"
                 placeholder="Chọn"
+                filterable
               >
                 <el-option
                   v-for="item in workFormList"
@@ -245,6 +246,7 @@ onMounted(async () => {
               <el-select
                 v-model="formData.value.recruitmentDegree"
                 placeholder="Chọn"
+                filterable
               >
                 <el-option
                   v-for="item in certificateList"
@@ -260,6 +262,7 @@ onMounted(async () => {
               <el-select
                 v-model="formData.value.recruitmentExperience"
                 placeholder="Chọn"
+                filterable
               >
                 <el-option
                   v-for="item in experienceList"
@@ -274,7 +277,7 @@ onMounted(async () => {
         <b-row>
           <b-col md="4">
             <el-form-item label="Cấp bậc" prop="level">
-              <el-select v-model="formData.value.level" placeholder="Chọn">
+              <el-select v-model="formData.value.level" placeholder="Chọn" filterable>
                 <el-option
                   v-for="item in rankList"
                   :key="item.value"
@@ -289,6 +292,7 @@ onMounted(async () => {
               <el-select
                 v-model="formData.value.recruitmentAge"
                 placeholder="Chọn"
+                filterable
               >
                 <el-option
                   v-for="item in ageRequirementList"
@@ -304,6 +308,7 @@ onMounted(async () => {
               <el-select
                 v-model="formData.value.recruitmentGender"
                 placeholder="Chọn"
+                filterable
               >
                 <el-option
                   v-for="item in genderRequirementList"
@@ -329,6 +334,7 @@ onMounted(async () => {
               <el-select
                 v-model="formData.value.probationaryPeriod"
                 placeholder="Chọn"
+                filterable
               >
                 <el-option
                   v-for="item in probationaryPeriodList"
@@ -353,7 +359,7 @@ onMounted(async () => {
         <b-row>
           <b-col md="4">
             <el-form-item label="Ngành nghề chính" prop="industryId">
-              <el-select v-model="formData.value.industryId" placeholder="Chọn">
+              <el-select v-model="formData.value.industryId" placeholder="Chọn" filterable>
                 <el-option
                   v-for="item in industryList.value"
                   :key="item.id"
@@ -368,6 +374,7 @@ onMounted(async () => {
               <el-select
                 v-model="formData.value.recruitmentArea"
                 placeholder="Chọn"
+                filterable
               >
                 <el-option
                   v-for="item in workPlaceList"
@@ -380,7 +387,7 @@ onMounted(async () => {
           </b-col>
           <b-col md="4">
             <el-form-item label="Nơi làm việc" prop="workplace">
-              <el-select v-model="formData.value.workplace" placeholder="Chọn">
+              <el-select v-model="formData.value.workplace" placeholder="Chọn" filterable>
                 <el-option
                   v-for="item in workPlaceList"
                   :key="item.value"

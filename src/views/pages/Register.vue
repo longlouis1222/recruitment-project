@@ -143,6 +143,7 @@ onMounted(() => {
                   <el-select
                     v-model="dataForm.value.type"
                     placeholder="Chọn"
+                    filterable
                   >
                     <el-option
                       v-for="item in typeList"

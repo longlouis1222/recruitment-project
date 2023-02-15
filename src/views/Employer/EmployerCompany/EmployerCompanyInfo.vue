@@ -294,6 +294,7 @@ onMounted(() => {
               <el-select
                 v-model="formData.value.companyRequest.fieldOfActivity"
                 placeholder="Chọn"
+                filterable
               >
                 <el-option
                   v-for="item in mainJobList"

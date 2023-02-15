@@ -11,7 +11,9 @@ import { FormInstance } from 'element-plus'
 import modelData from './EmployerAccountInfoModel'
 
 const ruleFormRef = ref(FormInstance)
-const formData = reactive({ value: MethodService.copyObject(modelData.dataForm)})
+const formData = reactive({
+  value: MethodService.copyObject(modelData.dataForm),
+})
 const validForm = modelData.validForm
 const userProfile = reactive({})
 
@@ -36,33 +38,46 @@ const submitForm = async (formEl) => {
   if (!formEl) return
   await formEl.validate(async (valid, fields) => {
     if (valid) {
-      const data = {
-        id: userProfile.value.id,
-        companyRequest: userProfile.value.companyDTO,
-        email: userProfile.value.email,
-        password: userProfile.value.password,
-        listRole: null,
-        type: "EMPLOYEE",
-        status: userProfile.value.status ? userProfile.value.status : 1,
-        userInfoRequest: {
-          address: formData.value.userInfoRequest.address,
-          avatar: userProfile.value.userInfoDTO.avatar ? userProfile.value.userInfoDTO.avatar : '',
-          companyId: null,
-          dateOfBirth: formData.value.userInfoRequest.dateOfBirth,
-          fullName: formData.value.userInfoRequest.fullName,
-          gender: formData.value.userInfoRequest.gender,
-          marriageStatus: formData.value.userInfoRequest.marriageStatus,
-          phoneNumber: formData.value.userInfoRequest.phoneNumber,
-          town: formData.value.userInfoRequest.town,
-        },
-        username: userProfile.value.username ? userProfile.value.username : ''
-      }
-      const userProfileApiRes = await UserApi.update(data)
-      if (userProfileApiRes.status == 200) {
+      try {
+        const data = {
+          id: userProfile.value.id,
+          companyRequest: userProfile.value.companyDTO,
+          email: userProfile.value.email,
+          password: userProfile.value.password,
+          listRole: null,
+          type: 'EMPLOYEE',
+          status: userProfile.value.status ? userProfile.value.status : 1,
+          userInfoRequest: {
+            address: formData.value.userInfoRequest.address,
+            avatar: userProfile.value.userInfoDTO.avatar
+              ? userProfile.value.userInfoDTO.avatar
+              : '',
+            companyId: null,
+            dateOfBirth: formData.value.userInfoRequest.dateOfBirth,
+            fullName: formData.value.userInfoRequest.fullName,
+            gender: formData.value.userInfoRequest.gender,
+            marriageStatus: formData.value.userInfoRequest.marriageStatus,
+            phoneNumber: formData.value.userInfoRequest.phoneNumber,
+            town: formData.value.userInfoRequest.town,
+          },
+          username: userProfile.value.username
+            ? userProfile.value.username
+            : '',
+        }
+        const userProfileApiRes = await UserApi.update(data)
+        if (userProfileApiRes.status == 200) {
+          ElNotification({
+            title: 'Success',
+            message: 'Cập nhật thành công.',
+            type: 'success',
+            duration: 3000,
+          })
+        }
+      } catch (error) {
         ElNotification({
-          title: 'Success',
-          message: 'Cập nhật thành công.',
-          type: 'success',
+          title: 'Error',
+          message: 'Cập nhật thất bại.',
+          type: 'error',
           duration: 3000,
         })
       }
@@ -87,7 +102,7 @@ const getUserInfo = async () => {
       email: userProfile.value.email,
       password: userProfile.value.password,
       listRole: null,
-      type: "EMPLOYEE",
+      type: 'EMPLOYEE',
       status: userProfile.value.status ? userProfile.value.status : 1,
       userInfoRequest: {
         address: userProfile.value.userInfoDTO.address,
@@ -100,9 +115,8 @@ const getUserInfo = async () => {
         phoneNumber: userProfile.value.userInfoDTO.phoneNumber,
         town: userProfile.value.userInfoDTO.town,
       },
-      username: userProfile.value.username ? userProfile.value.username : ''
+      username: userProfile.value.username ? userProfile.value.username : '',
     }
-    console.log("userProfile", userProfile)
   }
 }
 
@@ -135,7 +149,11 @@ onMounted(() => {
               <el-input v-model="formData.value.email" />
             </el-form-item>
             <el-form-item label="Mật khẩu" prop="password">
-              <el-input type="password" v-model="formData.value.password" disabled />
+              <el-input
+                type="password"
+                v-model="formData.value.password"
+                disabled
+              />
             </el-form-item>
           </b-col>
           <b-col md="5">
@@ -151,8 +169,8 @@ onMounted(() => {
                 <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
                 <template #tip>
                   <div class="el-upload__tip ms-2">
-                    Dạng file .jpg, .jpeg, .png <br>
-                    dung lượng tối đa là 300KB <br>
+                    Dạng file .jpg, .jpeg, .png <br />
+                    dung lượng tối đa là 300KB <br />
                     và kích thước tối thiểu 300x300 pixel.
                   </div>
                 </template>
@@ -169,19 +187,30 @@ onMounted(() => {
             <el-form-item label="Họ và tên" prop="fullName">
               <el-input v-model="formData.value.userInfoRequest.fullName" />
             </el-form-item>
-            <el-form-item label="Số điện thoại" prop="userInfoRequest.phoneNumber">
+            <el-form-item
+              label="Số điện thoại"
+              prop="userInfoRequest.phoneNumber"
+            >
               <el-input v-model="formData.value.userInfoRequest.phoneNumber" />
             </el-form-item>
             <el-form-item label="Email liên hệ" prop="email">
               <el-input v-model="formData.value.email" />
             </el-form-item>
-            <el-form-item label="Địa chỉ liên hệ" prop="userInfoRequest.address">
-              <el-input v-model="formData.value.userInfoRequest.address"  type="textarea"/>
+            <el-form-item
+              label="Địa chỉ liên hệ"
+              prop="userInfoRequest.address"
+            >
+              <el-input
+                v-model="formData.value.userInfoRequest.address"
+                type="textarea"
+              />
             </el-form-item>
           </b-col>
         </b-row>
-        <div>
-          <el-button type="primary" @click="submitForm(ruleFormRef)"
+        <div class="text-center">
+          <el-button
+            type="primary"
+            @click="submitForm(ruleFormRef)"
             >Cập nhật</el-button
           >
         </div>
@@ -202,7 +231,7 @@ onMounted(() => {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: .1s ease;
+  transition: 0.1s ease;
 }
 
 :deep .avatar-uploader .el-upload:hover {

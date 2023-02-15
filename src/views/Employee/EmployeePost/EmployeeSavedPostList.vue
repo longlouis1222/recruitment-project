@@ -295,6 +295,7 @@ onMounted(() => {
                       v-model="formSearchData.value.industryId"
                       placeholder="Chọn"
                       clearable
+                      filterable
                     >
                       <el-option
                         v-for="item in industryList.value"
@@ -310,6 +311,7 @@ onMounted(() => {
                     <el-select
                       v-model="formSearchData.value.recruitmentArea"
                       placeholder="Chọn"
+                      filterable
                     >
                       <el-option
                         v-for="item in workPlaceList"
@@ -328,6 +330,7 @@ onMounted(() => {
                     <el-select
                       v-model="formSearchData.value.recruitmentExperience"
                       placeholder="Chọn"
+                      filterable
                     >
                       <el-option
                         v-for="item in experienceList"
@@ -359,6 +362,7 @@ onMounted(() => {
                     <el-select
                       v-model="formSearchData.value.level"
                       placeholder="Chọn"
+                      filterable
                     >
                       <el-option
                         v-for="item in rankList"
@@ -375,6 +379,7 @@ onMounted(() => {
                       v-model="formSearchData.value.workForm"
                       placeholder="Chọn"
                       clearable
+                      filterable
                     >
                       <el-option
                         v-for="item in workFormList"

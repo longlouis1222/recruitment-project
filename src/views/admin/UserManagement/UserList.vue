@@ -242,6 +242,7 @@ onMounted(() => {
                       v-model="formSearchData.value.type"
                       placeholder="Chọn"
                       clearable
+                      filterable
                     >
                       <el-option
                         v-for="item in typeList"
@@ -294,7 +295,7 @@ onMounted(() => {
           label="Họ và tên"
           min-width="140"
         />
-        <el-table-column prop="type" label="Vai trò">
+        <el-table-column prop="type" label="Vai trò" align="center">
           <template #default="scope">
             {{
               scope.row.type == 'CANDIDATE'
