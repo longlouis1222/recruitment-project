@@ -72,6 +72,7 @@ const uploadFileToDb = async () => {
 
 const getFileById = async (id) => {
   try {
+    if (!id) return
     const res = await FileApi.getFileById(id)
     if (res.status === 200) {
       fileList.value = [
@@ -83,6 +84,12 @@ const getFileById = async (id) => {
     }
   } catch (error) {
     console.log('error:>', error)
+    ElNotification({
+      title: 'Error',
+      message: 'Có lỗi xảy ra khi tải dữ liệu.',
+      type: 'error',
+      duration: 3000,
+    })
   }
 }
 
@@ -118,14 +125,22 @@ const beforeRemove = (uploadFile, uploadFiles) => {
 }
 
 const getCurrentUserCV = async () => {
-  const res = await RecruitmentApi.getCurrentUserCV()
-  if (res.status == 200) {
-    console.log(res.data.data)
-    dataCv.value = res.data.data
-    switch1.value = dataCv.value.permissionSearch
-    switch2.value = dataCv.value.permissionSearch
-    view.value = dataCv.value.view
-    await getFileById(res.data.data.fileId)
+  try {
+    const res = await RecruitmentApi.getCurrentUserCV()
+    if (res.status == 200) {
+      dataCv.value = res.data.data
+      switch1.value = dataCv.value.permissionSearch
+      switch2.value = dataCv.value.permissionSearch
+      view.value = dataCv.value.view ? dataCv.value.view : 0
+      await getFileById(res.data.data.fileId)
+    }
+  } catch (error) {
+    ElNotification({
+      title: 'Error',
+      message: 'Có lỗi xảy ra khi tải dữ liệu.',
+      type: 'error',
+      duration: 3000,
+    })
   }
 }
 

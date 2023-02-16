@@ -373,7 +373,7 @@ onMounted(() => {
             </p>
           </b-col>
         </b-row>
-        <div>
+        <div class="text-center">
           <el-button type="primary" @click="submitForm(ruleFormRef)"
             >Cập nhật</el-button
           >

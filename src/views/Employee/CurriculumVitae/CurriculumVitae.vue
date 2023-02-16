@@ -1,8 +1,10 @@
 <script setup>
 import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
+
 import UserApi from '@/moduleApi/modules/UserApi'
 import RecruitmentApi from '@/moduleApi/modules/RecruitmentApi'
+import IndustryApi from '@/moduleApi/modules/IndustryApi'
 
 import { ElNotification } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
@@ -36,6 +38,7 @@ const validForm = modelData.validForm
 
 const imageUrl = ref('')
 const userProfile = reactive({ value: [] })
+const industryList = reactive({ value: [] })
 
 const editor = ClassicEditor
 const editorConfig = {
@@ -124,30 +127,61 @@ const resetForm = (formEl) => {
   formEl.resetFields()
 }
 
-const getCVInfo = async () => {
-  const recruitmentApiRes = await RecruitmentApi.findById(id)
-}
-
 const getUserInfo = async () => {
-  const userProfileApiRes = await UserApi.findById(
-    localStorage.getItem('uid'),
-  )
-  if (userProfileApiRes.status == 200) {
-    userProfile.value = userProfileApiRes.data.data
-    formData.value = { ...formData.value, ...userProfile.value }
+  try {
+    const userProfileApiRes = await UserApi.findById(
+      localStorage.getItem('uid'),
+    )
+    if (userProfileApiRes.status == 200) {
+      userProfile.value = userProfileApiRes.data.data
+      formData.value = { ...formData.value, ...userProfile.value }
+    }
+  } catch (error) {
+    ElNotification({
+      title: 'Error',
+      message: 'Có lỗi xảy ra khi tải dữ liệu.',
+      type: 'error',
+      duration: 3000,
+    })
   }
 }
 
 const getCurrentUserCV = async () => {
-  const res = await RecruitmentApi.getCurrentUserCV()
-  if (res.status == 200) {
-    formData.value = { ...formData.value, ...res.data.data }
+  try {
+    const res = await RecruitmentApi.getCurrentUserCV()
+    if (res.status == 200) {
+      formData.value = { ...formData.value, ...res.data.data }
+    }
+  } catch (error) {
+    ElNotification({
+      title: 'Error',
+      message: 'Có lỗi xảy ra khi tải dữ liệu.',
+      type: 'error',
+      duration: 3000,
+    })
+  }
+}
+
+const getIndustryList = async () => {
+  try {
+    const res = await IndustryApi.list('size=99999')
+    if (res.status === 200) {
+      industryList.value = res.data.data.data
+    }
+  } catch (error) {
+    ElNotification({
+      title: 'Error',
+      message: 'Có lỗi xảy ra khi tải dữ liệu.',
+      type: 'error',
+      duration: 3000,
+    })
   }
 }
 
 onMounted(() => {
   getUserInfo()
   getCurrentUserCV()
+  getIndustryList()
 })
 </script>
 
@@ -288,10 +322,10 @@ onMounted(() => {
               <el-form-item label="Nghề nghiệp" prop="career">
                 <el-select v-model="formData.value.career" placeholder="Chọn" filterable>
                   <el-option
-                    v-for="item in mainJobList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+                    v-for="item in industryList.value"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.name"
                   />
                 </el-select>
               </el-form-item>

@@ -384,6 +384,18 @@ onMounted(() => {
 
       <el-table :data="tableRules.data">
         <el-table-column
+          prop=""
+          label="STT"
+          width="60"
+          align="center"
+        >
+          <template #default="scope">
+            <div class="text-center">
+              {{ tableRules.skip + scope.$index + 1 }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="userDTO.userInfoDTO.fullName"
           label="Họ và tên"
           min-width="150"
@@ -398,12 +410,12 @@ onMounted(() => {
           label="Vị trí ứng tuyển"
           min-width="180"
         />
-        <el-table-column
+        <!-- <el-table-column
           prop="timeSubmitFormat"
           label="Thời gian nộp"
           min-width="120"
           align="center"
-        />
+        /> -->
         <el-table-column
           prop="offerSalaryFormat"
           label="Mức lương"

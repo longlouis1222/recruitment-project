@@ -1,8 +1,10 @@
 <script setup>
 import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
+
 import UserApi from '@/moduleApi/modules/UserApi'
 import RecruitmentApi from '@/moduleApi/modules/RecruitmentApi'
+import IndustryApi from '@/moduleApi/modules/IndustryApi'
 
 import { ElNotification, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
@@ -39,6 +41,7 @@ const validForm = modelData.validForm
 
 const imageUrl = ref('')
 const userProfile = reactive({ value: [] })
+const industryList = reactive({ value: [] })
 
 const editor = ClassicEditor
 const editorConfig = {
@@ -219,7 +222,8 @@ const saveRecruitment = async () => {
         ...userProfile.value.userInfoDTO.arrProfileIds,
         parseInt(route.params.id),
       ]
-      const res = await RecruitmentApi.saveList(arrSave)
+      dataBody.profileIds = arrSave
+      const res = await RecruitmentApi.saveList(dataBody)
       if (res.status === 200) {
         ElNotification({
           title: 'Success',
@@ -251,9 +255,26 @@ const saveRecruitment = async () => {
   }
 }
 
+const getIndustryList = async () => {
+  try {
+    const res = await IndustryApi.list('size=99999')
+    if (res.status === 200) {
+      industryList.value = res.data.data.data
+    }
+  } catch (error) {
+    ElNotification({
+      title: 'Error',
+      message: 'Có lỗi xảy ra khi tải dữ liệu.',
+      type: 'error',
+      duration: 3000,
+    })
+  }
+}
+
 onMounted(async () => {
   await getUserInfo()
   await getCVById()
+  await getIndustryList()
 })
 </script>
 
@@ -413,10 +434,10 @@ onMounted(async () => {
               <el-form-item label="Nghề nghiệp" prop="career">
                 <el-select v-model="formData.value.career" placeholder="Chọn" filterable>
                   <el-option
-                    v-for="item in mainJobList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+                    v-for="item in industryList.value"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.name"
                   />
                 </el-select>
               </el-form-item>

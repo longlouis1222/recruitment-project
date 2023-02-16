@@ -4,6 +4,7 @@ import DataService from '@/service/DataService'
 
 import RecruitmentApi from '@/moduleApi/modules/RecruitmentApi'
 import UserApi from '@/moduleApi/modules/UserApi'
+import IndustryApi from '@/moduleApi/modules/IndustryApi'
 
 import { ElNotification } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
@@ -34,6 +35,7 @@ const workPlaceList = DataService.workPlaceList
 const workFormList = DataService.workFormList
 
 const userProfile = reactive({ value: {} })
+const industryList = reactive({ value: {} })
 
 const submitForm = async (formEl) => {
   if (!formEl) return
@@ -90,12 +92,13 @@ const fn_tableNextClick = () => {
 const fn_tableChangeOffset = (page) => {
   tableRules.page = page
   tableRules.skip = (tableRules.page - 1) * tableRules.limit
-  // getService();
+  getRecruitmentList()
+
 }
 const fn_tableSortChange = (column, tableSort) => {
   tableSort = tableRules
   MethodService.tableSortChange(column, tableSort)
-  // getService();
+  getRecruitmentList()
 }
 
 const backToPrev = () => {
@@ -219,7 +222,8 @@ const saveRecruitment = async (rowData) => {
       }
     } else {
       arrSave = [...userProfile.value.userInfoDTO.arrProfileIds, rowData.id]
-      const res = await RecruitmentApi.saveList(arrSave)
+      dataBody.profileIds = arrSave
+      const res = await RecruitmentApi.saveList(dataBody)
       if (res.status === 200) {
         ElNotification({
           title: 'Success',
@@ -251,9 +255,26 @@ const saveRecruitment = async (rowData) => {
   }
 }
 
+const getIndustryList = async () => {
+  try {
+    const res = await IndustryApi.list('size=99999')
+    if (res.status === 200) {
+      industryList.value = res.data.data.data
+    }
+  } catch (error) {
+    ElNotification({
+      title: 'Error',
+      message: 'Có lỗi xảy ra khi tải dữ liệu.',
+      type: 'error',
+      duration: 3000,
+    })
+  }
+}
+
 onMounted(() => {
   getUserInfo()
   getRecruitmentList()
+  getIndustryList()
 })
 </script>
 
@@ -389,6 +410,18 @@ onMounted(() => {
       </div>
 
       <el-table :data="tableRules.data">
+        <el-table-column
+          prop=""
+          label="STT"
+          width="60"
+          align="center"
+        >
+          <template #default="scope">
+            <div class="text-center">
+              {{ tableRules.skip + scope.$index + 1 }}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="userDTO.userInfoDTO.fullName"
           label="Họ và tên"
