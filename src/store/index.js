@@ -82,12 +82,16 @@ export default createStore({
       try {
         console.log('Sign up from Action store ...', credentials)
         const res = await AuthService.register(credentials)
-        if (res.status) {
+        if (res.status === 200) {
           console.log('register RES', res)
           // router.push({ name: 'Login' })
         }
       } catch (error) {
         console.log(error)
+        ElMessage({
+          message: 'Có lỗi xảy ra lỗi khi đăng ký tài khoản.',
+          type: 'error',
+        })
       }
     },
 
@@ -95,11 +99,15 @@ export default createStore({
       try {
         console.log('Forgot PW from Action store...')
         const res = await AuthService.forgotPassword(credentials)
-        if (res.status) {
+        if (res.status === 200) {
           console.log('forgotPassword RES', res)
         }
       } catch (error) {
         console.log(error)
+        ElMessage({
+          message: 'Có lỗi xảy ra khi gửi mail xác nhận.',
+          type: 'error',
+        })
       }
     },
 
@@ -107,12 +115,16 @@ export default createStore({
       try {
         console.log('Update PW from Action store...')
         const res = await AuthService.updatePassword(credentials)
-        if (res.status) {
+        if (res.status === 200) {
           console.log('updatePassword RES', res)
           router.push({ name: 'Login' })
         }
       } catch (error) {
         console.log(error)
+        ElMessage({
+          message: 'Có lỗi xảy ra khi thay đổi mật khẩu.',
+          type: 'error',
+        })
       }
     },
 
@@ -120,12 +132,16 @@ export default createStore({
       try {
         console.log('activeAccount from Action store...')
         const res = await AuthService.activeAccount(credentials)
-        if (res.status) {
+        if (res.status === 200) {
           console.log('activeAccount RES', res)
           // router.push({ name: 'Login' })
         }
       } catch (error) {
         console.log(error)
+        ElMessage({
+          message: 'Có lỗi xảy ra khi kích hoạt tài khoản.',
+          type: 'error',
+        })
       }
     },
   },
