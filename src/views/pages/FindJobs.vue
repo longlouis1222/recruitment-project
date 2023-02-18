@@ -414,12 +414,21 @@ onMounted(async () => {
       <h3 class="fw-bold mb-3">Kết quả tìm kiếm</h3>
 
       <b-row>
-        <b-col md="8">
+        <b-col md="3">
+          <div class="left-side">
+            <img
+              src="@/assets/images/Ads/find-job-urban-967.png"
+              alt="find-job-urban-967"
+              class=""
+            />
+          </div>
+        </b-col>
+        <b-col md="6">
           <el-empty
             v-if="!tableRules.data || tableRules.data.length === 0"
             description="Hiện không có công việc nào."
           />
-          <div v-else class="infinite-list-wrapper left-side">
+          <div v-else class="infinite-list-wrapper">
             <ul
               v-infinite-scroll="load"
               class="list"
@@ -521,7 +530,7 @@ onMounted(async () => {
             </div>
           </div>
         </b-col>
-        <b-col md="4">
+        <b-col md="3">
           <div class="right-side">
             <img
               src="@/assets/images/Ads/find-job.jpg"
@@ -654,6 +663,12 @@ onMounted(async () => {
   border: 1px solid lightblue;
   border-radius: 10px;
   background-color: aliceblue;
+}
+.left-side {
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 :deep .infinite-list-wrapper {
   overflow: auto;
