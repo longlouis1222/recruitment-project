@@ -246,10 +246,9 @@ onMounted(async () => {
               <el-card
                 class="box-card"
                 shadow="hover"
-                @click="goToJobDetail(post.id)"
               >
                 <div class="d-flex justify-content-between w-100">
-                  <p class="card__item-content mb-2">
+                  <p class="card__item-content mb-2" @click="goToJobDetail(post.id)">
                     {{ post.title ? post.title : 'Vị trí tuyển dụng' }}
                   </p>
                   <CIcon
@@ -263,7 +262,7 @@ onMounted(async () => {
                     "
                   />
                 </div>
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center" @click="goToJobDetail(post.id)">
                   <div class="d-flex align-items-center">
                     <div class="card__subtitle me-5 d-flex">
                       <el-icon :size="18"><Money /></el-icon>
