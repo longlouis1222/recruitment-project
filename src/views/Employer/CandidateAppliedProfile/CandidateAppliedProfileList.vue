@@ -39,7 +39,7 @@ const convertDataExport = (data) => {
       'Họ và tên': record.userDTO.userInfoDTO.fullName,
       'Lĩnh vực ứng tuyển': record.career,
       'Vị trí ứng tuyển': record.positionOffer,
-      'Thời gian nộp': record.timeSubmitFormat,
+      'Cấp bậc mong muốn': record.levelDesire,
       'Mức lương': record.offerSalary
         ? MethodService.formatCurrency(record.offerSalary)
         : 0,
@@ -69,7 +69,7 @@ const exportExcel = async () => {
       property === 'Địa điểm làm việc' ||
       property === 'Lĩnh vực ứng tuyển' ||
       property === 'Số năm kinh nghiệm' ||
-      property === 'Thời gian nộp'
+      property === 'Cấp bậc mong muốn'
     ) {
       const max_width = dataExport.reduce(
         (w, r) => Math.max(w, property.length),
@@ -425,8 +425,8 @@ onMounted(() => {
           min-width="180"
         />
         <el-table-column
-          prop="timeSubmitFormat"
-          label="Thời gian nộp"
+          prop="levelDesire"
+          label="Cấp bậc mong muốn"
           min-width="120"
           align="center"
         />
