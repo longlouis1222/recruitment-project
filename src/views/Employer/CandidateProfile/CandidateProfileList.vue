@@ -29,6 +29,8 @@ const formSearchData = reactive({
   value: MethodService.copyObject(modelData.dataForm),
 })
 
+const allRecruitmentSavedList = reactive({ value: [] })
+
 const convertDataExport = (data) => {
   let arr = []
   data.forEach((record) => {
@@ -50,7 +52,7 @@ const convertDataExport = (data) => {
 }
 
 const exportExcel = () => {
-  const dataExport = convertDataExport(tableRules.data)
+  const dataExport = convertDataExport(allRecruitmentSavedList.value)
   if (!dataExport || dataExport.length == 0) {
     return
   }
@@ -153,6 +155,20 @@ const fn_tableSortChange = (column, tableSort) => {
   tableSort = tableRules
   MethodService.tableSortChange(column, tableSort)
   // getService();
+}
+
+const getAllRecruitmentSavedList = async () => {
+  try {
+    const res = await RecruitmentApi.getRecruitmentSavedList('size=99999')
+    if (res.status === 200 && res.data && res.data.data && res.data.data.data) {
+      allRecruitmentSavedList.value = await changeData(res.data.data.data)
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Có lỗi xảy ra khi thao tác.',
+      type: 'error',
+    })
+  }
 }
 
 const getRecruitmentSavedList = async () => {

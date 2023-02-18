@@ -30,6 +30,8 @@ const formSearchData = reactive({
   value: MethodService.copyObject(modelData.dataForm),
 })
 
+const allAppliesCVList = reactive({ value : [] })
+
 const convertDataExport = (data) => {
   let arr = []
   data.forEach((record) => {
@@ -50,8 +52,9 @@ const convertDataExport = (data) => {
   return arr
 }
 
-const exportExcel = () => {
-  const dataExport = convertDataExport(tableRules.data)
+const exportExcel = async () => {
+  await getAllAppliesCVList()
+  const dataExport = convertDataExport(allAppliesCVList.value)
   if (!dataExport || dataExport.length == 0) {
     return
   }
@@ -82,21 +85,21 @@ const exportExcel = () => {
     }
   }
   console.log(worksheet);
-  for (var sheet of Object.keys(sheets)) {
-    xlsx.utils.book_append_sheet(
-      worksheet,
-      xlsx.utils.aoa_to_sheet(sheets[sheet]),
-      sheet
-    );
-  }
-  for (let i = 1; i <= worksheet[0].length; i++) {
-    worksheet.Sheets[0]['A' + i].s = {
-      fill: {
-        patternType: 'solid',
-        fgColor: { rgb: '111111' },
-      },
-    }
-  }
+  // for (var sheet of Object.keys(sheets)) {
+  //   xlsx.utils.book_append_sheet(
+  //     worksheet,
+  //     xlsx.utils.aoa_to_sheet(sheets[sheet]),
+  //     sheet
+  //   );
+  // }
+  // for (let i = 1; i <= worksheet[0].length; i++) {
+  //   worksheet.Sheets[0]['A' + i].s = {
+  //     fill: {
+  //       patternType: 'solid',
+  //       fgColor: { rgb: '111111' },
+  //     },
+  //   }
+  // }
   XLSX.writeFile(workbook, 'Hồ sơ ứng viên ứng tuyển.xlsx', {
     compression: true,
   })
@@ -163,6 +166,20 @@ const fn_tableSortChange = (column, tableSort) => {
   tableSort = tableRules
   MethodService.tableSortChange(column, tableSort)
   // getService();
+}
+
+const getAllAppliesCVList = async () => {
+  try {
+    const res = await UserApi.getAppliedCVEmloyeeList('size=99999')
+    if (res.status === 200 && res.data && res.data.data && res.data.data.data) {
+      allAppliesCVList.value = await changeData(res.data.data.data)
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Có lỗi xảy ra khi thao tác.',
+      type: 'error',
+    })
+  }
 }
 
 const getAppliesCVList = async () => {
