@@ -33,7 +33,7 @@ const imageUrl = ref('')
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
 const disabled = ref(false)
-const loadImage = ref(false)
+const loadingBtn = ref(false)
 const imgSrc = ref('')
 
 const handleRemove = (file) => {
@@ -66,13 +66,13 @@ const handlePictureCardPreview = (file) => {
 // }
 
 const handleAvatarSuccess = async (response, uploadFile) => {
-  console.log('response >', response)
-  console.log('uploadFile >', uploadFile)
-  console.log('ZOO', formData.value.avatar[0].raw.url)
+  // console.log('uploadFile >', uploadFile)
+  // console.log('ZOO', formData.value.avatar[0].raw.url)
 }
 
 const uploadAvatar = async () => {
-  console.log('formData.value.avatar', formData.value.avatar[0].raw.name)
+  loadingBtn.value = true
+
   let fd = new FormData()
   fd.append(
     'filePath',
@@ -85,12 +85,10 @@ const uploadAvatar = async () => {
   )
   fd.append('shared', true)
 
-  // const fileApiRes = await FileApi.uploadFile(fd)
-  // console.log(fileApiRes)
-
   axios({
     method: 'post',
     url: 'http://localhost:8085/api/v1/users/avatar',
+    // url: 'http://localhost:8085/api/v1/users/avatar-local',
     data: fd,
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -100,14 +98,38 @@ const uploadAvatar = async () => {
           : '',
     },
   })
-    .then(function (response) {
+    .then(async (response) => {
       //handle success
       console.log('success', response)
-      // loadImage.value = true
+      const userProfileApiRes = await UserApi.findById(
+        localStorage.getItem('uid'),
+      )
+      if (userProfileApiRes.status == 200) {
+        const res = userProfileApiRes.data.data
+        const fileApiRes = await FileApi.getFileById(res.userInfoDTO.avatar)
+        if (fileApiRes.status === 200) {
+          imgSrc.value = fileApiRes.data.data.thumbnailLink
+        }
+      }
+      ElNotification({
+        title: 'Success',
+        message: 'Cập nhật thành công.',
+        type: 'success',
+        duration: 3000,
+      })
+      formData.value.avatar = []
+      loadingBtn.value = false
     })
-    .catch(function (response) {
+    .catch((response) => {
       //handle error
       console.log('error', response)
+      ElNotification({
+        title: 'Error',
+        message: 'Có lỗi khi upload file.',
+        type: 'error',
+        duration: 3000,
+      })
+      loadingBtn.value = false
     })
 }
 
@@ -186,23 +208,6 @@ const getUserInfo = async () => {
   const userProfileApiRes = await UserApi.findById(localStorage.getItem('uid'))
   if (userProfileApiRes.status == 200) {
     userProfile.value = userProfileApiRes.data.data
-    console.log('userProfile', userProfile)
-
-    // const fileApiRes = await FileApi.downloadFile(userProfile.value.userInfoDTO.avatar)
-    // console.log('fileApiRes', fileApiRes)
-    // if (userProfile.value.userInfoDTO.avatar) {
-    //   const fileApiRes = await FileApi.getImgById(userProfile.value.userInfoDTO.avatar)
-    //   if (fileApiRes.status == 200) {
-    //     console.log();
-    //     // imgSrc.value = fileApiRes.data.data.thumbnailLink
-    //   }
-    // }
-    // imgSrc.value = 'data:image/png;base64,' + hexToBase64(fileApiRes.data)
-    // imgSrc.value = 'data:image/png;base64,' + fileApiRes.data
-    // const url = _arrayBufferToBase64(fileApiRes.data)
-    // console.log("URL >", url)
-    // imgSrc.value = 'data:image/jpeg;base64,' + url
-
     formData.value = {
       companyDTO: userProfile.value.companyDTO,
       email: userProfile.value.email,
@@ -222,6 +227,27 @@ const getUserInfo = async () => {
         town: userProfile.value.userInfoDTO.town,
       },
       username: userProfile.value.username ? userProfile.value.username : '',
+    }
+    if (userProfile.value.userInfoDTO.avatar) {
+      // const fileApiRes = await FileApi.downloadStringFile(userProfile.value.userInfoDTO.avatar)
+      // const fileApiRes = await FileApi.downloadFile(userProfile.value.userInfoDTO.avatar)
+      const fileApiRes = await FileApi.getFileById(
+        userProfile.value.userInfoDTO.avatar,
+      )
+      if (fileApiRes.status === 200) {
+        // const blob = new Blob([fileApiRes.data], {
+        //   type: 'image/png',
+        // })
+        // const url = URL.createObjectURL(blob)
+        // imgSrc.value = url
+
+        imgSrc.value = fileApiRes.data.data.thumbnailLink
+
+        // const url = _arrayBufferToBase64(fileApiRes.data)
+
+        // imgSrc.value = 'data:image/png;base64,' + fileApiRes.data
+        // imgSrc.value = 'data:image/jpeg;base64,' + url
+      }
     }
   }
 }
@@ -275,62 +301,53 @@ onMounted(() => {
         <b-row>
           <h5 class="mb-4">Thông tin cá nhân</h5>
           <b-col md="6">
-            <!-- v-if="!formData.value.avatar || formData.value.avatar.length == 0" -->
-            <img :src="imgSrc" alt="" class="avatar__image me-4" />
-            <div class="d-flex flex-row align-items-center">
-              <el-upload
-                v-model:file-list="formData.value.avatar"
-                action
-                list-type="picture-card"
-                limit="1"
-                accept=".jpg,.jpeg,.png"
-                :auto-upload="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload"
-                :on-change="handleAvatarSuccess"
-              >
-                <el-icon><Plus /></el-icon>
-
-                <template #file="{ file }">
-                  <div>
-                    <img
-                      class="el-upload-list__item-thumbnail"
-                      :src="file.url"
-                      alt=""
-                    />
-                    <span class="el-upload-list__item-actions">
-                      <span
-                        class="el-upload-list__item-preview"
-                        @click="handlePictureCardPreview(file)"
-                      >
-                        <el-icon><zoom-in /></el-icon>
-                      </span>
-                      <span
-                        v-if="!disabled"
-                        class="el-upload-list__item-delete"
-                        @click="handleRemove(file)"
-                      >
-                        <el-icon><Delete /></el-icon>
-                      </span>
-                    </span>
-                  </div>
-                </template>
-              </el-upload>
-
+            <div class="d-flex align-items-center">
+              <img
+                :src="
+                  imgSrc
+                    ? imgSrc
+                    : require('@/assets/images/avatars/unknow_avt.png')
+                "
+                alt="avatar"
+                class="avatar__image me-3 mb-3"
+              />
               <div class="el-upload__tip ms-3">
                 Dạng file .jpg, .jpeg, .png <br />
                 dung lượng tối đa là 300KB <br />
                 và kích thước tối thiểu 300x300 pixel.
               </div>
             </div>
-
-            <el-button
-              v-if="formData.value.avatar && formData.value.avatar.length > 0"
-              class="mt-3"
-              type="primary"
-              @click="uploadAvatar()"
-              >Cập nhật ảnh đại diện</el-button
-            >
+            <div class="d-flex flex-row align-items-center">
+              <el-upload
+                v-model:file-list="formData.value.avatar"
+                action
+                limit="1"
+                accept=".jpg,.jpeg,.png"
+                :auto-upload="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+                :on-change="handleAvatarSuccess"
+                :disabled="loadingBtn"
+              >
+                <template #trigger>
+                  <el-button type="primary"
+                    ><CIcon icon="cil-pencil" class="me-2" />Cập nhật đại
+                    diện</el-button
+                  >
+                </template>
+                <el-button
+                  v-if="
+                    formData.value.avatar && formData.value.avatar.length > 0
+                  "
+                  class="ml-3 mb-2 ms-2 btn-load"
+                  type="success"
+                  @click="uploadAvatar"
+                  :loading="loadingBtn"
+                >
+                  Lưu
+                </el-button>
+              </el-upload>
+            </div>
 
             <el-dialog v-model="dialogVisible">
               <img w-full :src="dialogImageUrl" alt="Preview Image" />

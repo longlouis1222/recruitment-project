@@ -9,7 +9,9 @@ import Loading from '@/components/Loading.vue'
 import CompanyApi from '@/moduleApi/modules/CompanyApi'
 import PostApi from '@/moduleApi/modules/PostApi'
 import IndustryApi from '@/moduleApi/modules/IndustryApi'
+import FileApi from '@/moduleApi/modules/FileApi'
 
+import { ElNotification, ElMessage } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
 import { computed, ref, reactive, onMounted } from 'vue'
 
@@ -75,11 +77,19 @@ const getCompanyById = async () => {
     const res = await CompanyApi.findById(route.params.id)
     if (res.status === 200) {
       companyInfo.value = res.data.data
+      if (companyInfo.value.userInfoDTO.avatar) {
+        const fileApiRes = await FileApi.getFileById(companyInfo.value.userInfoDTO.avatar)
+        if (fileApiRes.status === 200) {
+          companyInfo.value.avt = fileApiRes.data.data.thumbnailLink
+        }
+      }
     }
   } catch (error) {
-    ElMessage({
+    ElNotification({
+      title: 'Error',
       message: 'Có lỗi khi tải dữ liệu.',
       type: 'error',
+      duration: 3000,
     })
   }
 }
@@ -139,9 +149,11 @@ const getHotIndustriesList = async () => {
     }
   } catch (error) {
     console.log(error)
-    ElMessage({
+    ElNotification({
+      title: 'Error',
       message: 'Có lỗi khi tải dữ liệu.',
       type: 'error',
+      duration: 3000,
     })
   }
 }
@@ -188,7 +200,7 @@ onMounted(async () => {
 
         <div class="banner__company-info d-flex align-items-end">
           <img
-            src="../../assets/images/logo-company/vecteezy_triangle_1200707.png"
+            :src="companyInfo && companyInfo.avt ? companyInfo.avt : require('@/assets/images/logo-company/vecteezy_triangle_1200707.png')"
             alt="logo-company"
             class="card__logo"
           />

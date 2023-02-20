@@ -4,6 +4,8 @@ import DataService from '@/service/DataService'
 
 import PostApi from '@/moduleApi/modules/PostApi'
 import IndustryApi from '@/moduleApi/modules/IndustryApi'
+import CompanyApi from '@/moduleApi/modules/CompanyApi'
+import FileApi from '@/moduleApi/modules/FileApi'
 
 import AppHeaderLanding from '@/components/AppHeaderLanding.vue'
 import AppFooterLanding from '@/components/AppFooterLanding.vue'
@@ -45,6 +47,8 @@ const count = ref(2)
 const loading = ref(false)
 const noMore = computed(() => count.value >= tableRules.total)
 const disabled = computed(() => loading.value || noMore.value)
+
+const companyList = reactive({ value: []})
 
 const toggleSearchBox = () => {
   tableRules.showFormSearch = !tableRules.showFormSearch
@@ -151,6 +155,8 @@ const changeData = (data) => {
     post.salaryMaxFormat = post.salaryMax
       ? MethodService.formatCurrencyShort(post.salaryMax)
       : '---'
+    const o = companyList.value.find(item => item.userInfoDTO.companyId === post.companyId)
+    post.avt = o && o.avt && isNaN(o.avt) ? o.avt : require('@/assets/images/logo-company/04012019-07.jpg')
   })
   return data
 }
@@ -203,6 +209,37 @@ const sortUpdatedIndustries = (data) => {
   )
 }
 
+const getCompanyList = async () => {
+  const companyApires = await CompanyApi.list('size=99999')
+  if (companyApires.status === 200) {
+    companyList.value = companyApires.data.data.data ? sortCompany(companyApires.data.data.data) : []
+
+    const arr = companyList.value.map((api, i) => {
+      if (api.userInfoDTO.avatar) return FileApi.getFileById(api.userInfoDTO.avatar);
+      else return i
+    })
+    await Promise.all([
+      ...arr
+    ])
+    .then(val => {
+      companyList.value.forEach((company, i) => {
+        company.avt = isNaN(val[i]) && val[i] !== undefined ? val[i].data.data.thumbnailLink : val[i]
+      })
+    })
+    .catch((error) => {
+      console.log('getCompanyList', error)
+      ElMessage({
+        type: 'error',
+        message: `Có lỗi khi tải dữ liệu.`,
+      })
+    });
+  }
+}
+
+const sortCompany = (data) => {
+  return data.sort((a, b) => b.numberPositionSubmit - a.numberPositionSubmit)
+}
+
 const hashURL = () => {
   tableRules.filters = route.query
   formSearchData.value = {
@@ -215,6 +252,7 @@ const hashURL = () => {
 }
 
 onMounted(async () => {
+  await getCompanyList()
   await getHotIndustriesList()
   await hashURL()
   await getPostList()
@@ -442,7 +480,7 @@ onMounted(async () => {
                 <el-card class="box-card" shadow="hover">
                   <div class="d-flex align-items-start">
                     <img
-                      src="../../assets/images/logo-company/icons8-notion-256.png"
+                      :src="post.avt"
                       alt="logo-company"
                       class="card__logo"
                       @click="goToJobDetail(post.id)"
@@ -694,6 +732,7 @@ onMounted(async () => {
         height: 80px;
         border: 1px solid #dadada;
         border-radius: 4px;
+        background-color: #fff;
       }
       .card__title-position {
         font-size: 16px;

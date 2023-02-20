@@ -1,7 +1,10 @@
 <script setup>
 import MethodService from '@/service/MethodService'
 import DataService from '@/service/DataService'
+
 import UserApi from '@/moduleApi/modules/UserApi'
+import FileApi from '@/moduleApi/modules/FileApi'
+import axios from 'axios'
 
 import { ElNotification } from 'element-plus'
 import { ref, reactive, onMounted, computed } from 'vue'
@@ -18,6 +21,9 @@ const validForm = modelData.validForm
 const userProfile = reactive({})
 
 const imageUrl = ref('')
+const loadingBtnUploadAvt = ref(false)
+const fileCompanyAvtList = ref([])
+const imgSrc = ref('')
 
 const handleAvatarSuccess = (response, uploadFile) => {
   imageUrl.value = URL.createObjectURL(uploadFile)
@@ -117,7 +123,79 @@ const getUserInfo = async () => {
       },
       username: userProfile.value.username ? userProfile.value.username : '',
     }
+
+    if (userProfile.value.userInfoDTO.avatar) {
+        const fileApiRes = await FileApi.getFileById(
+          userProfile.value.userInfoDTO.avatar,
+        )
+        if (fileApiRes.status === 200) {
+          imgSrc.value = fileApiRes.data.data.thumbnailLink
+        }
+      }
   }
+}
+
+const uploadAvatar = async () => {
+  loadingBtnUploadAvt.value = true
+
+  let fd = new FormData()
+  fd.append(
+    'filePath',
+    'https://drive.google.com/drive/folders/1Evc0_Wr5g0ehP9nRPyiSYM_DFXxoHuMm?usp=share_link',
+  )
+  fd.append(
+    'fileUpload',
+    formData.value.avatar[0].raw,
+    formData.value.avatar[0].raw.name,
+  )
+  fd.append('shared', true)
+
+  axios({
+    method: 'post',
+    url: 'http://localhost:8085/api/v1/users/avatar',
+    // url: 'http://localhost:8085/api/v1/users/company-profile-local',
+    data: fd,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization:
+        localStorage.getItem('Token') && localStorage.getItem('uid')
+          ? 'Bearer ' + localStorage.getItem('Token')
+          : '',
+    },
+  })
+    .then(async (response) => {
+      const userProfileApiRes = await UserApi.findById(
+        localStorage.getItem('uid'),
+      )
+      if (userProfileApiRes.status == 200) {
+        const res = userProfileApiRes.data.data
+        const fileApiRes = await FileApi.getFileById(res.userInfoDTO.avatar)
+        if (fileApiRes.status === 200) {
+          imgSrc.value = fileApiRes.data.data.thumbnailLink
+        }
+      }
+      formData.value.avatar = []
+      ElNotification({
+        title: 'Success',
+        message: 'Cập nhật thành công.',
+        type: 'success',
+        duration: 3000,
+      })
+      formData.value.avatar = []
+
+      loadingBtnUploadAvt.value = false
+    })
+    .catch((response) => {
+      //handle error
+      console.log('error', response)
+      ElNotification({
+        title: 'Error',
+        message: 'Có lỗi khi upload file.',
+        type: 'error',
+        duration: 3000,
+      })
+      loadingBtnUploadAvt.value = false
+    })
 }
 
 onMounted(() => {
@@ -156,26 +234,52 @@ onMounted(() => {
               />
             </el-form-item>
           </b-col>
-          <b-col md="5">
-            <el-form-item label="Ảnh đại diện" prop="">
+          <b-col md="4" class="text-center">
+            <div class="d-flex justify-content-center align-items-center">
+              <img
+                :src="
+                  imgSrc
+                    ? imgSrc
+                    : require('@/assets/images/avatars/unknow_avt.png')
+                "
+                alt="avatar"
+                class="avatar__image mb-3"
+              />
+              <div class="el-upload__tip ms-3">
+                Dạng file .jpg, .jpeg, .png <br />
+                dung lượng tối đa là 300KB <br />
+                và kích thước tối thiểu 300x300 pixel.
+              </div>
+            </div>
+            <div class="">
               <el-upload
-                class="avatar-uploader d-flex"
-                action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
+                v-model:file-list="formData.value.avatar"
+                action
+                limit="1"
+                accept=".jpg,.jpeg,.png"
+                :auto-upload="false"
                 :before-upload="beforeAvatarUpload"
+                :disabled="loadingBtnUploadAvt"
               >
-                <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-                <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-                <template #tip>
-                  <div class="el-upload__tip ms-2">
-                    Dạng file .jpg, .jpeg, .png <br />
-                    dung lượng tối đa là 300KB <br />
-                    và kích thước tối thiểu 300x300 pixel.
-                  </div>
+                <template #trigger>
+                  <el-button type="primary" class="mt-3"
+                    ><CIcon icon="cil-pencil" class="me-2" />Cập nhật đại
+                    diện</el-button
+                  >
                 </template>
+                <el-button
+                  v-if="
+                    formData.value.avatar && formData.value.avatar.length > 0
+                  "
+                  class="ml-3 mb-2 ms-2"
+                  type="success"
+                  @click="uploadAvatar"
+                  :loading="loadingBtnUploadAvt"
+                >
+                  Lưu
+                </el-button>
               </el-upload>
-            </el-form-item>
+            </div>
           </b-col>
         </b-row>
 
@@ -244,5 +348,15 @@ onMounted(() => {
   width: 120px;
   height: 120px;
   text-align: center;
+}
+.avatar__image {
+  width: 80px;
+  height: auto;
+  border: 1px solid #bebebe;
+  border-radius: 8px;
+  box-shadow: 0 0 3px 0px #bebebe;
+  :hover {
+    cursor: pointer;
+  }
 }
 </style>

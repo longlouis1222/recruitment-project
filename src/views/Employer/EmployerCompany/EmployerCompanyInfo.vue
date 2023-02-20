@@ -25,6 +25,10 @@ const validForm = modelData.validForm
 const mainJobList = DataService.mainJobList
 const userProfile = reactive({})
 const fileList = ref([])
+const fileCompanyAvtList = ref([])
+const imgSrc = ref('')
+const loadingBtnUploadAvt = ref(false)
+const loadingBtnBusinessFile = ref(false)
 
 const editor = ClassicEditor
 const editorConfig = {
@@ -75,9 +79,11 @@ const submitForm = async (formEl) => {
           })
         }
       } catch (error) {
-        ElMessage({
+        ElNotification({
+          title: 'Error',
           message: 'Có lỗi khi thao tác.',
           type: 'error',
+          duration: 3000,
         })
       }
     } else {
@@ -137,12 +143,22 @@ const getUserInfo = async () => {
         (userProfile.value.companyDTO && !userProfile.value.companyDTO.fileId)
       )
         return
+      if (userProfile.value.userInfoDTO.avatar) {
+        const fileApiRes = await FileApi.getFileById(
+          userProfile.value.userInfoDTO.avatar,
+        )
+        if (fileApiRes.status === 200) {
+          imgSrc.value = fileApiRes.data.data.thumbnailLink
+        }
+      }
       await getFileById(userProfile.value.companyDTO.fileId)
     }
   } catch (error) {
-    ElMessage({
+    ElNotification({
+      title: 'Error',
       message: 'Có lỗi khi tải dữ liệu.',
       type: 'error',
+      duration: 3000,
     })
   }
 }
@@ -157,7 +173,12 @@ const handlePreview = (uploadFile) => {
 }
 
 const handleExceed = (files, uploadFiles) => {
-  ElMessage.warning(`Giới hạn file tải lên là ${files.length}`)
+  ElNotification({
+    title: 'Warning',
+    message: `Giới hạn file tải lên là ${files.length}`,
+    type: 'warning',
+    duration: 3000,
+  })
 }
 
 const beforeRemove = (uploadFile, uploadFiles) => {
@@ -177,6 +198,7 @@ const beforeRemove = (uploadFile, uploadFiles) => {
 }
 
 const uploadFileToDb = async () => {
+  loadingBtnBusinessFile.value = true
   let fd = new FormData()
   fd.append(
     'filePath',
@@ -199,16 +221,20 @@ const uploadFileToDb = async () => {
   })
     .then(async (response) => {
       //handle success
+      loadingBtnBusinessFile.value = false
       console.log('success', response)
       await getFileById(response.data.data)
     })
     .catch((response) => {
       //handle error
       console.log('error', response)
-      ElMessage({
+      ElNotification({
+        title: 'Error',
         message: 'Có lỗi khi upload file.',
         type: 'error',
+        duration: 3000,
       })
+      loadingBtnBusinessFile.value = false
     })
 }
 
@@ -225,11 +251,76 @@ const getFileById = async (id) => {
     }
   } catch (error) {
     console.log('error:>', error)
-    ElMessage({
+    ElNotification({
+      title: 'Error',
       message: 'Có lỗi khi tải dữ liệu.',
       type: 'error',
+      duration: 3000,
     })
   }
+}
+
+const uploadAvatar = async () => {
+  loadingBtnUploadAvt.value = true
+
+  let fd = new FormData()
+  fd.append(
+    'filePath',
+    'https://drive.google.com/drive/folders/1Evc0_Wr5g0ehP9nRPyiSYM_DFXxoHuMm?usp=share_link',
+  )
+  fd.append(
+    'fileUpload',
+    formData.value.avatar[0].raw,
+    formData.value.avatar[0].raw.name,
+  )
+  fd.append('shared', true)
+
+  axios({
+    method: 'post',
+    url: 'http://localhost:8085/api/v1/users/avatar',
+    // url: 'http://localhost:8085/api/v1/users/company-profile-local',
+    data: fd,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization:
+        localStorage.getItem('Token') && localStorage.getItem('uid')
+          ? 'Bearer ' + localStorage.getItem('Token')
+          : '',
+    },
+  })
+    .then(async (response) => {
+      const userProfileApiRes = await UserApi.findById(
+        localStorage.getItem('uid'),
+      )
+      if (userProfileApiRes.status == 200) {
+        const res = userProfileApiRes.data.data
+        const fileApiRes = await FileApi.getFileById(res.userInfoDTO.avatar)
+        if (fileApiRes.status === 200) {
+          imgSrc.value = fileApiRes.data.data.thumbnailLink
+        }
+      }
+      formData.value.avatar = []
+      ElNotification({
+        title: 'Success',
+        message: 'Cập nhật thành công.',
+        type: 'success',
+        duration: 3000,
+      })
+      formData.value.avatar = []
+
+      loadingBtnUploadAvt.value = false
+    })
+    .catch((response) => {
+      //handle error
+      console.log('error', response)
+      ElNotification({
+        title: 'Error',
+        message: 'Có lỗi khi upload file.',
+        type: 'error',
+        duration: 3000,
+      })
+      loadingBtnUploadAvt.value = false
+    })
 }
 
 onMounted(() => {
@@ -256,7 +347,7 @@ onMounted(() => {
       >
         <b-row>
           <h5 class="mb-4">Thông tin công ty</h5>
-          <b-col md="7">
+          <b-col md="8">
             <el-form-item label="Mã số thuế " prop="companyRequest.taxCode">
               <el-input v-model="formData.value.companyRequest.taxCode" />
             </el-form-item>
@@ -305,6 +396,55 @@ onMounted(() => {
               </el-select>
             </el-form-item>
           </b-col>
+
+          <b-col md="4" class="text-center">
+            <div class="">
+              <img
+                :src="
+                  imgSrc
+                    ? imgSrc
+                    : require('@/assets/images/avatars/unknow_avt.png')
+                "
+                alt="avatar"
+                class="avatar__image mb-3"
+              />
+              <div class="el-upload__tip">
+                Dạng file .jpg, .jpeg, .png <br />
+                dung lượng tối đa là 300KB <br />
+                và kích thước tối thiểu 300x300 pixel.
+              </div>
+            </div>
+            <div class="">
+              <el-upload
+                v-model:file-list="formData.value.avatar"
+                action
+                limit="1"
+                accept=".jpg,.jpeg,.png"
+                :auto-upload="false"
+                :before-upload="beforeAvatarUpload"
+                :disabled="loadingBtnUploadAvt"
+              >
+                <template #trigger>
+                  <el-button type="primary" class="mt-3"
+                    ><CIcon icon="cil-pencil" class="me-2" />Cập nhật đại
+                    diện</el-button
+                  >
+                </template>
+                <el-button
+                  v-if="
+                    formData.value.avatar && formData.value.avatar.length > 0
+                  "
+                  class="ml-3 mb-2 ms-2"
+                  type="success"
+                  @click="uploadAvatar"
+                  :loading="loadingBtnUploadAvt"
+                >
+                  Lưu
+                </el-button>
+              </el-upload>
+            </div>
+          </b-col>
+
           <b-col md="12">
             <el-form-item
               class="businessIntroduction"
@@ -342,6 +482,8 @@ onMounted(() => {
               :limit="1"
               :on-exceed="handleExceed"
               :auto-upload="false"
+              :disabled="loadingBtnBusinessFile"
+              accept=".pdf"
             >
               <template #trigger>
                 <el-button type="primary"
@@ -350,9 +492,10 @@ onMounted(() => {
               </template>
               <el-button
                 v-if="fileList"
-                class="ml-3 mb-2 ms-2"
+                class="ml-3 mb-2 ms-2 btn-load"
                 type="success"
                 @click="uploadFileToDb"
+                :loading="loadingBtnBusinessFile"
               >
                 Cập nhật
               </el-button>
@@ -384,6 +527,16 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
+.avatar__image {
+  width: 150px;
+  height: auto;
+  border: 1px solid #bebebe;
+  border-radius: 8px;
+  box-shadow: 0 0 3px 0px #bebebe;
+  :hover {
+    cursor: pointer;
+  }
+}
 :deep .formCompany {
   .businessIntroduction {
     ul li {

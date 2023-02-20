@@ -14,5 +14,8 @@ export default {
   },
   getFileById(id) {
     return Api().get(`google-driver/file/get-by-id/${id}`)
+  },
+  downloadStringFile(id) {
+    return Api().get(`files/download/string/${id}`)
   }
 }

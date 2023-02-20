@@ -5,6 +5,7 @@ import MethodService from '@/service/MethodService'
 import PostApi from '@/moduleApi/modules/PostApi'
 import CompanyApi from '@/moduleApi/modules/CompanyApi'
 import IndustryApi from '@/moduleApi/modules/IndustryApi'
+import FileApi from '@/moduleApi/modules/FileApi'
 
 import AppHeaderLanding from '@/components/AppHeaderLanding.vue'
 import AppFooterLanding from '@/components/AppFooterLanding.vue'
@@ -64,6 +65,57 @@ const bannerList = [
   },
 ]
 
+const companyAvtList = [
+  {
+    id: 1,
+    src: require('@/assets/images/logo-company/04012019-07.jpg'),
+  },
+  {
+    id: 2,
+    src: require('@/assets/images/logo-company/icons8-bbb-150.png'),
+  },
+  {
+    id: 3,
+    src: require('@/assets/images/logo-company/icons8-canvas-student-250.png'),
+  },
+  {
+    id: 4,
+    src: require('@/assets/images/logo-company/icons8-magento-250.png'),
+  },
+  {
+    id: 5,
+    src: require('@/assets/images/logo-company/icons8-monzo-250.png'),
+  },
+  {
+    id: 6,
+    src: require('@/assets/images/logo-company/icons8-notion-256.png'),
+  },
+  {
+    id: 7,
+    src: require('@/assets/images/logo-company/icons8-powerschool-250.png'),
+  },
+  {
+    id: 8,
+    src: require('@/assets/images/logo-company/vecteezy_circle-abstract-logo_1192263.png'),
+  },
+  {
+    id: 9,
+    src: require('@/assets/images/logo-company/vecteezy_natural-theme-sign-logo_8504086_143.png'),
+  },
+  {
+    id: 10,
+    src: require('@/assets/images/logo-company/vecteezy_natural-theme-sign-logo_8504087_507.png'),
+  },
+  {
+    id: 11,
+    src: require('@/assets/images/logo-company/vecteezy_triangle_1200707.png'),
+  },
+  {
+    id: 11,
+    src: require('@/assets/images/logo-company/vecteezy_triangle-logo_1200601.png'),
+  },
+]
+
 const backToPrev = () => {
   router.go(-1)
 }
@@ -104,6 +156,7 @@ const fn_tableChangeOffset = (page) => {
   tableRules.page = page
   tableRules.skip = (tableRules.page - 1) * tableRules.limit
   getOutstandingJob()
+  getNewestJob()
 }
 
 const getOutstandingJob = async () => {
@@ -112,14 +165,23 @@ const getOutstandingJob = async () => {
     skip: tableRules.skip,
     page: tableRules.page > 0 ? tableRules.page - 1 : tableRules.page,
     isOutstanding: true,
+    status: 'APPROVED',
     ...tableRules.filters,
   }
   const filter = MethodService.filterTable(JSON.stringify(dataFilter))
   const postApiRes = await PostApi.list(filter)
   if (postApiRes.status === 200) {
-    outstandingPostList.value = postApiRes.data.data.data
+    outstandingPostList.value = await changeData(postApiRes.data.data.data)
     outstandingPostList.total = postApiRes.data.data.totalElements
   }
+}
+
+const changeData = (data) => {
+  data.forEach(post => {
+    const o = companyList.value.find(item => item.userInfoDTO.companyId === post.companyId)
+    post.avt = o && o.avt && isNaN(o.avt) ? o.avt : require('@/assets/images/logo-company/04012019-07.jpg')
+  })
+  return data;
 }
 
 const getNewestJob = async () => {
@@ -127,28 +189,50 @@ const getNewestJob = async () => {
     limit: tableRules.limit,
     skip: tableRules.skip,
     page: tableRules.page > 0 ? tableRules.page - 1 : tableRules.page,
+    status: 'APPROVED',
     ...tableRules.filters,
   }
   const filter = MethodService.filterTable(JSON.stringify(dataFilter))
   const postApiRes = await PostApi.list(filter)
   if (postApiRes.status === 200) {
-    newestPostList.value = postApiRes.data.data.data
+    newestPostList.value = await changeData(postApiRes.data.data.data)
     newestPostList.total = postApiRes.data.data.totalElements
   }
 }
 
 const getCompanyList = async () => {
-  let dataFilter = {
-    limit: tableRules.limit,
-    skip: tableRules.skip,
-    page: tableRules.page > 0 ? tableRules.page - 1 : tableRules.page,
-    ...tableRules.filters,
-  }
-  const filter = MethodService.filterTable(JSON.stringify(dataFilter))
-  const companyApires = await CompanyApi.list(filter)
+  const companyApires = await CompanyApi.list('size=99999')
   if (companyApires.status === 200) {
-    companyList.value = companyApires.data.data.data
+    companyList.value = companyApires.data.data.data ? sortCompany(companyApires.data.data.data) : []
+
+    const arr = companyList.value.map((api, i) => {
+      if (i < 6) {
+        if (api.userInfoDTO.avatar) return FileApi.getFileById(api.userInfoDTO.avatar);
+        else return i
+      } else return i
+    })
+    console.log('arr >', arr)
+    await Promise.all([
+      ...arr
+    ])
+    .then(val => {
+      console.log(val)
+      companyList.value.forEach((company, i) => {
+        company.avt = isNaN(val[i]) && val[i] !== undefined ? val[i].data.data.thumbnailLink : val[i]
+      })
+    })
+    .catch((error) => {
+      console.log('getCompanyList', error)
+      ElMessage({
+        type: 'error',
+        message: `Có lỗi khi tải dữ liệu.`,
+      })
+    });
   }
+}
+
+const sortCompany = (data) => {
+  return data.sort((a, b) => b.numberPositionSubmit - a.numberPositionSubmit)
 }
 
 const handleAction = (action, id, fromList) => {
@@ -215,7 +299,7 @@ const getHotIndustriesList = async () => {
       industryHotList.value = sortHotIndustries(res.data.data.data)
     }
   } catch (error) {
-    console.log(error)
+    console.log('getHotIndustriesList', error)
     ElMessage({
       message: 'Có lỗi khi tải dữ liệu.',
       type: 'error',
@@ -233,11 +317,11 @@ const sortUpdatedIndustries = (data) => {
   )
 }
 
-onMounted(() => {
-  getHotIndustriesList()
-  getCompanyList()
-  getOutstandingJob()
-  getNewestJob()
+onMounted(async () => {
+  await getCompanyList()
+  await getHotIndustriesList()
+  await getOutstandingJob()
+  await getNewestJob()
 })
 </script>
 
@@ -290,7 +374,7 @@ onMounted(() => {
           >
             <div class="d-flex flex-column justify-content-center text-center">
               <img
-                src="../../assets/images/logo-company/04012019-07.jpg"
+                :src="company.avt && isNaN(company.avt) ? company.avt : companyAvtList[i+1].src"
                 alt="logo-company"
                 class="card__logo mx-auto"
               />
@@ -298,7 +382,7 @@ onMounted(() => {
                 {{
                   company.numberPositionSubmit
                     ? company.numberPositionSubmit
-                    : '22'
+                    : 0
                 }}
                 vị trí đang tuyển
               </p>
@@ -490,8 +574,8 @@ onMounted(() => {
                 @click="goToJobDetail(post.id)"
               >
                 <img
-                  src="../../assets/images/logo-company/vecteezy_triangle_1200707.png"
-                  alt="logo-company"
+                  :src="post.avt"
+                  alt="logo-company.png"
                   class="card__logo"
                 />
                 <div class="w-100">
@@ -751,7 +835,7 @@ onMounted(() => {
             background
             layout="prev, pager, next"
             :total="Number(outstandingPostList.total)"
-            @size-change="fn_tableSizeChange"
+            @size-change="fn_tableSizeChange('hot')"
             @current-change="fn_tableCurentChange"
             @prev-click="fn_tablePrevClick"
             @next-click="fn_tableNextClick"
@@ -849,8 +933,8 @@ onMounted(() => {
             <el-card class="box-card" shadow="hover">
               <div class="d-flex align-items-start">
                 <img
-                  src="../../assets/images/logo-company/icons8-notion-256.png"
-                  alt="logo-company"
+                  :src="post.avt"
+                  alt="logo-company.png"
                   class="card__logo"
                 />
                 <div class="w-100">
