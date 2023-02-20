@@ -118,7 +118,7 @@ export default [
       },
       {
         path: '/employee/curriculum-vitae/curriculum-vitae-info',
-        name: 'Hồ sơ trưc tuyến',
+        name: 'Hồ sơ trực tuyến',
         component: () =>
           import( '@/views/Employee/CurriculumVitae/CurriculumVitae.vue'),
       },

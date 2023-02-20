@@ -29,7 +29,7 @@ const currentUserId = localStorage.getItem('uid')
 
 const updateOnlineCV = () => {
   router.push({
-    name: 'Hồ sơ trưc tuyến',
+    name: 'Hồ sơ trực tuyến',
     // params:
   })
 }
@@ -115,7 +115,8 @@ const handleExceed = (files, uploadFiles) => {
 }
 
 const beforeRemove = (uploadFile, uploadFiles) => {
-  ElMessageBox.confirm(
+  console.log('beforeRemove')
+  return ElMessageBox.confirm(
     `Bạn có chắc chắn muốn bỏ hồ sơ đính kèm ${uploadFile.name} ?`,
     {
       // if you want to disable its autofocus

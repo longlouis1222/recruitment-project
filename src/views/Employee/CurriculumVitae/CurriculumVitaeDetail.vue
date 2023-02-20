@@ -5,6 +5,7 @@ import DataService from '@/service/DataService'
 import UserApi from '@/moduleApi/modules/UserApi'
 import RecruitmentApi from '@/moduleApi/modules/RecruitmentApi'
 import IndustryApi from '@/moduleApi/modules/IndustryApi'
+import FileApi from '@/moduleApi/modules/FileApi'
 
 import { ElNotification, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
@@ -140,6 +141,15 @@ const getCVById = async () => {
     const res = await RecruitmentApi.findById(route.params.id)
     if (res.status == 200) {
       formData.value = { ...res.data.data }
+
+      if (formData.value.userDTO && formData.value.userDTO.userInfoDTO && formData.value.userDTO.userInfoDTO.avatar) {
+        console.log(formData.value.userDTO.userInfoDTO.avatar)
+        const fileApiRes = await FileApi.getFileById(formData.value.userDTO.userInfoDTO.avatar)
+        if (fileApiRes.status === 200) {
+          formData.value.avt = fileApiRes.data.data.thumbnailLink
+        }
+      }
+
       formData.value.isSaved =
         (userProfile.value.userInfoDTO.arrProfileIds || []).findIndex(
           (o) => o == route.params.id,
@@ -201,7 +211,9 @@ const saveRecruitment = async () => {
       userProfile.value.userInfoDTO &&
       userProfile.value.userInfoDTO.arrProfileIds &&
       userProfile.value.userInfoDTO.arrProfileIds.length > 0 &&
-      userProfile.value.userInfoDTO.arrProfileIds.includes(parseInt(route.params.id))
+      userProfile.value.userInfoDTO.arrProfileIds.includes(
+        parseInt(route.params.id),
+      )
     ) {
       arrSave = userProfile.value.userInfoDTO.arrProfileIds.filter(
         (item) => item != parseInt(route.params.id),
@@ -312,25 +324,11 @@ onMounted(async () => {
         <b-row>
           <h5 class="mb-4">Thông tin cá nhân</h5>
           <b-col md="6">
-            <el-form-item label="Ảnh đại diện" prop="avatar">
-              <el-upload
-                class="avatar-uploader d-flex"
-                action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload"
-              >
-                <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-                <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-                <template #tip>
-                  <div class="el-upload__tip ms-2">
-                    Dạng file .jpg, .jpeg, .png <br />
-                    dung lượng tối đa là 300KB <br />
-                    và kích thước tối thiểu 300x300 pixel.
-                  </div>
-                </template>
-              </el-upload>
-            </el-form-item>
+            <img
+              :src="formData.value.avt ? formData.value.avt : require('@/assets/images/avatars/unknow_avt.png')"
+              alt="employee-avt.png"
+              class="card__logo"
+            />
           </b-col>
         </b-row>
 
@@ -431,7 +429,11 @@ onMounted(async () => {
             </b-col>
             <b-col md="6">
               <el-form-item label="Nghề nghiệp" prop="career">
-                <el-select v-model="formData.value.career" placeholder="Chọn" filterable>
+                <el-select
+                  v-model="formData.value.career"
+                  placeholder="Chọn"
+                  filterable
+                >
                   <el-option
                     v-for="item in industryList.value"
                     :key="item.id"
@@ -556,7 +558,11 @@ onMounted(async () => {
           <b-row>
             <b-col md="6">
               <el-form-item label="Hình thức làm việc" prop="workForm">
-                <el-select v-model="formData.value.workForm" placeholder="Chọn" filterable>
+                <el-select
+                  v-model="formData.value.workForm"
+                  placeholder="Chọn"
+                  filterable
+                >
                   <el-option
                     v-for="item in workFormList"
                     :key="item.value"
@@ -871,5 +877,12 @@ onMounted(async () => {
   ul li {
     list-style: initial;
   }
+}
+.card__logo {
+  width: auto;
+  height: 120px;
+  border: 1px solid #dadada;
+  border-radius: 4px;
+  box-shadow: 0px 0px 5px 0px #bebebe;
 }
 </style>

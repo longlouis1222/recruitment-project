@@ -8,11 +8,13 @@ import AppFooterLanding from '@/components/AppFooterLanding.vue'
 import PostApi from '@/moduleApi/modules/PostApi'
 import UserApi from '@/moduleApi/modules/UserApi'
 import IndustryApi from '@/moduleApi/modules/IndustryApi'
+import FileApi from '@/moduleApi/modules/FileApi'
 
 import { ElNotification, ElMessage } from 'element-plus'
 
 import { useRoute, useRouter } from 'vue-router'
 import { ref, reactive, onMounted } from 'vue'
+import CompanyApi from '@/moduleApi/modules/CompanyApi'
 
 const route = useRoute()
 const router = useRouter()
@@ -35,6 +37,13 @@ const getPostById = async () => {
     const res = await PostApi.findById(route.params.id)
     if (res.status === 200) {
       postInfo.value = res.data.data
+      const companyApiRes = await CompanyApi.findById(postInfo.value.companyId)
+      if (companyApiRes.status === 200) {
+        const fileApiRes = await FileApi.getFileById(companyApiRes.data.data.userInfoDTO.avatar)
+        if (fileApiRes.status === 200) {
+          postInfo.value.companyAvt = fileApiRes.data.data.thumbnailLink
+        }
+      }
     }
   } catch (error) {
     ElMessage({
@@ -170,7 +179,7 @@ onMounted(async () => {
           >
             <div class="d-flex align-items-center">
               <img
-                src="../../assets/images/logo-company/04012019-07.jpg"
+                :src="postInfo && postInfo.companyAvt ? postInfo.companyAvt : require('@/assets/images/logo-company/04012019-07.jpg')"
                 alt="logo-company"
                 class="card__logo"
               />
