@@ -18,7 +18,6 @@ const fn_upload = async () => {
   try {
     let nameImage = document.getElementById("uploadImage").files[0]?.name;
     let typeImage = nameImage?.slice(nameImage.indexOf(".")).toLowerCase();
-    console.log("typeImage", typeImage);
     if (typeImage) {
       if (
         typeImage !== ".jpg" &&

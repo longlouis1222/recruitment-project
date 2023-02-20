@@ -63,7 +63,6 @@ const goToFindJob = (query) => {
 
 onMounted(() => {
   localStorage.getItem('Token')
-  // console.log(localStorage.getItem('Token'))
   if (localStorage.getItem('Token') && localStorage.getItem('uid')) {
     isShowAvatar.value = true
   }
@@ -73,8 +72,6 @@ onMounted(() => {
   ) {
     isEmployer.value = true
   }
-  // console.log('props.industryList', props.industryList)
-  // console.log('props.industryHotList', props.industryHotList)
 })
 </script>
 <template>

@@ -29,7 +29,6 @@ const getVerificationCodes = async (formEl) => {
   formEl.validate(async (valid) => {
     if (valid) {
       try {
-        console.log('Login func from Login Component', dataForm.value.email)
         store.dispatch('forgotPassword', { email: dataForm.value.email})
         setTimeout(() => {
           isRecoverPw.value = false

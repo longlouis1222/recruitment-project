@@ -206,7 +206,6 @@ const saveRecruitment = async () => {
       arrSave = userProfile.value.userInfoDTO.arrProfileIds.filter(
         (item) => item != parseInt(route.params.id),
       )
-      console.log('arrSave:>', arrSave)
       dataBody.profileIds = arrSave
       const res = await RecruitmentApi.saveList(dataBody)
       if (res.status === 200) {

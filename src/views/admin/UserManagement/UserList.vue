@@ -103,7 +103,6 @@ const submitFormSearch = async (formEl) => {
     if (valid) {
       try {
         tableRules.filters = formSearchData.value
-        console.log('tableRules.filters', tableRules.filters)
         tableRules.skip = 0
         tableRules.page = 1
         await getUserList()

@@ -211,12 +211,10 @@ const getCompanyList = async () => {
         else return i
       } else return i
     })
-    console.log('arr >', arr)
     await Promise.all([
       ...arr
     ])
     .then(val => {
-      console.log(val)
       companyList.value.forEach((company, i) => {
         company.avt = isNaN(val[i]) && val[i] !== undefined ? val[i].data.data.thumbnailLink : val[i]
       })

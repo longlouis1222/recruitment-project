@@ -34,17 +34,8 @@ export default createStore({
   actions: {
     async login({ commit }, credentials) {
       try {
-        console.log(
-          'Log in from Action store ...',
-          credentials.username,
-          credentials.password,
-        )
         const res = await AuthService.login(credentials)
         if (res.status == 200 && res.data) {
-          console.log(
-            'this.$jwtDec("<your jwt>")',
-            VueJwtDecode.decode(res.data.token),
-          )
           const userInfo = VueJwtDecode.decode(res.data.token)
           commit('SET_CURRENT_USER', userInfo)
           localStorage.setItem('Token', res.data.token)
@@ -67,7 +58,6 @@ export default createStore({
 
     async logout({ commit }) {
       try {
-        console.log('Log out from Action store ...')
         localStorage.removeItem('Token')
         localStorage.removeItem('uid')
         localStorage.removeItem('type')
@@ -80,10 +70,8 @@ export default createStore({
 
     async register({ commit }, credentials) {
       try {
-        console.log('Sign up from Action store ...', credentials)
         const res = await AuthService.register(credentials)
         if (res.status === 200) {
-          console.log('register RES', res)
           // router.push({ name: 'Login' })
         }
       } catch (error) {
@@ -97,10 +85,8 @@ export default createStore({
 
     async forgotPassword({ commit }, credentials) {
       try {
-        console.log('Forgot PW from Action store...')
         const res = await AuthService.forgotPassword(credentials)
         if (res.status === 200) {
-          console.log('forgotPassword RES', res)
         }
       } catch (error) {
         console.log(error)
@@ -113,10 +99,8 @@ export default createStore({
 
     async updatePassword({ commit }, credentials) {
       try {
-        console.log('Update PW from Action store...')
         const res = await AuthService.updatePassword(credentials)
         if (res.status === 200) {
-          console.log('updatePassword RES', res)
           router.push({ name: 'Login' })
         }
       } catch (error) {
@@ -130,10 +114,8 @@ export default createStore({
 
     async activeAccount({ commit }, credentials) {
       try {
-        console.log('activeAccount from Action store...')
         const res = await AuthService.activeAccount(credentials)
         if (res.status === 200) {
-          console.log('activeAccount RES', res)
           // router.push({ name: 'Login' })
         }
       } catch (error) {

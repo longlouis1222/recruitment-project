@@ -100,7 +100,6 @@ const uploadAvatar = async () => {
   })
     .then(async (response) => {
       //handle success
-      console.log('success', response)
       const userProfileApiRes = await UserApi.findById(
         localStorage.getItem('uid'),
       )

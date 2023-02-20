@@ -81,8 +81,6 @@ const signUp = async (formEl) => {
         password: dataForm.value.password,
         confirmPassword: dataForm.value.repeatPassword,
       }
-      console.log('>>>data', data)
-      console.log('Login func from Register Component')
       store.dispatch('register', data)
 
       isVerifyAccount.value = true

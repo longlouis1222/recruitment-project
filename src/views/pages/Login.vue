@@ -17,18 +17,11 @@ const validForm = reactive({
 })
 
 const login = async (formEl) => {
-  console.log('zoos')
   formEl.validate(async (valid) => {
     if (!valid) {
       return
     }
     try {
-      console.log(
-        'Username / password',
-        formData.value.username,
-        formData.value.password,
-      )
-      console.log('Login func from Login Component')
       store.dispatch('login', {
         username: formData.value.username,
         password: formData.value.password,

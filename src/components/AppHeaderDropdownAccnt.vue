@@ -79,7 +79,6 @@ const logout = () => {
         duration: 3000,
       })
       setTimeout(() => {
-        console.log('Log out from App Header')
         store.dispatch('logout')
       }, 1500)
     })
@@ -87,7 +86,6 @@ const logout = () => {
 }
 
 const gotoUserProfile = () => {
-  console.log('Log out from App Header')
   const accType = localStorage.getItem('type')
   if (accType == 'CANDIDATE') {
     router.push({ name: 'Tài khoản ứng viên' })

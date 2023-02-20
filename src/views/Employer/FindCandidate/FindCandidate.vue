@@ -146,7 +146,6 @@ const getUserInfo = async () => {
     )
     if (userProfileApiRes.status == 200) {
       userProfile.value = userProfileApiRes.data.data
-      console.log(userProfile.value.userInfoDTO)
     }
   } catch (error) {
     ElMessage({
@@ -181,8 +180,6 @@ const saveRecruitment = async (rowData) => {
       profileIds: []
     }
     let arrSave = []
-    console.log('rowData.id:>', rowData.id)
-    console.log('userProfile.value:>', userProfile.value)
     if (
       userProfile.value &&
       userProfile.value.userInfoDTO &&

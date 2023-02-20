@@ -222,7 +222,12 @@ const uploadFileToDb = async () => {
     .then(async (response) => {
       //handle success
       loadingBtnBusinessFile.value = false
-      console.log('success', response)
+      ElNotification({
+        title: 'Success',
+        message: 'Cập nhật thành công.',
+        type: 'success',
+        duration: 3000,
+      })
       await getFileById(response.data.data)
     })
     .catch((response) => {

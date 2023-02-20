@@ -35,15 +35,16 @@ const updateOnlineCV = () => {
 }
 
 const fileList = ref([])
-
+const loadFileCV = ref(false)
 const uploadFileToDb = async () => {
+  loadFileCV.value = true
+
   let fd = new FormData()
-  fd.append('filePath', 'https://drive.google.com/drive/folders/1Evc0_Wr5g0ehP9nRPyiSYM_DFXxoHuMm?usp=share_link')
   fd.append(
-    'fileUpload',
-    fileList.value[0].raw,
-    fileList.value[0].raw.name,
+    'filePath',
+    'https://drive.google.com/drive/folders/1Evc0_Wr5g0ehP9nRPyiSYM_DFXxoHuMm?usp=share_link',
   )
+  fd.append('fileUpload', fileList.value[0].raw, fileList.value[0].raw.name)
   fd.append('shared', true)
 
   axios({
@@ -61,11 +62,18 @@ const uploadFileToDb = async () => {
     .then(async (response) => {
       //handle success
       console.log('success', response)
-      // loadImage.value = true
+      ElNotification({
+        title: 'Success',
+        message: 'Cập nhật thành công.',
+        type: 'success',
+        duration: 3000,
+      })
+      loadFileCV.value = false
       await getFileById(response.data.data)
     })
     .catch((response) => {
       //handle error
+      loadFileCV.value = false
       console.log('error', response)
     })
 }
@@ -78,8 +86,8 @@ const getFileById = async (id) => {
       fileList.value = [
         {
           name: res.data.data.name,
-          url: res.data.data.link
-        }
+          url: res.data.data.link,
+        },
       ]
     }
   } catch (error) {
@@ -103,9 +111,7 @@ const handlePreview = (uploadFile) => {
 }
 
 const handleExceed = (files, uploadFiles) => {
-  ElMessage.warning(
-    `Giới hạn file tải lên là ${files.length}`
-  )
+  ElMessage.warning(`Giới hạn file tải lên là ${files.length}`)
 }
 
 const beforeRemove = (uploadFile, uploadFiles) => {
@@ -173,7 +179,7 @@ const activeSearchUserCV = async () => {
         type: 'error',
         duration: 3000,
       })
-      return;
+      return
     }
     ElNotification({
       title: 'Error',
@@ -208,14 +214,24 @@ onMounted(async () => {
             style="width: 64px"
             alt="icons8-resume-64.png"
           />
-          <p class="mb-0 ms-2 me-3">{{ dataCv.value.positionOffer ? dataCv.value.positionOffer : 'Vị trí ứng tuyển' }}</p>
+          <p class="mb-0 ms-2 me-3">
+            {{
+              dataCv.value.positionOffer
+                ? dataCv.value.positionOffer
+                : 'Vị trí ứng tuyển'
+            }}
+          </p>
           <el-tag :type="'success'" disable-transitions class="ms-2 me-5"
             >Đã duyệt</el-tag
           >
           <el-divider direction="vertical" />
           <p class="mb-0 mx-3">Lượt xem: {{ view }}</p>
           <el-divider direction="vertical" />
-          <el-switch v-model="switch1" active-text="Cho phép tìm kiếm" @change="activeSearchUserCV" />
+          <el-switch
+            v-model="switch1"
+            active-text="Cho phép tìm kiếm"
+            @change="activeSearchUserCV"
+          />
           <el-tooltip
             class="box-item"
             effect="dark"
@@ -225,11 +241,7 @@ onMounted(async () => {
             <el-icon class="mx-1"><InfoFilled /></el-icon>
           </el-tooltip>
           <el-divider direction="vertical" />
-          <el-button
-            type="primary"
-            class="ms-4"
-            @click="updateOnlineCV"
-          >
+          <el-button type="primary" class="ms-4" @click="updateOnlineCV">
             <CIcon icon="cil-pencil" class="me-2" />
             Cập nhật hồ sơ
           </el-button>
@@ -244,14 +256,24 @@ onMounted(async () => {
             style="width: 64px"
             alt="PDF-CV.png"
           />
-          <p class="mb-0 ms-2 me-3">{{ dataCv.value.positionOffer ? dataCv.value.positionOffer : 'Vị trí ứng tuyển' }}</p>
+          <p class="mb-0 ms-2 me-3">
+            {{
+              dataCv.value.positionOffer
+                ? dataCv.value.positionOffer
+                : 'Vị trí ứng tuyển'
+            }}
+          </p>
           <el-tag :type="'success'" disable-transitions class="ms-2 me-5"
             >Đã duyệt</el-tag
           >
           <el-divider direction="vertical" />
           <!-- <p class="mb-0 mx-3">Lượt xem: {{ view }}</p> -->
           <!-- <el-divider direction="vertical" /> -->
-          <el-switch v-model="switch2" active-text="Cho phép tìm kiếm" disabled />
+          <el-switch
+            v-model="switch2"
+            active-text="Cho phép tìm kiếm"
+            disabled
+          />
           <el-tooltip
             class="box-item"
             effect="dark"
@@ -280,17 +302,27 @@ onMounted(async () => {
             :limit="1"
             :on-exceed="handleExceed"
             :auto-upload="false"
+            :disabled="loadFileCV"
           >
             <template #trigger>
-              <el-button type="primary"><CIcon icon="cil-pencil" class="me-2" />Tải lên hồ sơ</el-button>
+              <el-button type="primary"
+                ><CIcon
+                  icon="cil-pencil"
+                  class="me-2"
+                  :disabled="loadFileCV"
+                />Tải lên hồ sơ</el-button
+              >
             </template>
-            <el-button class="ml-3 mb-2 ms-2" type="success" @click="uploadFileToDb">
+            <el-button
+              class="ml-3 mb-2 ms-2 btn-load"
+              type="success"
+              @click="uploadFileToDb"
+              :loading="loadFileCV"
+            >
               Cập nhật
             </el-button>
             <template #tip>
-              <div class="el-upload__tip">
-                Định dạng file tải lên là PDF.
-              </div>
+              <div class="el-upload__tip">Định dạng file tải lên là PDF.</div>
             </template>
           </el-upload>
         </div>

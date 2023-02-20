@@ -84,22 +84,6 @@ const exportExcel = async () => {
       worksheet['!cols'].push({ wch: max_width })
     }
   }
-  console.log(worksheet);
-  // for (var sheet of Object.keys(sheets)) {
-  //   xlsx.utils.book_append_sheet(
-  //     worksheet,
-  //     xlsx.utils.aoa_to_sheet(sheets[sheet]),
-  //     sheet
-  //   );
-  // }
-  // for (let i = 1; i <= worksheet[0].length; i++) {
-  //   worksheet.Sheets[0]['A' + i].s = {
-  //     fill: {
-  //       patternType: 'solid',
-  //       fgColor: { rgb: '111111' },
-  //     },
-  //   }
-  // }
   XLSX.writeFile(workbook, 'Hồ sơ ứng viên ứng tuyển.xlsx', {
     compression: true,
   })

@@ -69,6 +69,12 @@ const submitForm = async (formEl) => {
         await getIndustryList()
       } catch (error) {
         console.log(error)
+        ElNotification({
+          title: 'Error',
+          message: 'Cập nhật thất bại.',
+          type: 'error',
+          duration: 3000,
+        })
       }
     } else {
       console.log('error submit!', fields)
