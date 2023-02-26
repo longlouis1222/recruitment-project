@@ -287,6 +287,7 @@ onMounted(async () => {
                 type="primary"
                 plain
                 @click="handleAction('update', scope.row)"
+                title="Cập nhật"
                 ><CIcon icon="cilPencil"
               /></el-button>
               <el-button
@@ -294,6 +295,7 @@ onMounted(async () => {
                 type="danger"
                 plain
                 @click="handleAction('delete', scope.row)"
+                title="Xóa"
                 ><CIcon icon="cilTrash"
               /></el-button>
             </div>

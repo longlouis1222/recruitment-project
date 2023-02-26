@@ -460,6 +460,7 @@ onMounted(async () => {
                 @click="handleAction('approve', scope.row)"
                 :disabled="scope.row.status == 'APPROVED' || scope.row.status == 'REJECT'"
                 v-if="userRole === 'ADMIN'"
+                title="Duyệt"
                 ><CIcon icon="cilBrushAlt"
               /></el-button>
               <el-button
@@ -468,6 +469,7 @@ onMounted(async () => {
                 plain
                 @click="handleAction('update', scope.row)"
                 :disabled="scope.row.status == 'APPROVED' || scope.row.status == 'REJECT'"
+                title="Cập nhật"
                 ><CIcon icon="cilPencil"
               /></el-button>
               <el-button
@@ -475,6 +477,7 @@ onMounted(async () => {
                 type="danger"
                 plain
                 @click="handleAction('delete', scope.row)"
+                title="Xóa"
                 ><CIcon icon="cilTrash"
               /></el-button>
             </div>

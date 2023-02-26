@@ -467,6 +467,7 @@ onMounted(() => {
               <el-button
                 size="small"
                 @click="handleAction('view', scope.row)"
+                title="Xem"
                 ><CIcon icon="cilFindInPage"
               /></el-button>
               <el-button
@@ -475,6 +476,7 @@ onMounted(() => {
                 plain
                 @click="handleAction('save', scope.row)"
                 v-if="userRole === 'EMPLOYER' && !scope.row.isSaved"
+                title="Lưu"
                 ><CIcon icon="cilStar"
               /></el-button>
               <el-button
@@ -483,6 +485,7 @@ onMounted(() => {
                 plain
                 @click="handleAction('save', scope.row)"
                 v-if="userRole === 'EMPLOYER' && scope.row.isSaved"
+                title="Bỏ lưu"
                 ><CIcon icon="cilStar"
               /></el-button>
             </div>

@@ -444,7 +444,7 @@ onMounted(() => {
         >
           <template #default="scope">
             <div class="">
-              <el-button size="small" @click="handleAction('view', scope.row)"
+              <el-button size="small" @click="handleAction('view', scope.row)" title="Xem"
                 ><CIcon icon="cilFindInPage"
               /></el-button>
               <!-- <el-button
@@ -459,6 +459,7 @@ onMounted(() => {
                 type="danger"
                 plain
                 @click="handleAction('delete', scope.row)"
+                title="Xóa"
                 ><CIcon icon="cilTrash"
               /></el-button>
             </div>

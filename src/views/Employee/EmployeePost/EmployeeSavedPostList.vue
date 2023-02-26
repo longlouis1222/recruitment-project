@@ -479,6 +479,7 @@ onMounted(() => {
                 type="danger"
                 plain
                 @click="handleAction('delete', scope.row)"
+                title="Xóa"
                 ><CIcon icon="cilTrash"
               /></el-button>
             </div>
