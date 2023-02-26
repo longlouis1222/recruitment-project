@@ -319,10 +319,10 @@ onMounted(() => {
                       filterable
                     >
                       <el-option
-                        v-for="item in mainJobList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
+                        v-for="item in industryList.value"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.name"
                       />
                     </el-select>
                   </el-form-item>

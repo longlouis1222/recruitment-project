@@ -51,7 +51,8 @@ const convertDataExport = (data) => {
   return arr
 }
 
-const exportExcel = () => {
+const exportExcel = async () => {
+  await getAllRecruitmentSavedList()
   const dataExport = convertDataExport(allRecruitmentSavedList.value)
   if (!dataExport || dataExport.length == 0) {
     return
@@ -82,14 +83,14 @@ const exportExcel = () => {
       worksheet['!cols'].push({ wch: max_width })
     }
   }
-  for (let i = 1; i <= sheets[0].length; i++) {
-    worksheet.Sheets[0]['A' + i].s = {
-      fill: {
-        patternType: 'solid',
-        fgColor: { rgb: '111111' },
-      },
-    }
-  }
+  // for (let i = 1; i <= sheets[0].length; i++) {
+  //   worksheet.Sheets[0]['A' + i].s = {
+  //     fill: {
+  //       patternType: 'solid',
+  //       fgColor: { rgb: '111111' },
+  //     },
+  //   }
+  // }
 
   XLSX.writeFile(workbook, 'Hồ sơ đã lưu.xlsx', { compression: true })
 }

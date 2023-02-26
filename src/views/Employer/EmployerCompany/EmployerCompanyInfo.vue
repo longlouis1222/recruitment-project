@@ -4,6 +4,7 @@ import DataService from '@/service/DataService'
 
 import UserApi from '@/moduleApi/modules/UserApi'
 import FileApi from '@/moduleApi/modules/FileApi'
+import IndustryApi from '@/moduleApi/modules/IndustryApi'
 
 import axios from 'axios'
 
@@ -23,9 +24,12 @@ const formData = reactive({
 const validForm = modelData.validForm
 
 const mainJobList = DataService.mainJobList
+const industryList = reactive({ value: [] })
+
 const userProfile = reactive({})
 const fileList = ref([])
 const fileCompanyAvtList = ref([])
+
 const imgSrc = ref('')
 const loadingBtnUploadAvt = ref(false)
 const loadingBtnBusinessFile = ref(false)
@@ -136,21 +140,23 @@ const getUserInfo = async () => {
             ? userProfile.value.userInfoDTO.town
             : '',
         },
-        companyRequest: { ...userProfile.value.companyDTO },
+        companyRequest: { ...userProfile.value.companyDTO,
+          businessIntroduction: userProfile.value.companyDTO.businessIntroduction ? userProfile.value.companyDTO.businessIntroduction : '',
+          fieldOfActivity: userProfile.value.companyDTO.fieldOfActivity ? Number(userProfile.value.companyDTO.fieldOfActivity) : '' }
+      }
+      if (userProfile.value.userInfoDTO && userProfile.value.userInfoDTO.avatar) {
+        const fileApiRes = await FileApi.getFileById(
+          userProfile.value.userInfoDTO.avatar
+        )
+        if (fileApiRes.status === 200) {
+          imgSrc.value = fileApiRes.data.data.thumbnailLink
+        }
       }
       if (
         !userProfile.value.companyDTO ||
         (userProfile.value.companyDTO && !userProfile.value.companyDTO.fileId)
       )
         return
-      if (userProfile.value.userInfoDTO.avatar) {
-        const fileApiRes = await FileApi.getFileById(
-          userProfile.value.userInfoDTO.avatar,
-        )
-        if (fileApiRes.status === 200) {
-          imgSrc.value = fileApiRes.data.data.thumbnailLink
-        }
-      }
       await getFileById(userProfile.value.companyDTO.fileId)
     }
   } catch (error) {
@@ -328,8 +334,23 @@ const uploadAvatar = async () => {
     })
 }
 
-onMounted(() => {
-  getUserInfo()
+const getIndustryList = async () => {
+  try {
+    const industryApiRes = await IndustryApi.list('size=99999')
+    if (industryApiRes.status == 200) {
+      industryList.value = industryApiRes.data.data.data
+    }
+  } catch (error) {
+    ElMessage({
+      message: 'Có lỗi khi tải dữ liệu.',
+      type: 'error',
+    })
+  }
+}
+
+onMounted(async () => {
+  await getIndustryList()
+  await getUserInfo()
 })
 </script>
 
@@ -393,10 +414,10 @@ onMounted(() => {
                 filterable
               >
                 <el-option
-                  v-for="item in mainJobList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in industryList.value"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
                 />
               </el-select>
             </el-form-item>
@@ -465,7 +486,6 @@ onMounted(() => {
                 v-model="formData.value.companyRequest.businessIntroduction"
                 :config="editorConfig"
                 :disabled="editorDisabled"
-                @blur="onEditorBlur(ruleFormRef)"
               ></ckeditor>
             </el-form-item>
           </b-col>
@@ -547,6 +567,12 @@ onMounted(() => {
     ul li {
       list-style: initial;
     }
+  }
+}
+:deep .ck.ck-editor {
+  width: 100%;
+  ul li {
+    list-style: initial;
   }
 }
 </style>

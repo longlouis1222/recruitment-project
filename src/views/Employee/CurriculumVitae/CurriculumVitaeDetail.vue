@@ -40,6 +40,7 @@ const formData = reactive({
 })
 const validForm = modelData.validForm
 
+const currentUser = localStorage.getItem('type')
 const imageUrl = ref('')
 const userProfile = reactive({ value: [] })
 const industryList = reactive({ value: [] })
@@ -833,14 +834,14 @@ onMounted(async () => {
           type="danger"
           plain
           @click="saveRecruitment"
-          v-if="formData.value.isSaved"
+          v-if="formData.value.isSaved && currentUser == 'EMPLOYER'"
           >Bỏ lưu</el-button
         >
         <el-button
           type="warning"
           plain
           @click="saveRecruitment"
-          v-if="!formData.value.isSaved"
+          v-if="!formData.value.isSaved && currentUser == 'EMPLOYER'"
           >Lưu</el-button
         >
       </div>

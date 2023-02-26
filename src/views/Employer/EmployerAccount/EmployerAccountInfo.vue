@@ -51,7 +51,7 @@ const submitForm = async (formEl) => {
           email: userProfile.value.email,
           password: userProfile.value.password,
           listRole: null,
-          type: 'EMPLOYEE',
+          type: 'EMPLOYER',
           status: userProfile.value.status ? userProfile.value.status : 1,
           userInfoRequest: {
             address: formData.value.userInfoRequest.address,
@@ -108,7 +108,7 @@ const getUserInfo = async () => {
       email: userProfile.value.email,
       password: userProfile.value.password,
       listRole: null,
-      type: 'EMPLOYEE',
+      type: 'EMPLOYER',
       status: userProfile.value.status ? userProfile.value.status : 1,
       userInfoRequest: {
         address: userProfile.value.userInfoDTO.address,
@@ -357,6 +357,12 @@ onMounted(() => {
   box-shadow: 0 0 3px 0px #bebebe;
   :hover {
     cursor: pointer;
+  }
+}
+:deep .ck.ck-editor {
+  width: 100%;
+  ul li {
+    list-style: initial;
   }
 }
 </style>

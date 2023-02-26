@@ -4,6 +4,7 @@ import DataService from '@/service/DataService'
 
 import IndustryApi from '@/moduleApi/modules/IndustryApi'
 import PostApi from '@/moduleApi/modules/PostApi'
+import UserApi from '@/moduleApi/modules/UserApi'
 
 import { useRouter } from 'vue-router'
 import { ElMessageBox, ElNotification } from 'element-plus'
@@ -30,6 +31,7 @@ const formSearchData = reactive({
 const validFormSearch = tableRules.dataSearch.valid
 
 const industryList = reactive({ value: [] })
+const companyId = ref('')
 
 const submitForm = async (formEl) => {
   if (!formEl) return
@@ -54,6 +56,7 @@ const getPostList = async () => {
     page: tableRules.page > 0 ? tableRules.page - 1 : tableRules.page,
     // sort: tableRules.sort,
     ...tableRules.filters,
+    companyId: companyId.value
   }
   router.replace({
     name: moduleName,
@@ -118,40 +121,36 @@ const handleAction = (action, rowData) => {
 const approvePost = (rowData) => {
   router.push({
     name: 'Duyệt tin tuyển dụng',
-    params: { id: rowData.id }
+    params: { id: rowData.id },
   })
 }
 
 const updatePost = (rowData) => {
   router.push({
     name: 'Cập nhật tin tuyển dụng',
-    params: { id: rowData.id }
+    params: { id: rowData.id },
   })
 }
 
 const deletePost = async (rowData) => {
-  ElMessageBox.confirm(
-    'Bạn có chắc muốn xóa bài viết này ?',
-    'Cảnh báo',
-    {
-      // if you want to disable its autofocus
-      // autofocus: false,
-      confirmButtonText: 'Đồng ý',
-      cancelButtonText: 'Hủy',
-      type: 'warning',
-    },
-  )
+  ElMessageBox.confirm('Bạn có chắc muốn xóa bài viết này ?', 'Cảnh báo', {
+    // if you want to disable its autofocus
+    // autofocus: false,
+    confirmButtonText: 'Đồng ý',
+    cancelButtonText: 'Hủy',
+    type: 'warning',
+  })
     .then(async () => {
       const postApiRes = await PostApi.delete(rowData.id)
-        if (postApiRes.status === 200) {
-          ElNotification({
-            title: 'Success',
-            message: 'Xóa thành công.',
-            type: 'success',
-            duration: 3000,
-          })
-          await getPostList()
-        }
+      if (postApiRes.status === 200) {
+        ElNotification({
+          title: 'Success',
+          message: 'Xóa thành công.',
+          type: 'success',
+          duration: 3000,
+        })
+        await getPostList()
+      }
     })
     .catch(() => {})
 }
@@ -191,15 +190,29 @@ const getIndustryList = async () => {
       industryList.value = industryApiRes.data.data.data
     }
   } catch (error) {
-    ElMessage({
+    ElNotification({
+      title: 'Error',
       message: 'Có lỗi khi tải dữ liệu.',
       type: 'error',
+      duration: 3000,
     })
   }
 }
 
+const getUserInfo = async () => {
+  const userProfileApiRes = await UserApi.findById(localStorage.getItem('uid'))
+  if (userProfileApiRes.status == 200) {
+    if (userProfileApiRes.data.data.type === 'EMPLOYER') {
+      companyId.value = userProfileApiRes.data.data.companyDTO.id
+        ? userProfileApiRes.data.data.companyDTO.id
+        : ''
+    }
+  }
+}
+
 onMounted(async () => {
-  getIndustryList()
+  await getUserInfo()
+  await getIndustryList()
   await getPostList()
 })
 </script>
@@ -211,10 +224,7 @@ onMounted(async () => {
         <div class="card-header">
           <div class="d-flex justify-content-between">
             <h4>Danh sách bài tuyển dụng</h4>
-            <el-button
-              type="primary"
-              @click="toggleSearchBox"
-            >
+            <el-button type="primary" @click="toggleSearchBox">
               <el-icon class="me-2"><Search /></el-icon>
               Ẩn/hiện tìm kiếm
             </el-button>
@@ -458,7 +468,9 @@ onMounted(async () => {
               <el-button
                 size="small"
                 @click="handleAction('approve', scope.row)"
-                :disabled="scope.row.status == 'APPROVED' || scope.row.status == 'REJECT'"
+                :disabled="
+                  scope.row.status == 'APPROVED' || scope.row.status == 'REJECT'
+                "
                 v-if="userRole === 'ADMIN'"
                 title="Duyệt"
                 ><CIcon icon="cilBrushAlt"
@@ -468,7 +480,9 @@ onMounted(async () => {
                 type="primary"
                 plain
                 @click="handleAction('update', scope.row)"
-                :disabled="scope.row.status == 'APPROVED' || scope.row.status == 'REJECT'"
+                :disabled="
+                  scope.row.status == 'APPROVED' || scope.row.status == 'REJECT'
+                "
                 title="Cập nhật"
                 ><CIcon icon="cilPencil"
               /></el-button>
