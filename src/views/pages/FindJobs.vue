@@ -49,7 +49,7 @@ const noMore = computed(() => count.value >= tableRules.total)
 const disabled = computed(() => loading.value || noMore.value)
 
 const companyList = reactive({ value: []})
-
+const componentRerender = ref(0)
 const toggleSearchBox = () => {
   tableRules.showFormSearch = !tableRules.showFormSearch
 }
@@ -81,6 +81,7 @@ const handleAction = (action, id) => {
     const post = tableRules.data.find((o) => o.id === id)
     if (post) post.userCurrentSaved = false
   }
+  componentRerender.value++
 }
 
 const saveToCareList = async (id) => {
@@ -471,6 +472,7 @@ onMounted(async () => {
               v-infinite-scroll="load"
               class="list"
               :infinite-scroll-disabled="disabled"
+              :key="componentRerender"
             >
               <li
                 v-for="post in tableRules.data"
