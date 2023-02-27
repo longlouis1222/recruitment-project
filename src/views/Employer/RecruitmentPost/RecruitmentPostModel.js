@@ -62,7 +62,7 @@ model.validForm = {
   workplace: [ValidService.requiredChange],
   salaryMin: [ValidService.required],
   salaryMax: [ValidService.required],
-  necessarySkills: [ValidService.requiredChange],
+  necessarySkills: [ValidService.required],
   jobDescription: [ValidService.required],
   jobRequirements: [ValidService.required],
   benefits: [ValidService.required],

@@ -175,12 +175,12 @@ const fn_tableNextClick = () => {
 const fn_tableChangeOffset = (page) => {
   tableRules.page = page
   tableRules.offset = (tableRules.page - 1) * tableRules.limit
-  // getService();
+  getPostList();
 }
 const fn_tableSortChange = (column, tableSort) => {
   tableSort = tableRules
   MethodService.tableSortChange(column, tableSort)
-  // getService();
+  getPostList();
 }
 
 const getIndustryList = async () => {
@@ -456,7 +456,7 @@ onMounted(async () => {
             >
           </template>
         </el-table-column>
-        <el-table-column prop="necessarySkills" label="Khác" min-width="200" />
+        <!-- <el-table-column prop="necessarySkills" label="Khác" min-width="200" /> -->
         <el-table-column
           fixed="right"
           align="center"
