@@ -65,7 +65,7 @@ DataService.certificateList = [
 DataService.experienceList = [
   {
     label: 'Chưa có kinh nghiệm',
-    value: 'Chưa có kinh nghiệm'
+    value: 0
   },
   {
     label: 'Dưới 1 năm',

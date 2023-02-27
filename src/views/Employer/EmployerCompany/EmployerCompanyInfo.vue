@@ -142,7 +142,7 @@ const getUserInfo = async () => {
         },
         companyRequest: { ...userProfile.value.companyDTO,
           businessIntroduction: userProfile.value.companyDTO.businessIntroduction ? userProfile.value.companyDTO.businessIntroduction : '',
-          fieldOfActivity: userProfile.value.companyDTO.fieldOfActivity ? Number(userProfile.value.companyDTO.fieldOfActivity) : '' }
+          fieldOfActivity: userProfile.value.companyDTO.fieldOfActivity ? userProfile.value.companyDTO.fieldOfActivity : '' }
       }
       if (userProfile.value.userInfoDTO && userProfile.value.userInfoDTO.avatar) {
         const fileApiRes = await FileApi.getFileById(
@@ -417,7 +417,7 @@ onMounted(async () => {
                   v-for="item in industryList.value"
                   :key="item.id"
                   :label="item.name"
-                  :value="item.id"
+                  :value="item.name"
                 />
               </el-select>
             </el-form-item>

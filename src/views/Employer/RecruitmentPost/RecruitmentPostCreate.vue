@@ -38,6 +38,7 @@ const formData = reactive({
 const validForm = modelData.validForm
 const industryList = reactive({ value: [] })
 const userInfo = ref(null)
+const isFullCapacity = ref(false)
 
 const editor = ClassicEditor
 const editorConfig = {
@@ -169,9 +170,26 @@ const getUserInfo = async () => {
   }
 }
 
-onMounted(() => {
-  getIndustryList()
-  getUserInfo()
+const getPostList = async () => {
+  isFullCapacity.value = false
+  const postApiRes = await PostApi.list(`size=99999&companyId=${userInfo.value.companyDTO.id}`)
+  if (postApiRes.status == 200) {
+    isFullCapacity.value = postApiRes.data.data.totalElements >= 15 ? true : false
+    if (isFullCapacity.value) {
+      ElNotification({
+        title: 'Warning',
+        message: 'Công ty đã đạt giới hạn 15 tin tuyển dụng. Vui lòng xóa bớt để tạo tin mới.',
+        type: 'warning',
+        duration: 3000,
+      })
+    }
+  }
+}
+
+onMounted(async () => {
+  await getUserInfo()
+  await getPostList()
+  await getIndustryList()
 })
 </script>
 
@@ -191,6 +209,7 @@ onMounted(() => {
         label-position="top"
         class="demo-ruleForm"
         status-icon
+        :disabled="isFullCapacity"
       >
         <b-row>
           <b-col md="12">
@@ -443,7 +462,7 @@ onMounted(() => {
                 :editor="editor"
                 v-model="formData.value.necessarySkills"
                 :config="editorConfigNecessarySkills"
-                :disabled="editorDisabled"
+                :disabled="editorDisabled || isFullCapacity"
                 @blur="onEditorBlur(ruleFormRef)"
               ></ckeditor>
             </el-form-item>
@@ -465,7 +484,7 @@ onMounted(() => {
                 :editor="editor"
                 v-model="formData.value.jobDescription"
                 :config="editorConfigJobDescription"
-                :disabled="editorDisabled"
+                :disabled="editorDisabled || isFullCapacity"
                 @blur="onEditorBlur(ruleFormRef)"
               ></ckeditor>
             </el-form-item>
@@ -484,7 +503,7 @@ onMounted(() => {
                 :editor="editor"
                 v-model="formData.value.jobRequirements"
                 :config="editorConfigJobRequirements"
-                :disabled="editorDisabled"
+                :disabled="editorDisabled || isFullCapacity"
                 @blur="onEditorBlur(ruleFormRef)"
               ></ckeditor>
             </el-form-item>
@@ -503,7 +522,7 @@ onMounted(() => {
                 :editor="editor"
                 v-model="formData.value.benefits"
                 :config="editorConfigBenifits"
-                :disabled="editorDisabled"
+                :disabled="editorDisabled || isFullCapacity"
                 @blur="onEditorBlur(ruleFormRef)"
               ></ckeditor>
             </el-form-item>
@@ -545,14 +564,13 @@ onMounted(() => {
             </el-form-item>
           </b-col>
         </b-row>
-
-        <div class="text-center">
-          <el-button @click="backToPrev">Hủy bỏ</el-button>
-          <el-button type="primary" @click="submitForm(ruleFormRef)"
-            >Thêm mới</el-button
-          >
-        </div>
       </el-form>
+      <div class="text-center">
+        <el-button @click="backToPrev">Quay lại</el-button>
+        <el-button type="primary" @click="submitForm(ruleFormRef)" :disabled="isFullCapacity"
+          >Thêm mới</el-button
+        >
+      </div>
     </el-card>
   </div>
 </template>
