@@ -57,7 +57,8 @@ const toggleSearchBox = () => {
 const load = () => {
   loading.value = true
   setTimeout(() => {
-    count.value += 1
+    count.value += 10
+    tableRules.skip += 10
     tableRules.page += 1
     getPostList()
   }, 2000)
@@ -120,10 +121,11 @@ const unSaveFromCareList = async (id) => {
 
 const getPostList = async () => {
   let dataFilter = {
+    ...tableRules.filters,
+    status: 'APPROVED',
     size: tableRules.limit,
     skip: tableRules.skip,
     page: tableRules.page > 0 ? tableRules.page - 1 : tableRules.page,
-    ...tableRules.filters,
   }
   router.replace({
     name: moduleName,
@@ -137,7 +139,6 @@ const getPostList = async () => {
     const res = await changeData(postApiRes.data.data.data)
     tableRules.data = [...tableRules.data, ...res]
     tableRules.total = postApiRes.data.data.totalElements
-    count.value = postApiRes.data.data.totalElements
     loading.value = false
   }
 }
@@ -243,6 +244,8 @@ const sortCompany = (data) => {
 
 const hashURL = () => {
   tableRules.filters = route.query
+  tableRules.page = 1
+  tableRules.filters.page = 0
   formSearchData.value = {
     ...tableRules.filters,
     industryId: route.query.industryId ? parseInt(route.query.industryId) : '',

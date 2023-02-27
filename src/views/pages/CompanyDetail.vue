@@ -41,6 +41,7 @@ const load = () => {
     offset.value += 10
     // page.value += 1
     recruitmentPostList.total += 10
+    getRecuitmentPostByCompany()
   }, 2000)
   loading.value = false
 }
@@ -56,6 +57,7 @@ const backToPrev = () => {
 const getRecuitmentPostByCompany = async () => {
   const dataFilter = {
     companyId: route.params.id,
+    status: 'APPROVED',
     limit: size.value,
     skip: offset.value,
     page: page.value > 0 ? page.value - 1 : page.value,
