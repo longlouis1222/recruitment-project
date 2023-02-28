@@ -1,6 +1,6 @@
 // Here you can add other styles
 ul li {
- list-style: none;
+  list-style: none;
 }
 .w-45 {
   width: 45%;
@@ -23,6 +23,17 @@ ul li {
   text-overflow: ellipsis;
   line-height: 28px;
   -webkit-line-clamp: 2;
+  display: -webkit-box;
+  word-break: break-word;
+  -webkit-box-orient: vertical;
+}
+
+.text-overflow-title {
+  width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 28px;
+  -webkit-line-clamp: 1;
   display: -webkit-box;
   word-break: break-word;
   -webkit-box-orient: vertical;

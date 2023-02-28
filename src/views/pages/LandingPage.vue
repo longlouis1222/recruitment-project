@@ -549,6 +549,7 @@ onMounted(async () => {
                 <p
                   class="card__title-position mb-2"
                   @click="goToJobDetail(post.id)"
+                  :title="post.title"
                 >
                   {{ post.title }}
                 </p>
@@ -920,7 +921,7 @@ onMounted(async () => {
             >
           </div>
         </template>
-        <!-- Start Fake data -->
+        <!-- Start Real data -->
         <b-row>
           <b-col
             md="4"
@@ -942,6 +943,7 @@ onMounted(async () => {
                     <p
                       class="card__title-position mb-1 ms-2"
                       @click="goToJobDetail(post.id)"
+                      :title="post.title ? post.title : ''"
                     >
                       {{ post.title ? post.title : '' }}
                     </p>
@@ -1003,7 +1005,7 @@ onMounted(async () => {
             </el-card>
           </b-col>
         </b-row>
-        <!-- End Fake data -->
+        <!-- End Real data -->
 
         <!-- Start Fake data -->
         <b-row class="mb-3" v-if="newestPostList.value.length === 0">
@@ -1626,6 +1628,14 @@ onMounted(async () => {
   .card__title-position {
     font-size: 13px;
     font-weight: 600;
+    width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 28px;
+    -webkit-line-clamp: 1;
+    display: -webkit-box;
+    word-break: break-word;
+    -webkit-box-orient: vertical;
   }
   .card__title-company {
     font-size: 13px;
@@ -1653,6 +1663,14 @@ onMounted(async () => {
   .card__title-position {
     font-size: 13px;
     font-weight: 600;
+    width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 28px;
+    -webkit-line-clamp: 1;
+    display: -webkit-box;
+    word-break: break-word;
+    -webkit-box-orient: vertical;
   }
   .card__title-company {
     font-size: 13px;
