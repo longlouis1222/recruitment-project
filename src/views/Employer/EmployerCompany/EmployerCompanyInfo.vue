@@ -336,14 +336,16 @@ const uploadAvatar = async () => {
 
 const getIndustryList = async () => {
   try {
-    const industryApiRes = await IndustryApi.list('size=99999')
-    if (industryApiRes.status == 200) {
-      industryList.value = industryApiRes.data.data.data
+    const res = await IndustryApi.list('size=99999')
+    if (res.status === 200) {
+      industryList.value = res.data.data.data
     }
   } catch (error) {
-    ElMessage({
-      message: 'Có lỗi khi tải dữ liệu.',
+    ElNotification({
+      title: 'Error',
+      message: 'Có lỗi xảy ra khi tải dữ liệu.',
       type: 'error',
+      duration: 3000,
     })
   }
 }
@@ -516,7 +518,7 @@ onMounted(async () => {
                 >
               </template>
               <el-button
-                v-if="fileList"
+                v-if="fileList && fileList.length > 0"
                 class="ml-3 mb-2 ms-2 btn-load"
                 type="success"
                 @click="uploadFileToDb"

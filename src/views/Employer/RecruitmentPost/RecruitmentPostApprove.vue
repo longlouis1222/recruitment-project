@@ -140,14 +140,16 @@ const resetForm = (formEl) => {
 
 const getIndustryList = async () => {
   try {
-    const industryApiRes = await IndustryApi.list()
-    if (industryApiRes.status == 200) {
-      industryList.value = industryApiRes.data.data.data
+    const res = await IndustryApi.list('size=99999')
+    if (res.status === 200) {
+      industryList.value = res.data.data.data
     }
   } catch (error) {
-    ElMessage({
-      message: 'Có lỗi khi tải dữ liệu.',
+    ElNotification({
+      title: 'Error',
+      message: 'Có lỗi xảy ra khi tải dữ liệu.',
       type: 'error',
+      duration: 3000,
     })
   }
 }
@@ -156,7 +158,7 @@ const getPostById = async () => {
   try {
     const industryApiRes = await PostApi.findById(route.params.id)
     if (industryApiRes.status == 200) {
-      formData.value = industryApiRes.data.data
+      formData.value = {...industryApiRes.data.data, recruitmentExperience: industryApiRes.data.data.recruitmentExperience ? Number(industryApiRes.data.data.recruitmentExperience) : 0}
       formData.value.fullNameContactor = formData.value.companyDTO.userInfoDTO.fullName
       formData.value.emailContactor = formData.value.companyDTO.userDTO.email
       formData.value.phoneNumberContactor = formData.value.companyDTO.userInfoDTO.phoneNumber

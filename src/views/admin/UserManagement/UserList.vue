@@ -287,7 +287,7 @@ onMounted(() => {
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="username" label="Tài khoản" width="100" />
+        <el-table-column prop="username" label="Tài khoản" width="130" />
         <el-table-column prop="email" label="Email" min-width="160" />
         <el-table-column
           prop="userInfoDTO.fullName"

@@ -226,9 +226,18 @@ const deletePost = async (rowData) => {
 }
 
 const getIndustryList = async () => {
-  const industryApiRes = await IndustryApi.list()
-  if (industryApiRes.status == 200) {
-    industryList.value = industryApiRes.data.data.data
+  try {
+    const res = await IndustryApi.list('size=99999')
+    if (res.status === 200) {
+      industryList.value = res.data.data.data
+    }
+  } catch (error) {
+    ElNotification({
+      title: 'Error',
+      message: 'Có lỗi xảy ra khi tải dữ liệu.',
+      type: 'error',
+      duration: 3000,
+    })
   }
 }
 

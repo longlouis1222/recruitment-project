@@ -139,7 +139,7 @@ const getCurrentUserCV = async () => {
       switch1.value = dataCv.value.permissionSearch
       switch2.value = dataCv.value.permissionSearch
       view.value = dataCv.value.view ? dataCv.value.view : 0
-      await getFileById(res.data.data.fileId)
+      if (res.data.data.fileId) await getFileById(res.data.data.fileId)
     }
   } catch (error) {
     ElNotification({
@@ -315,6 +315,7 @@ onMounted(async () => {
               >
             </template>
             <el-button
+              v-if="fileList && fileList.length > 0"
               class="ml-3 mb-2 ms-2 btn-load"
               type="success"
               @click="uploadFileToDb"

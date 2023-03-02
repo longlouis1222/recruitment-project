@@ -185,7 +185,7 @@ const fn_tableSortChange = (column, tableSort) => {
 
 const getIndustryList = async () => {
   try {
-    const industryApiRes = await IndustryApi.list()
+    const industryApiRes = await IndustryApi.list('size=99999')
     if (industryApiRes.status === 200) {
       industryList.value = industryApiRes.data.data.data
     }

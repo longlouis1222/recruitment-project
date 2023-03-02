@@ -14,7 +14,7 @@ const dialogAllIndustries = ref(false)
 const mainJobList = DataService.mainJobList
 
 const isShowAvatar = ref(false)
-const isEmployer = ref(false)
+const isCandidate = ref(false)
 const userType = localStorage.getItem('type')
 
 const props = defineProps({
@@ -68,9 +68,9 @@ onMounted(() => {
   }
   if (
     localStorage.getItem('Token') &&
-    localStorage.getItem('type') === 'EMPLOYER'
+    localStorage.getItem('type') === 'CANDIDATE'
   ) {
-    isEmployer.value = true
+    isCandidate.value = true
   }
 })
 </script>
@@ -179,7 +179,7 @@ onMounted(() => {
         <CNavItem
           @click="goToCreateCV"
           style="cursor: pointer"
-          v-if="!isEmployer"
+          v-if="isCandidate"
         >
           <CNavLink class="d-flex align-items-center">
             Tạo hồ sơ ngay <CIcon class="mx-2" icon="cilArrowRight" size="lg" />

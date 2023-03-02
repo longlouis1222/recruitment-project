@@ -136,7 +136,7 @@ const getUserInfo = async () => {
     if (userProfileApiRes.status == 200) {
       userProfile.value = userProfileApiRes.data.data
       formData.value = { ...formData.value, ...userProfile.value }
-
+      if (!formData.value.userInfoDTO.avatar) return
       const fileApiRes = await FileApi.getFileById(formData.value.userInfoDTO.avatar)
       if (fileApiRes.status === 200) {
         formData.value.avt = fileApiRes.data.data.thumbnailLink

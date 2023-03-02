@@ -218,9 +218,9 @@ onMounted(async () => {
               <div class="d-flex align-items-center me-4">
                 <el-icon class="text-info"><Location /></el-icon
                 ><span class="card__subtitle">{{
-                  companyInfo && companyInfo.companyAddress
-                    ? companyInfo.companyAddress
-                    : 'Số 86 Mễ Trì Hạ, Nam Từ Liêm, Hà Nội'
+                  companyInfo && companyInfo.location
+                    ? companyInfo.location
+                    : 'Hà Nội'
                 }}</span>
               </div>
               <div class="d-flex align-items-center">
