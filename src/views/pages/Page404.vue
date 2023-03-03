@@ -4,7 +4,9 @@ import { useRouter } from 'vue-router';
 const router = useRouter()
 
 const backToPrev = () => {
-  router.go(-1);
+  router.push({
+    name: 'Login'
+  });
 }
 
 </script>

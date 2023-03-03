@@ -158,11 +158,36 @@ const getPostById = async () => {
   try {
     const industryApiRes = await PostApi.findById(route.params.id)
     if (industryApiRes.status == 200) {
-      formData.value = {...industryApiRes.data.data, recruitmentExperience: industryApiRes.data.data.recruitmentExperience ? Number(industryApiRes.data.data.recruitmentExperience) : 0}
-      formData.value.fullNameContactor = formData.value.companyDTO.userInfoDTO.fullName
-      formData.value.emailContactor = formData.value.companyDTO.userDTO.email
-      formData.value.phoneNumberContactor = formData.value.companyDTO.userInfoDTO.phoneNumber
-      formData.value.addressContactor = formData.value.companyDTO.userInfoDTO.address
+      formData.value = {
+        ...industryApiRes.data.data,
+        recruitmentExperience: industryApiRes.data.data.recruitmentExperience
+          ? Number(industryApiRes.data.data.recruitmentExperience)
+          : 0,
+      }
+      formData.value.fullNameContactor =
+        formData.value.companyDTO &&
+        formData.value.companyDTO.userInfoDTO &&
+        formData.value.companyDTO.userInfoDTO.fullName
+          ? formData.value.companyDTO.userInfoDTO.fullName
+          : ''
+      formData.value.emailContactor =
+        formData.value.companyDTO &&
+        formData.value.companyDTO.userDTO &&
+        formData.value.companyDTO.userDTO.email
+          ? formData.value.companyDTO.userDTO.email
+          : ''
+      formData.value.phoneNumberContactor =
+        formData.value.companyDTO &&
+        formData.value.companyDTO.userInfoDTO &&
+        formData.value.companyDTO.userInfoDTO.phoneNumber
+          ? formData.value.companyDTO.userInfoDTO.phoneNumber
+          : ''
+      formData.value.addressContactor =
+        formData.value.companyDTO &&
+        formData.value.companyDTO.userInfoDTO &&
+        formData.value.companyDTO.userInfoDTO.address
+          ? formData.value.companyDTO.userInfoDTO.address
+          : ''
     }
   } catch (error) {
     ElMessage({

@@ -2,7 +2,7 @@
   <!-- <CDropdown variant="nav-item"> -->
   <CDropdown>
     <CDropdownToggle placement="bottom-end" class="py-0 border-0" :caret="false">
-      <CAvatar :src="avatar" size="md" />
+      <CAvatar :src="userRole !== 'ADMIN' ? avatar : avatarAdmin" size="md" />
     </CDropdownToggle>
     <CDropdownMenu class="pt-0">
       <!-- <CDropdownHeader component="h6" class="bg-light fw-semibold py-2">
@@ -52,13 +52,14 @@
 
 <script setup>
 import avatar from '@/assets/images/avatars/3.jpg'
+import avatarAdmin from '@/assets/images/avatars/unknow_avt.png'
 import { ElMessageBox, ElNotification } from 'element-plus'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
 const store = useStore()
 const router = useRouter()
-
+const userRole = localStorage.getItem('type')
 const logout = () => {
   ElMessageBox.confirm(
     'Bạn có chắc muốn đăng xuất khỏi tài khoản này ?',

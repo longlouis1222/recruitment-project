@@ -99,11 +99,11 @@ const getCompanyById = async () => {
 const handleAction = (action, id) => {
   if (action === 'save') {
     saveToCareList(id)
-    const post = tableRules.data.find((o) => o.id === id)
+    const post = recruitmentPostList.value.find((o) => o.id === id)
     if (post) post.userCurrentSaved = true
   } else if (action === 'unSave') {
     unSaveFromCareList(id)
-    const post = tableRules.data.find((o) => o.id === id)
+    const post = recruitmentPostList.value.find((o) => o.id === id)
     if (post) post.userCurrentSaved = false
   }
 }

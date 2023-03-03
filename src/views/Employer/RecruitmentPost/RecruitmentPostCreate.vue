@@ -128,7 +128,7 @@ const resetForm = (formEl) => {
 }
 
 const goToRecruitmentList = () => {
-  router.push({ name: 'Danh sách bài tuyển dụng'})
+  router.push({ name: 'Danh sách bài tuyển dụng' })
 }
 
 const backToPrev = () => {
@@ -159,10 +159,19 @@ const getUserInfo = async () => {
     if (userProfileApiRes.status === 200) {
       const res = userProfileApiRes.data.data
       userInfo.value = res
-      formData.value.fullNameContactor = res.userInfoDTO.fullName
-      formData.value.emailContactor = res.email
-      formData.value.phoneNumberContactor = res.userInfoDTO.phoneNumber
-      formData.value.addressContactor = res.companyDTO.companyAddress
+      formData.value.fullNameContactor =
+        res.userInfoDTO && res.userInfoDTO.fullName
+          ? res.userInfoDTO.fullName
+          : ''
+      formData.value.emailContactor = res.email ? res.email : ''
+      formData.value.phoneNumberContactor =
+        res.userInfoDTO && res.userInfoDTO.phoneNumber
+          ? res.userInfoDTO.phoneNumber
+          : ''
+      formData.value.addressContactor =
+        res.companyDTO && res.companyDTO.companyAddress
+          ? res.companyDTO.companyAddress
+          : ''
     }
   } catch (error) {
     ElMessage({
@@ -174,13 +183,17 @@ const getUserInfo = async () => {
 
 const getPostList = async () => {
   isFullCapacity.value = false
-  const postApiRes = await PostApi.list(`size=99999&companyId=${userInfo.value.companyDTO.id}`)
+  const postApiRes = await PostApi.list(
+    `size=99999&companyId=${userInfo.value.companyDTO.id}`,
+  )
   if (postApiRes.status == 200) {
-    isFullCapacity.value = postApiRes.data.data.totalElements >= 15 ? true : false
+    isFullCapacity.value =
+      postApiRes.data.data.totalElements >= 15 ? true : false
     if (isFullCapacity.value) {
       ElNotification({
         title: 'Warning',
-        message: 'Công ty đã đạt giới hạn 15 tin tuyển dụng. Vui lòng xóa bớt để tạo tin mới.',
+        message:
+          'Công ty đã đạt giới hạn 15 tin tuyển dụng. Vui lòng xóa bớt để tạo tin mới.',
         type: 'warning',
         duration: 3000,
       })
@@ -569,7 +582,10 @@ onMounted(async () => {
       </el-form>
       <div class="text-center">
         <el-button @click="backToPrev">Quay lại</el-button>
-        <el-button type="primary" @click="submitForm(ruleFormRef)" :disabled="isFullCapacity"
+        <el-button
+          type="primary"
+          @click="submitForm(ruleFormRef)"
+          :disabled="isFullCapacity"
           >Thêm mới</el-button
         >
       </div>

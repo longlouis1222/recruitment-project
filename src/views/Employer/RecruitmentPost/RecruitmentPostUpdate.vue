@@ -34,9 +34,11 @@ const workPlaceList = DataService.workPlaceList
 const minSalaryList = DataService.minSalaryList
 const maxSalaryList = DataService.minSalaryList
 
-const formData = reactive({ value: MethodService.copyObject(modelData.dataForm)})
+const formData = reactive({
+  value: MethodService.copyObject(modelData.dataForm),
+})
 const validForm = modelData.validForm
-const industryList = reactive({ value: []})
+const industryList = reactive({ value: [] })
 const userInfo = ref(null)
 
 const editor = ClassicEditor
@@ -106,7 +108,7 @@ const submitForm = async (formEl) => {
         })
         setTimeout(() => {
           backToPrev()
-        }, 500);
+        }, 500)
       }
     } catch (error) {
       ElNotification({
@@ -144,9 +146,39 @@ const getPostById = async () => {
   try {
     const industryApiRes = await PostApi.findById(route.params.id)
     if (industryApiRes.status == 200) {
-      formData.value = industryApiRes.data.data
+      formData.value = {
+        ...industryApiRes.data.data,
+        recruitmentExperience: industryApiRes.data.data.recruitmentExperience
+          ? Number(industryApiRes.data.data.recruitmentExperience)
+          : 0,
+      }
+      formData.value.fullNameContactor =
+        formData.value.companyDTO &&
+        formData.value.companyDTO.userInfoDTO &&
+        formData.value.companyDTO.userInfoDTO.fullName
+          ? formData.value.companyDTO.userInfoDTO.fullName
+          : ''
+      formData.value.emailContactor =
+        formData.value.companyDTO &&
+        formData.value.companyDTO.userDTO &&
+        formData.value.companyDTO.userDTO.email
+          ? formData.value.companyDTO.userDTO.email
+          : ''
+      formData.value.phoneNumberContactor =
+        formData.value.companyDTO &&
+        formData.value.companyDTO.userInfoDTO &&
+        formData.value.companyDTO.userInfoDTO.phoneNumber
+          ? formData.value.companyDTO.userInfoDTO.phoneNumber
+          : ''
+      formData.value.addressContactor =
+        formData.value.companyDTO &&
+        formData.value.companyDTO.userInfoDTO &&
+        formData.value.companyDTO.userInfoDTO.address
+          ? formData.value.companyDTO.userInfoDTO.address
+          : ''
     }
   } catch (error) {
+    console.log(error)
     ElMessage({
       message: 'Có lỗi khi tải dữ liệu.',
       type: 'error',
@@ -165,9 +197,12 @@ const getUserInfo = async () => {
       formData.value.fullNameContactor = res.userInfoDTO.fullName
       formData.value.emailContactor = res.email
       formData.value.phoneNumberContactor = res.userInfoDTO.phoneNumber
-      formData.value.addressContactor = res.companyDTO.companyAddress
+      formData.value.addressContactor = res.companyDTO
+        ? res.companyDTO.companyAddress
+        : ''
     }
   } catch (error) {
+    console.log(error)
     ElMessage({
       message: 'Có lỗi khi tải dữ liệu.',
       type: 'error',
@@ -182,7 +217,7 @@ const backToPrev = () => {
 onMounted(async () => {
   await getIndustryList()
   await getPostById()
-  await getUserInfo()
+  // await getUserInfo()
 })
 </script>
 

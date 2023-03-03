@@ -111,7 +111,7 @@ const handlePreview = (uploadFile) => {
 }
 
 const handleExceed = (files, uploadFiles) => {
-  ElMessage.warning(`Giới hạn file tải lên là ${files.length}`)
+  ElMessage.warning(`Giới hạn file tải lên là ${files.length}. Vui lòng xóa bỏ hồ sơ đính kèm hiện tại rồi tải file mới.`)
 }
 
 const beforeRemove = (uploadFile, uploadFiles) => {
@@ -303,6 +303,7 @@ onMounted(async () => {
             :limit="1"
             :on-exceed="handleExceed"
             :auto-upload="false"
+            accept=".pdf"
             :disabled="loadFileCV"
           >
             <template #trigger>

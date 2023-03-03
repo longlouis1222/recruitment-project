@@ -256,8 +256,12 @@ const hashURL = () => {
 }
 
 onMounted(async () => {
-  await getCompanyList()
-  await getHotIndustriesList()
+  await Promise.all([
+    getCompanyList(),
+    getHotIndustriesList()
+  ])
+  // await getCompanyList()
+  // await getHotIndustriesList()
   await hashURL()
   await getPostList()
 })

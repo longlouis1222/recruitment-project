@@ -320,6 +320,7 @@ onMounted(() => {
                     <el-select
                       v-model="formSearchData.value.recruitmentArea"
                       placeholder="Chọn"
+                      clearable
                       filterable
                     >
                       <el-option
@@ -339,6 +340,7 @@ onMounted(() => {
                     <el-select
                       v-model="formSearchData.value.recruitmentExperience"
                       placeholder="Chọn"
+                      clearable
                       filterable
                     >
                       <el-option
@@ -355,6 +357,7 @@ onMounted(() => {
                     <el-input
                       v-model="formSearchData.value.salaryMin"
                       placeholder="Vui lòng nhập"
+                      clearable
                     />
                   </el-form-item>
                 </b-col>
@@ -363,6 +366,7 @@ onMounted(() => {
                     <el-input
                       v-model="formSearchData.value.salaryMax"
                       placeholder="Vui lòng nhập"
+                      clearable
                     />
                   </el-form-item>
                 </b-col>
@@ -372,6 +376,7 @@ onMounted(() => {
                       v-model="formSearchData.value.level"
                       placeholder="Chọn"
                       filterable
+                      clearable
                     >
                       <el-option
                         v-for="item in rankList"
@@ -471,7 +476,7 @@ onMounted(() => {
           show-overflow-tooltip
           align="center"
         /> -->
-        <el-table-column prop="necessarySkills" label="Khác" min-width="200" />
+        <el-table-column prop="workingForm" label="Hình thức làm việc" min-width="200" />
         <el-table-column
           fixed="right"
           align="center"
